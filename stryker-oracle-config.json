@@ -1,0 +1,41 @@
+{
+  "stryker-config": {
+    "project": "src/EricksonLopez.SqlBuilder.Oracle/EricksonLopez.SqlBuilder.Oracle.csproj",
+    "test-projects": [
+      "tests/EricksonLopez.SqlBuilder.Oracle.UnitTests/EricksonLopez.SqlBuilder.Oracle.UnitTests.csproj"
+    ],
+    "coverage-analysis": "perTest",
+    "concurrency": 4,
+    "mutate": [
+      "src/EricksonLopez.SqlBuilder.Oracle/**/*.cs",
+      "!src/EricksonLopez.SqlBuilder.Oracle/bin/**",
+      "!src/EricksonLopez.SqlBuilder.Oracle/obj/**",
+      "!src/EricksonLopez.SqlBuilder.Oracle/**/*.g.cs",
+      "!src/EricksonLopez.SqlBuilder.Oracle/**/*.AssemblyInfo.cs",
+      "!src/EricksonLopez.SqlBuilder.Oracle/**/*Diagnostics.cs"
+    ],
+    "thresholds": {
+      "high": 100,
+      "low": 98,
+      "break": 95
+    },
+    "reporters": [
+      "html",
+      "json",
+      "cleartext",
+      "progress"
+    ],
+    "ignore-methods": [
+      "*ConfigureAwait",
+      "*Dispose",
+      "*LogWarning",
+      "*LogError",
+      "*LogInformation",
+      "*LogDebug",
+      "*SetTag",
+      "*SetError",
+      "*AddParameter",
+      "*StartActivity"
+    ]
+  }
+}

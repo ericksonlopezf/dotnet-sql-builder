@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <PublishAot>false</PublishAot>
+    <!-- Samples project: not a library, suppress public API tracking warnings -->
+    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.SqlServer\EricksonLopez.SqlBuilder.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.PostgreSql\EricksonLopez.SqlBuilder.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Dapper\EricksonLopez.SqlBuilder.Dapper.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.SourceGenerators\EricksonLopez.SqlBuilder.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Sqlite\EricksonLopez.SqlBuilder.Sqlite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" VersionOverride="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+  </ItemGroup>
+
+</Project>
+

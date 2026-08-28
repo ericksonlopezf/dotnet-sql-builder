@@ -1,0 +1,144 @@
+<Solution>
+  <Folder Name="/EricksonLopez.SqlBuilder.Abstractions/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Abstractions/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Abstractions/EricksonLopez.SqlBuilder.Abstractions.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Abstractions/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Abstractions.UnitTests/EricksonLopez.SqlBuilder.Abstractions.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Aot/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Aot/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Aot/EricksonLopez.SqlBuilder.Aot.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Aot/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Aot.UnitTests/EricksonLopez.SqlBuilder.Aot.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Analyzers/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Analyzers/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Analyzers/EricksonLopez.SqlBuilder.Analyzers.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Analyzers/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Analyzers.UnitTests/EricksonLopez.SqlBuilder.Analyzers.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Benchmarks/">
+    <Project Path="benchmarks/EricksonLopez.SqlBuilder.Benchmarks/EricksonLopez.SqlBuilder.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Dapper/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Dapper/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Dapper/EricksonLopez.SqlBuilder.Dapper.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Dapper/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Dapper.UnitTests/EricksonLopez.SqlBuilder.Dapper.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Dapper.Aot/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Dapper.Aot/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Dapper.Aot/EricksonLopez.SqlBuilder.Dapper.Aot.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Dapper.Aot/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Dapper.Aot.UnitTests/EricksonLopez.SqlBuilder.Dapper.Aot.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.MySql/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.MySql/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.MySql/EricksonLopez.SqlBuilder.MySql.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.MySql/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.MySql.IntegrationTests/EricksonLopez.SqlBuilder.MySql.IntegrationTests.csproj" />
+    <Project Path="tests/EricksonLopez.SqlBuilder.MySql.UnitTests/EricksonLopez.SqlBuilder.MySql.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.MariaDb/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.MariaDb/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.MariaDb/EricksonLopez.SqlBuilder.MariaDb.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.MariaDb/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.MariaDb.IntegrationTests/EricksonLopez.SqlBuilder.MariaDb.IntegrationTests.csproj" />
+    <Project Path="tests/EricksonLopez.SqlBuilder.MariaDb.UnitTests/EricksonLopez.SqlBuilder.MariaDb.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Oracle/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Oracle/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Oracle/EricksonLopez.SqlBuilder.Oracle.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Oracle/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Oracle.IntegrationTests/EricksonLopez.SqlBuilder.Oracle.IntegrationTests.csproj" />
+    <Project Path="tests/EricksonLopez.SqlBuilder.Oracle.UnitTests/EricksonLopez.SqlBuilder.Oracle.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.PostgreSql/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.PostgreSql/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.PostgreSql/EricksonLopez.SqlBuilder.PostgreSql.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.PostgreSql/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.PostgreSql.IntegrationTests/EricksonLopez.SqlBuilder.PostgreSql.IntegrationTests.csproj" />
+    <Project Path="tests/EricksonLopez.SqlBuilder.PostgreSql.UnitTests/EricksonLopez.SqlBuilder.PostgreSql.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/Playgrounds/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/Playgrounds/MySql/">
+    <Project Path="samples/Playgrounds/MySql/MySqlPlayground.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/Playgrounds/Oracle/">
+    <Project Path="samples/Playgrounds/Oracle/OraclePlayground.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/Playgrounds/PostgreSql/">
+    <Project Path="samples/Playgrounds/PostgreSql/PostgreSqlPlayground.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/Playgrounds/Sqlite/">
+    <Project Path="samples/Playgrounds/Sqlite/SqlitePlayground.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/Playgrounds/SqlServer/">
+    <Project Path="samples/Playgrounds/SqlServer/SqlServerPlayground.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Samples/src/">
+    <Project Path="samples/EricksonLopez.SqlBuilder.Samples/EricksonLopez.SqlBuilder.Samples.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.SourceGenerators/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.SourceGenerators/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.SourceGenerators/EricksonLopez.SqlBuilder.SourceGenerators.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.SourceGenerators/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.SourceGenerators.UnitTests/EricksonLopez.SqlBuilder.SourceGenerators.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Sqlite/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Sqlite/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Sqlite/EricksonLopez.SqlBuilder.Sqlite.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Sqlite/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Sqlite.IntegrationTests/EricksonLopez.SqlBuilder.Sqlite.IntegrationTests.csproj" />
+    <Project Path="tests/EricksonLopez.SqlBuilder.Sqlite.UnitTests/EricksonLopez.SqlBuilder.Sqlite.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.SqlServer/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.SqlServer/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.SqlServer/EricksonLopez.SqlBuilder.SqlServer.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.SqlServer/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.SqlServer.IntegrationTests/EricksonLopez.SqlBuilder.SqlServer.IntegrationTests.csproj" />
+    <Project Path="tests/EricksonLopez.SqlBuilder.SqlServer.UnitTests/EricksonLopez.SqlBuilder.SqlServer.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Testing/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Testing/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Testing/EricksonLopez.SqlBuilder.Testing.csproj" />
+  </Folder>
+
+  <Folder Name="/EricksonLopez.SqlBuilder/" />
+  <Folder Name="/EricksonLopez.SqlBuilder/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder/EricksonLopez.SqlBuilder.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.UnitTests/EricksonLopez.SqlBuilder.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.ArchitectureTests/EricksonLopez.SqlBuilder.ArchitectureTests.csproj" />
+    <Project Path="tests/EricksonLopez.SqlBuilder.AotSmokeTest/EricksonLopez.SqlBuilder.AotSmokeTest.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Pagination/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.Pagination/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.Pagination/EricksonLopez.SqlBuilder.Pagination.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Pagination/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Pagination.Tests/EricksonLopez.SqlBuilder.Pagination.Tests.csproj" />
+  </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.OpenTelemetry/" />
+  <Folder Name="/EricksonLopez.SqlBuilder.OpenTelemetry/src/">
+    <Project Path="src/EricksonLopez.SqlBuilder.OpenTelemetry/EricksonLopez.SqlBuilder.OpenTelemetry.csproj" />
+  </Folder>
+</Solution>
+
+

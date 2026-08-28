@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <PackageId>EricksonLopez.SqlBuilder</PackageId>
+    <Description>Immutable NativeAOT-friendly SQL Builder core — AST, query builders, expression visitors, and dialect compilation contracts.</Description>
+    <PackageTags>$(CommonPackageTags);query-builder;fluent-api;ast;expression-tree;native-aot</PackageTags>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.Abstractions\EricksonLopez.SqlBuilder.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Dialect compiler packages (internal API access) -->
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.SqlServer" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.PostgreSql" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MySql" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MariaDb" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Oracle" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Sqlite" />
+    <!-- Test projects (internal API access) -->
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Tests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Testing" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Benchmarks" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Dapper.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MySql.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Oracle.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.PostgreSql.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Sqlite.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.SqlServer.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MySql.IntegrationTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MariaDb.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MariaDb.IntegrationTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Oracle.IntegrationTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Sqlite.IntegrationTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.SqlServer.IntegrationTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.PostgreSql.IntegrationTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+</Project>

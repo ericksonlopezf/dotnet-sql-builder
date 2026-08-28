@@ -1,0 +1,7 @@
+﻿{
+  Sql: SELECT * FROM "USERS" WHERE Id = :p0 OR (first_name = :p1),
+  Parameters: {
+    p0: 1,
+    p1: Admin
+  }
+}

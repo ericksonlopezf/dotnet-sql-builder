@@ -1,0 +1,14 @@
+﻿{
+  Sql: INSERT INTO [users] ([username], [email], [password_hash], [first_name], [last_name], [is_active], [email_verified], [created_at], [failed_login_attempts]) VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8),
+  Parameters: {
+    p0: TestUser,
+    p1: TestUser@example.com,
+    p2: hash123,
+    p3: TestUser,
+    p4: TestLastName,
+    p5: true,
+    p6: true,
+    p7: DateTime_1,
+    p8: 0
+  }
+}

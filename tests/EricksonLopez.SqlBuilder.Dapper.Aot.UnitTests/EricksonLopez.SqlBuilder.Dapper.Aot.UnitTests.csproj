@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <EnablePackageValidation>false</EnablePackageValidation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" VersionOverride="6.0.4" />
+    <PackageReference Include="Microsoft.Data.Sqlite" VersionOverride="10.0.10" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" VersionOverride="17.14.1" />
+    <PackageReference Include="xunit" VersionOverride="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" VersionOverride="3.1.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="AwesomeAssertions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Dapper.Aot\EricksonLopez.SqlBuilder.Dapper.Aot.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Sqlite\EricksonLopez.SqlBuilder.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Testing\EricksonLopez.SqlBuilder.Testing.csproj" />
+  </ItemGroup>
+
+</Project>

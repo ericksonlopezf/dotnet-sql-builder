@@ -1,0 +1,278 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial class EnumGuidEntity : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<EnumGuidEntity>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<EnumGuidEntity>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>
+    {
+        public const string TableName = "enumguidentitys";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+            public const string Id = "id";
+            public const string Status = "status";
+            public const string Small = "small";
+            public const string LongS = "long_s";
+            public const string ShortS = "short_s";
+            public const string Uuid = "uuid";
+            public const string NullableUuid = "nullable_uuid";
+        }
+        public static readonly string SelectAllTemplate = $"SELECT {Columns.Id}, {Columns.Status}, {Columns.Small}, {Columns.LongS}, {Columns.ShortS}, {Columns.Uuid}, {Columns.NullableUuid} FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { nameof(Id), Columns.Id },
+            { nameof(Status), Columns.Status },
+            { nameof(Small), Columns.Small },
+            { nameof(LongS), Columns.LongS },
+            { nameof(ShortS), Columns.ShortS },
+            { nameof(Uuid), Columns.Uuid },
+            { nameof(NullableUuid), Columns.NullableUuid },
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] { Columns.Id, Columns.Status, Columns.Small, Columns.LongS, Columns.ShortS, Columns.Uuid, Columns.NullableUuid };
+        public object?[] GetValues() => new object?[] { this.Id, this.Status, this.Small, this.LongS, this.ShortS, this.Uuid, this.NullableUuid };
+        public string[] GetAllColumnNames() => new[] { Columns.Id, Columns.Status, Columns.Small, Columns.LongS, Columns.ShortS, Columns.Uuid, Columns.NullableUuid };
+        public object?[] GetAllValues() => new object?[] { this.Id, this.Status, this.Small, this.LongS, this.ShortS, this.Uuid, this.NullableUuid };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => System.Array.Empty<string>();
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+            public string Id => $"{TableAlias}.{Columns.Id}";
+            public string Status => $"{TableAlias}.{Columns.Status}";
+            public string Small => $"{TableAlias}.{Columns.Small}";
+            public string LongS => $"{TableAlias}.{Columns.LongS}";
+            public string ShortS => $"{TableAlias}.{Columns.ShortS}";
+            public string Uuid => $"{TableAlias}.{Columns.Uuid}";
+            public string NullableUuid => $"{TableAlias}.{Columns.NullableUuid}";
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            private int _ordinal_Id;
+            private int _ordinal_Status;
+            private int _ordinal_Small;
+            private int _ordinal_LongS;
+            private int _ordinal_ShortS;
+            private int _ordinal_Uuid;
+            private int _ordinal_NullableUuid;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _ordinal_Id = reader.GetOrdinal(Columns.Id);
+                _ordinal_Status = reader.GetOrdinal(Columns.Status);
+                _ordinal_Small = reader.GetOrdinal(Columns.Small);
+                _ordinal_LongS = reader.GetOrdinal(Columns.LongS);
+                _ordinal_ShortS = reader.GetOrdinal(Columns.ShortS);
+                _ordinal_Uuid = reader.GetOrdinal(Columns.Uuid);
+                _ordinal_NullableUuid = reader.GetOrdinal(Columns.NullableUuid);
+                _initialized = true;
+            }
+            public EnumGuidEntity Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new EnumGuidEntity();
+                if (!reader.IsDBNull(_ordinal_Id))
+                    entity.Id = reader.GetInt32(_ordinal_Id);
+                if (!reader.IsDBNull(_ordinal_Status))
+                    entity.Status = (TestNamespace.Status)reader.GetInt32(_ordinal_Status);
+                if (!reader.IsDBNull(_ordinal_Small))
+                    entity.Small = (TestNamespace.SmallStatus)reader.GetByte(_ordinal_Small);
+                if (!reader.IsDBNull(_ordinal_LongS))
+                    entity.LongS = (TestNamespace.LongStatus)reader.GetInt64(_ordinal_LongS);
+                if (!reader.IsDBNull(_ordinal_ShortS))
+                    entity.ShortS = (TestNamespace.ShortStatus)reader.GetInt16(_ordinal_ShortS);
+                if (!reader.IsDBNull(_ordinal_Uuid))
+                    entity.Uuid = reader.GetGuid(_ordinal_Uuid);
+                if (!reader.IsDBNull(_ordinal_NullableUuid))
+                    entity.NullableUuid = reader.GetGuid(_ordinal_NullableUuid);
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, EnumGuidEntity> GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static EnumGuidEntity FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.ColumnCount => 7;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.IsNull(EnumGuidEntity entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.IsDefault(EnumGuidEntity entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.AreEqual(EnumGuidEntity entity, EnumGuidEntity snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, snapshot.Id),
+                1 => System.Collections.Generic.EqualityComparer<TestNamespace.Status>.Default.Equals(entity.Status, snapshot.Status),
+                2 => System.Collections.Generic.EqualityComparer<TestNamespace.SmallStatus>.Default.Equals(entity.Small, snapshot.Small),
+                3 => System.Collections.Generic.EqualityComparer<TestNamespace.LongStatus>.Default.Equals(entity.LongS, snapshot.LongS),
+                4 => System.Collections.Generic.EqualityComparer<TestNamespace.ShortStatus>.Default.Equals(entity.ShortS, snapshot.ShortS),
+                5 => System.Collections.Generic.EqualityComparer<System.Guid>.Default.Equals(entity.Uuid, snapshot.Uuid),
+                6 => System.Collections.Generic.EqualityComparer<System.Guid?>.Default.Equals(entity.NullableUuid, snapshot.NullableUuid),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => Columns.Id,
+                1 => Columns.Status,
+                2 => Columns.Small,
+                3 => Columns.LongS,
+                4 => Columns.ShortS,
+                5 => Columns.Uuid,
+                6 => Columns.NullableUuid,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.BindParameter(EnumGuidEntity entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                0 => parameters.Add(entity.Id),
+                1 => parameters.Add(entity.Status),
+                2 => parameters.Add(entity.Small),
+                3 => parameters.Add(entity.LongS),
+                4 => parameters.Add(entity.ShortS),
+                5 => parameters.Add(entity.Uuid),
+                6 => parameters.Add(entity.NullableUuid),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.ExtractColumnArrays(System.ReadOnlySpan<EnumGuidEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, EnumGuidEntity> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.GetReaderParser() => GetReaderParser();
+        static EnumGuidEntity EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<EnumGuidEntity>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<EnumGuidEntity> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<EnumGuidEntity>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => EnumGuidEntity.TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(EnumGuidEntity.Columns.Id, "Id", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(EnumGuidEntity.Columns.Status, "Status", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(EnumGuidEntity.Columns.Small, "Small", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(EnumGuidEntity.Columns.LongS, "LongS", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(EnumGuidEntity.Columns.ShortS, "ShortS", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(EnumGuidEntity.Columns.Uuid, "Uuid", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(EnumGuidEntity.Columns.NullableUuid, "NullableUuid", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(0, EnumGuidEntity.Columns.Id, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(1, EnumGuidEntity.Columns.Status, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(2, EnumGuidEntity.Columns.Small, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(3, EnumGuidEntity.Columns.LongS, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(4, EnumGuidEntity.Columns.ShortS, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(5, EnumGuidEntity.Columns.Uuid, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(6, EnumGuidEntity.Columns.NullableUuid, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull(EnumGuidEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => false,
+                    1 => false,
+                    2 => false,
+                    3 => false,
+                    4 => false,
+                    5 => false,
+                    6 => entity.NullableUuid is null,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault(EnumGuidEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, default!),
+                    1 => System.Collections.Generic.EqualityComparer<TestNamespace.Status>.Default.Equals(entity.Status, default!),
+                    2 => System.Collections.Generic.EqualityComparer<TestNamespace.SmallStatus>.Default.Equals(entity.Small, default!),
+                    3 => System.Collections.Generic.EqualityComparer<TestNamespace.LongStatus>.Default.Equals(entity.LongS, default!),
+                    4 => System.Collections.Generic.EqualityComparer<TestNamespace.ShortStatus>.Default.Equals(entity.ShortS, default!),
+                    5 => System.Collections.Generic.EqualityComparer<System.Guid>.Default.Equals(entity.Uuid, default!),
+                    6 => System.Collections.Generic.EqualityComparer<System.Guid?>.Default.Equals(entity.NullableUuid, default!),
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue(EnumGuidEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => entity.Id,
+                    1 => entity.Status,
+                    2 => entity.Small,
+                    3 => entity.LongS,
+                    4 => entity.ShortS,
+                    5 => entity.Uuid,
+                    6 => entity.NullableUuid,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<EnumGuidEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                int[]? array_0 = null;
+                if (activeColumns[0]) array_0 = new int[entities.Length];
+                TestNamespace.Status[]? array_1 = null;
+                if (activeColumns[1]) array_1 = new TestNamespace.Status[entities.Length];
+                TestNamespace.SmallStatus[]? array_2 = null;
+                if (activeColumns[2]) array_2 = new TestNamespace.SmallStatus[entities.Length];
+                TestNamespace.LongStatus[]? array_3 = null;
+                if (activeColumns[3]) array_3 = new TestNamespace.LongStatus[entities.Length];
+                TestNamespace.ShortStatus[]? array_4 = null;
+                if (activeColumns[4]) array_4 = new TestNamespace.ShortStatus[entities.Length];
+                System.Guid[]? array_5 = null;
+                if (activeColumns[5]) array_5 = new System.Guid[entities.Length];
+                System.Guid?[]? array_6 = null;
+                if (activeColumns[6]) array_6 = new System.Guid?[entities.Length];
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                    if (activeColumns[0]) array_0![i] = entity.Id;
+                    if (activeColumns[1]) array_1![i] = entity.Status;
+                    if (activeColumns[2]) array_2![i] = entity.Small;
+                    if (activeColumns[3]) array_3![i] = entity.LongS;
+                    if (activeColumns[4]) array_4![i] = entity.ShortS;
+                    if (activeColumns[5]) array_5![i] = entity.Uuid;
+                    if (activeColumns[6]) array_6![i] = entity.NullableUuid;
+                }
+                if (activeColumns[0]) parameters.AddNamed("C0", array_0);
+                if (activeColumns[1]) parameters.AddNamed("C1", array_1);
+                if (activeColumns[2]) parameters.AddNamed("C2", array_2);
+                if (activeColumns[3]) parameters.AddNamed("C3", array_3);
+                if (activeColumns[4]) parameters.AddNamed("C4", array_4);
+                if (activeColumns[5]) parameters.AddNamed("C5", array_5);
+                if (activeColumns[6]) parameters.AddNamed("C6", array_6);
+            }
+        }
+        public void Serialize(EnumGuidEntity entity, object?[] values)
+        {
+            values[0] = entity.Id;
+            values[1] = entity.Status;
+            values[2] = entity.Small;
+            values[3] = entity.LongS;
+            values[4] = entity.ShortS;
+            values[5] = entity.Uuid;
+            values[6] = entity.NullableUuid;
+        }
+    }
+}
+
+  ]
+}

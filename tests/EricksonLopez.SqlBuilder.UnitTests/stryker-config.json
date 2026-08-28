@@ -1,0 +1,30 @@
+{
+  "stryker-config": {
+    "project": "EricksonLopez.SqlBuilder.csproj",
+    "concurrency": 4,
+    "mutation-level": "Standard",
+    "coverage-analysis": "perTest",
+    "thresholds": {
+      "high": 100,
+      "low": 98,
+      "break": 95
+    },
+    "reporters": [
+      "html",
+      "json",
+      "cleartext",
+      "progress"
+    ],
+    "ignore-methods": [
+      "ConfigureAwait",
+      "Dispose"
+    ],
+    "mutate": [
+      "**/*",
+      "!bin/**",
+      "!obj/**",
+      "!**/*.g.cs",
+      "!**/*.AssemblyInfo.cs"
+    ]
+  }
+}

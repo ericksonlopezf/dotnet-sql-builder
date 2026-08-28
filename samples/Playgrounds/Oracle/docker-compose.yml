@@ -1,0 +1,24 @@
+services:
+  oracle:
+    image: gvenzl/oracle-free:23-slim-faststart
+    container_name: sqlbuilder_oracle_playground
+    environment:
+      ORACLE_PASSWORD: Oracle@SqlB1!
+      APP_USER:        demo
+      APP_USER_PASSWORD: Demo@SqlB1!
+    ports:
+      - "1522:1521"
+    volumes:
+      - ./init.sql:/container-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh"]
+      interval: 10s
+      timeout: 10s
+      retries: 25
+      start_period: 60s
+    networks:
+      - oracle_net
+
+networks:
+  oracle_net:
+    driver: bridge

@@ -1,0 +1,62 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+using System;
+using EricksonLopez.SqlBuilder;
+
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static partial class UserFilters
+    {
+        public static SelectQuery<User> WhereIdEq(this SelectQuery<User> query, int value)
+            => query.Where((System.FormattableString)$"id = {value}");
+        public static SelectQuery<User> WhereIdNotEq(this SelectQuery<User> query, int value)
+            => query.Where((System.FormattableString)$"id != {value}");
+        public static SelectQuery<User> WhereIdGt(this SelectQuery<User> query, int value)
+            => query.Where((System.FormattableString)$"id > {value}");
+        public static SelectQuery<User> WhereIdLt(this SelectQuery<User> query, int value)
+            => query.Where((System.FormattableString)$"id < {value}");
+        public static SelectQuery<User> WhereNameEq(this SelectQuery<User> query, string value)
+            => query.Where((System.FormattableString)$"name = {value}");
+        public static SelectQuery<User> WhereNameNotEq(this SelectQuery<User> query, string value)
+            => query.Where((System.FormattableString)$"name != {value}");
+        public static SelectQuery<User> WhereNameContains(this SelectQuery<User> query, string value)
+        {
+            var escaped = value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            var pattern = "%" + escaped + "%";
+            return query.Where((System.FormattableString)$"name LIKE {pattern} ESCAPE '\\' ");
+        }
+        public static SelectQuery<User> WhereNameStartsWith(this SelectQuery<User> query, string value)
+        {
+            var escaped = value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            var pattern = escaped + "%";
+            return query.Where((System.FormattableString)$"name LIKE {pattern} ESCAPE '\\' ");
+        }
+    }
+
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class UserFilter : EricksonLopez.SqlBuilder.Filters.ISqlFilter<User>
+    {
+        public int? IdEq { get; set; }
+        public int? IdGt { get; set; }
+        public int? IdLt { get; set; }
+        public string? NameEq { get; set; }
+        public string? NameContains { get; set; }
+        public string? NameStartsWith { get; set; }
+
+        public SelectQuery<User> Apply(SelectQuery<User> query)
+        {
+            if (IdEq != null) query = query.WhereIdEq(IdEq.Value);
+            if (IdGt != null) query = query.WhereIdGt(IdGt.Value);
+            if (IdLt != null) query = query.WhereIdLt(IdLt.Value);
+            if (NameEq != null) query = query.WhereNameEq(NameEq!);
+            if (!string.IsNullOrEmpty(NameContains)) query = query.WhereNameContains(NameContains!);
+            if (!string.IsNullOrEmpty(NameStartsWith)) query = query.WhereNameStartsWith(NameStartsWith!);
+            return query;
+        }
+    }
+}
+
+  ]
+}

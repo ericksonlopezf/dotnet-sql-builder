@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <IsAotCompatible>true</IsAotCompatible>
+
+    <PackageId>EricksonLopez.SqlBuilder.Aot</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Erickson Lopez</Authors>
+    <Description>
+      Reflection-free, NativeAOT-compatible query execution layer for EricksonLopez.SqlBuilder.
+      Executes compiled SQL directly over IDbConnection using source-generated entity mappers,
+      with no runtime code generation and no dependency on Dapper.
+    </Description>
+    <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>$(CommonPackageTags);native-aot;aot;ado-net;data-access;zero-allocation;streaming</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.Abstractions\EricksonLopez.SqlBuilder.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+</Project>

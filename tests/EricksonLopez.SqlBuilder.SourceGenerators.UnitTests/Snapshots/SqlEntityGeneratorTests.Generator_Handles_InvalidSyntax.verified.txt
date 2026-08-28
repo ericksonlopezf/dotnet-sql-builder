@@ -1,0 +1,138 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial class  : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>
+    {
+        public const string TableName = "s";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+        }
+        public static readonly string SelectAllTemplate = $"SELECT  FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] {  };
+        public object?[] GetValues() => new object?[] {  };
+        public string[] GetAllColumnNames() => new[] {  };
+        public object?[] GetAllValues() => new object?[] {  };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => System.Array.Empty<string>();
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _initialized = true;
+            }
+            public  Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new ();
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, > GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static  FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.ColumnCount => 0;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.IsNull( entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.IsDefault( entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.AreEqual( entity,  snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.BindParameter( entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.ExtractColumnArrays(System.ReadOnlySpan<> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, > EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.GetReaderParser() => GetReaderParser();
+        static  EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => .TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull( entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault( entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue( entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                }
+            }
+        }
+        public void Serialize( entity, object?[] values)
+        {
+        }
+    }
+}
+
+  ]
+}

@@ -1,0 +1,178 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace <global namespace>
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial class GlobalConfig : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<GlobalConfig>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<GlobalConfig>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>
+    {
+        public const string TableName = "globals";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+            public const string Key = "key";
+            public const string Value = "value";
+        }
+        public static readonly string SelectAllTemplate = $"SELECT {Columns.Key}, {Columns.Value} FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { nameof(Key), Columns.Key },
+            { nameof(Value), Columns.Value },
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] { Columns.Key, Columns.Value };
+        public object?[] GetValues() => new object?[] { this.Key, this.Value };
+        public string[] GetAllColumnNames() => new[] { Columns.Key, Columns.Value };
+        public object?[] GetAllValues() => new object?[] { this.Key, this.Value };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => System.Array.Empty<string>();
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+            public string Key => $"{TableAlias}.{Columns.Key}";
+            public string Value => $"{TableAlias}.{Columns.Value}";
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            private int _ordinal_Key;
+            private int _ordinal_Value;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _ordinal_Key = reader.GetOrdinal(Columns.Key);
+                _ordinal_Value = reader.GetOrdinal(Columns.Value);
+                _initialized = true;
+            }
+            public GlobalConfig Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new GlobalConfig();
+                if (!reader.IsDBNull(_ordinal_Key))
+                    entity.Key = reader.GetInt32(_ordinal_Key);
+                if (!reader.IsDBNull(_ordinal_Value))
+                    entity.Value = reader.GetString(_ordinal_Value);
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, GlobalConfig> GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static GlobalConfig FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.ColumnCount => 2;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.IsNull(GlobalConfig entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.IsDefault(GlobalConfig entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.AreEqual(GlobalConfig entity, GlobalConfig snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Key, snapshot.Key),
+                1 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.Value, snapshot.Value),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => Columns.Key,
+                1 => Columns.Value,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.BindParameter(GlobalConfig entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                0 => parameters.Add(entity.Key),
+                1 => parameters.Add(entity.Value),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.ExtractColumnArrays(System.ReadOnlySpan<GlobalConfig> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, GlobalConfig> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.GetReaderParser() => GetReaderParser();
+        static GlobalConfig EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<GlobalConfig>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<GlobalConfig> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<GlobalConfig>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => GlobalConfig.TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(GlobalConfig.Columns.Key, "Key", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(GlobalConfig.Columns.Value, "Value", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(0, GlobalConfig.Columns.Key, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(1, GlobalConfig.Columns.Value, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull(GlobalConfig entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => false,
+                    1 => entity.Value is null,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault(GlobalConfig entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Key, default!),
+                    1 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.Value, default!),
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue(GlobalConfig entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => entity.Key,
+                    1 => entity.Value,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<GlobalConfig> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                int[]? array_0 = null;
+                if (activeColumns[0]) array_0 = new int[entities.Length];
+                string[]? array_1 = null;
+                if (activeColumns[1]) array_1 = new string[entities.Length];
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                    if (activeColumns[0]) array_0![i] = entity.Key;
+                    if (activeColumns[1]) array_1![i] = entity.Value;
+                }
+                if (activeColumns[0]) parameters.AddNamed("C0", array_0);
+                if (activeColumns[1]) parameters.AddNamed("C1", array_1);
+            }
+        }
+        public void Serialize(GlobalConfig entity, object?[] values)
+        {
+            values[0] = entity.Key;
+            values[1] = entity.Value;
+        }
+    }
+}
+
+  ]
+}

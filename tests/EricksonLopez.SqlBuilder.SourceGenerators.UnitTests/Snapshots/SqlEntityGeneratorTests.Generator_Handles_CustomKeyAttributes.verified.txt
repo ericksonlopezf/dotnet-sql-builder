@@ -1,0 +1,178 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial class CustomKeyEntity : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<CustomKeyEntity>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<CustomKeyEntity>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>
+    {
+        public const string TableName = "customkeyentitys";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+            public const string KeyId = "key_id";
+            public const string PrimaryId = "primary_id";
+        }
+        public static readonly string SelectAllTemplate = $"SELECT {Columns.KeyId}, {Columns.PrimaryId} FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { nameof(KeyId), Columns.KeyId },
+            { nameof(PrimaryId), Columns.PrimaryId },
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] { Columns.KeyId, Columns.PrimaryId };
+        public object?[] GetValues() => new object?[] { this.KeyId, this.PrimaryId };
+        public string[] GetAllColumnNames() => new[] { Columns.KeyId, Columns.PrimaryId };
+        public object?[] GetAllValues() => new object?[] { this.KeyId, this.PrimaryId };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => System.Array.Empty<string>();
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+            public string KeyId => $"{TableAlias}.{Columns.KeyId}";
+            public string PrimaryId => $"{TableAlias}.{Columns.PrimaryId}";
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            private int _ordinal_KeyId;
+            private int _ordinal_PrimaryId;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _ordinal_KeyId = reader.GetOrdinal(Columns.KeyId);
+                _ordinal_PrimaryId = reader.GetOrdinal(Columns.PrimaryId);
+                _initialized = true;
+            }
+            public CustomKeyEntity Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new CustomKeyEntity();
+                if (!reader.IsDBNull(_ordinal_KeyId))
+                    entity.KeyId = reader.GetInt32(_ordinal_KeyId);
+                if (!reader.IsDBNull(_ordinal_PrimaryId))
+                    entity.PrimaryId = reader.GetInt32(_ordinal_PrimaryId);
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, CustomKeyEntity> GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static CustomKeyEntity FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.ColumnCount => 2;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.IsNull(CustomKeyEntity entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.IsDefault(CustomKeyEntity entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.AreEqual(CustomKeyEntity entity, CustomKeyEntity snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.KeyId, snapshot.KeyId),
+                1 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.PrimaryId, snapshot.PrimaryId),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => Columns.KeyId,
+                1 => Columns.PrimaryId,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.BindParameter(CustomKeyEntity entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                0 => parameters.Add(entity.KeyId),
+                1 => parameters.Add(entity.PrimaryId),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.ExtractColumnArrays(System.ReadOnlySpan<CustomKeyEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, CustomKeyEntity> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.GetReaderParser() => GetReaderParser();
+        static CustomKeyEntity EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<CustomKeyEntity>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<CustomKeyEntity> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<CustomKeyEntity>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => CustomKeyEntity.TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(CustomKeyEntity.Columns.KeyId, "KeyId", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(CustomKeyEntity.Columns.PrimaryId, "PrimaryId", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.PrimaryKey),
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(0, CustomKeyEntity.Columns.KeyId, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(1, CustomKeyEntity.Columns.PrimaryId, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.PrimaryKey),
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull(CustomKeyEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => false,
+                    1 => false,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault(CustomKeyEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.KeyId, default!),
+                    1 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.PrimaryId, default!),
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue(CustomKeyEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => entity.KeyId,
+                    1 => entity.PrimaryId,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<CustomKeyEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                int[]? array_0 = null;
+                if (activeColumns[0]) array_0 = new int[entities.Length];
+                int[]? array_1 = null;
+                if (activeColumns[1]) array_1 = new int[entities.Length];
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                    if (activeColumns[0]) array_0![i] = entity.KeyId;
+                    if (activeColumns[1]) array_1![i] = entity.PrimaryId;
+                }
+                if (activeColumns[0]) parameters.AddNamed("C0", array_0);
+                if (activeColumns[1]) parameters.AddNamed("C1", array_1);
+            }
+        }
+        public void Serialize(CustomKeyEntity entity, object?[] values)
+        {
+            values[0] = entity.KeyId;
+            values[1] = entity.PrimaryId;
+        }
+    }
+}
+
+  ]
+}

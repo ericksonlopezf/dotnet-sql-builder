@@ -1,0 +1,31 @@
+{
+  "stryker-config": {
+    "project": "EricksonLopez.SqlBuilder.Abstractions.csproj",
+    "test-projects": [
+      "EricksonLopez.SqlBuilder.Abstractions.UnitTests.csproj"
+    ],
+    "mutate": [
+      "**/*.cs",
+      "!bin/**",
+      "!obj/**",
+      "!**/*.g.cs",
+      "!**/*.AssemblyInfo.cs"
+    ],
+    "thresholds": {
+      "high": 100,
+      "low": 98,
+      "break": 95
+    },
+    "reporters": [
+      "html",
+      "json",
+      "cleartext",
+      "progress"
+    ],
+    "ignore-methods": [
+      "ConfigureAwait",
+      "Dispose"
+    ],
+    "concurrency": 4
+  }
+}

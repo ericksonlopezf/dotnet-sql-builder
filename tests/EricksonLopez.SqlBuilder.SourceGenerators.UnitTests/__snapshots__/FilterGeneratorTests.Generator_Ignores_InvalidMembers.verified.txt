@@ -1,0 +1,40 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+using System;
+using EricksonLopez.SqlBuilder;
+
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static partial class InvalidEntityFilters
+    {
+        public static SelectQuery<InvalidEntity> WhereIdEq(this SelectQuery<InvalidEntity> query, int value)
+            => query.Where((System.FormattableString)$"id = {value}");
+        public static SelectQuery<InvalidEntity> WhereIdNotEq(this SelectQuery<InvalidEntity> query, int value)
+            => query.Where((System.FormattableString)$"id != {value}");
+        public static SelectQuery<InvalidEntity> WhereIdGt(this SelectQuery<InvalidEntity> query, int value)
+            => query.Where((System.FormattableString)$"id > {value}");
+        public static SelectQuery<InvalidEntity> WhereIdLt(this SelectQuery<InvalidEntity> query, int value)
+            => query.Where((System.FormattableString)$"id < {value}");
+    }
+
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class InvalidEntityFilter : EricksonLopez.SqlBuilder.Filters.ISqlFilter<InvalidEntity>
+    {
+        public int? IdEq { get; set; }
+        public int? IdGt { get; set; }
+        public int? IdLt { get; set; }
+
+        public SelectQuery<InvalidEntity> Apply(SelectQuery<InvalidEntity> query)
+        {
+            if (IdEq != null) query = query.WhereIdEq(IdEq.Value);
+            if (IdGt != null) query = query.WhereIdGt(IdGt.Value);
+            if (IdLt != null) query = query.WhereIdLt(IdLt.Value);
+            return query;
+        }
+    }
+}
+
+  ]
+}
