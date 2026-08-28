@@ -1,0 +1,52 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+using System;
+using EricksonLopez.SqlBuilder;
+
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static partial class OrderFilters
+    {
+        public static SelectQuery<Order> WhereIdEq(this SelectQuery<Order> query, int value)
+            => query.Where((System.FormattableString)$"id = {value}");
+        public static SelectQuery<Order> WhereIdNotEq(this SelectQuery<Order> query, int value)
+            => query.Where((System.FormattableString)$"id != {value}");
+        public static SelectQuery<Order> WhereIdGt(this SelectQuery<Order> query, int value)
+            => query.Where((System.FormattableString)$"id > {value}");
+        public static SelectQuery<Order> WhereIdLt(this SelectQuery<Order> query, int value)
+            => query.Where((System.FormattableString)$"id < {value}");
+        public static SelectQuery<Order> WhereCustomerIdEq(this SelectQuery<Order> query, int? value)
+            => query.Where((System.FormattableString)$"customer_id = {value}");
+        public static SelectQuery<Order> WhereCustomerIdNotEq(this SelectQuery<Order> query, int? value)
+            => query.Where((System.FormattableString)$"customer_id != {value}");
+        public static SelectQuery<Order> WhereNotesEq(this SelectQuery<Order> query, string? value)
+            => query.Where((System.FormattableString)$"notes = {value}");
+        public static SelectQuery<Order> WhereNotesNotEq(this SelectQuery<Order> query, string? value)
+            => query.Where((System.FormattableString)$"notes != {value}");
+    }
+
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class OrderFilter : EricksonLopez.SqlBuilder.Filters.ISqlFilter<Order>
+    {
+        public int? IdEq { get; set; }
+        public int? IdGt { get; set; }
+        public int? IdLt { get; set; }
+        public int? CustomerIdEq { get; set; }
+        public string? NotesEq { get; set; }
+
+        public SelectQuery<Order> Apply(SelectQuery<Order> query)
+        {
+            if (IdEq != null) query = query.WhereIdEq(IdEq.Value);
+            if (IdGt != null) query = query.WhereIdGt(IdGt.Value);
+            if (IdLt != null) query = query.WhereIdLt(IdLt.Value);
+            if (CustomerIdEq != null) query = query.WhereCustomerIdEq(CustomerIdEq.Value);
+            if (NotesEq != null) query = query.WhereNotesEq(NotesEq!);
+            return query;
+        }
+    }
+}
+
+  ]
+}

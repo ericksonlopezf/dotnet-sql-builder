@@ -1,0 +1,238 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial class SpecialEntity : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<SpecialEntity>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<SpecialEntity>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>
+    {
+        public const string TableName = "special_table";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+            public const string Id = "id";
+            public const string SearchTerm = "search_term";
+            public const string SortOrder = "sort_order";
+            public const string ComputedHash = "computed_hash";
+            public const string AutoCol = "auto_col";
+        }
+        public static readonly string SelectAllTemplate = $"SELECT {Columns.Id}, {Columns.SearchTerm}, {Columns.SortOrder}, {Columns.ComputedHash}, {Columns.AutoCol} FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { nameof(Id), Columns.Id },
+            { nameof(SearchTerm), Columns.SearchTerm },
+            { nameof(SortOrder), Columns.SortOrder },
+            { nameof(ComputedHash), Columns.ComputedHash },
+            { nameof(AutoCol), Columns.AutoCol },
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] { Columns.SearchTerm, Columns.SortOrder };
+        public object?[] GetValues() => new object?[] { this.SearchTerm, this.SortOrder };
+        public string[] GetAllColumnNames() => new[] { Columns.Id, Columns.SearchTerm, Columns.SortOrder, Columns.ComputedHash, Columns.AutoCol };
+        public object?[] GetAllValues() => new object?[] { this.Id, this.SearchTerm, this.SortOrder, this.ComputedHash, this.AutoCol };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => new string[] { Columns.SearchTerm, Columns.SortOrder };
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+            public string Id => $"{TableAlias}.{Columns.Id}";
+            public string SearchTerm => $"{TableAlias}.{Columns.SearchTerm}";
+            public string SortOrder => $"{TableAlias}.{Columns.SortOrder}";
+            public string ComputedHash => $"{TableAlias}.{Columns.ComputedHash}";
+            public string AutoCol => $"{TableAlias}.{Columns.AutoCol}";
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            private int _ordinal_Id;
+            private int _ordinal_SearchTerm;
+            private int _ordinal_SortOrder;
+            private int _ordinal_ComputedHash;
+            private int _ordinal_AutoCol;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _ordinal_Id = reader.GetOrdinal(Columns.Id);
+                _ordinal_SearchTerm = reader.GetOrdinal(Columns.SearchTerm);
+                _ordinal_SortOrder = reader.GetOrdinal(Columns.SortOrder);
+                _ordinal_ComputedHash = reader.GetOrdinal(Columns.ComputedHash);
+                _ordinal_AutoCol = reader.GetOrdinal(Columns.AutoCol);
+                _initialized = true;
+            }
+            public SpecialEntity Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new SpecialEntity();
+                if (!reader.IsDBNull(_ordinal_Id))
+                    entity.Id = reader.GetInt32(_ordinal_Id);
+                if (!reader.IsDBNull(_ordinal_SearchTerm))
+                    entity.SearchTerm = reader.GetString(_ordinal_SearchTerm);
+                if (!reader.IsDBNull(_ordinal_SortOrder))
+                    entity.SortOrder = reader.GetInt32(_ordinal_SortOrder);
+                if (!reader.IsDBNull(_ordinal_ComputedHash))
+                    entity.ComputedHash = reader.GetString(_ordinal_ComputedHash);
+                if (!reader.IsDBNull(_ordinal_AutoCol))
+                    entity.AutoCol = reader.GetString(_ordinal_AutoCol);
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, SpecialEntity> GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static SpecialEntity FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.ColumnCount => 5;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.IsNull(SpecialEntity entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.IsDefault(SpecialEntity entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.AreEqual(SpecialEntity entity, SpecialEntity snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, snapshot.Id),
+                1 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.SearchTerm, snapshot.SearchTerm),
+                2 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.SortOrder, snapshot.SortOrder),
+                3 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.ComputedHash, snapshot.ComputedHash),
+                4 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.AutoCol, snapshot.AutoCol),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => Columns.Id,
+                1 => Columns.SearchTerm,
+                2 => Columns.SortOrder,
+                3 => Columns.ComputedHash,
+                4 => Columns.AutoCol,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.BindParameter(SpecialEntity entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                0 => parameters.Add(entity.Id),
+                1 => parameters.Add(entity.SearchTerm),
+                2 => parameters.Add(entity.SortOrder),
+                3 => parameters.Add(entity.ComputedHash),
+                4 => parameters.Add(entity.AutoCol),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.ExtractColumnArrays(System.ReadOnlySpan<SpecialEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, SpecialEntity> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.GetReaderParser() => GetReaderParser();
+        static SpecialEntity EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<SpecialEntity>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<SpecialEntity> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<SpecialEntity>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => SpecialEntity.TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(SpecialEntity.Columns.Id, "Id", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.PrimaryKey | EricksonLopez.SqlBuilder.Metadata.ColumnFlags.Generated),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(SpecialEntity.Columns.SearchTerm, "SearchTerm", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(SpecialEntity.Columns.SortOrder, "SortOrder", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(SpecialEntity.Columns.ComputedHash, "ComputedHash", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.Generated),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(SpecialEntity.Columns.AutoCol, "AutoCol", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.Generated),
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(0, SpecialEntity.Columns.Id, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.PrimaryKey | EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.Identity),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(1, SpecialEntity.Columns.SearchTerm, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(2, SpecialEntity.Columns.SortOrder, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(3, SpecialEntity.Columns.ComputedHash, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.Identity),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(4, SpecialEntity.Columns.AutoCol, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.Identity),
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull(SpecialEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => false,
+                    1 => entity.SearchTerm is null,
+                    2 => false,
+                    3 => entity.ComputedHash is null,
+                    4 => entity.AutoCol is null,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault(SpecialEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, default!),
+                    1 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.SearchTerm, default!),
+                    2 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.SortOrder, default!),
+                    3 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.ComputedHash, default!),
+                    4 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.AutoCol, default!),
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue(SpecialEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => entity.Id,
+                    1 => entity.SearchTerm,
+                    2 => entity.SortOrder,
+                    3 => entity.ComputedHash,
+                    4 => entity.AutoCol,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<SpecialEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                int[]? array_0 = null;
+                if (activeColumns[0]) array_0 = new int[entities.Length];
+                string[]? array_1 = null;
+                if (activeColumns[1]) array_1 = new string[entities.Length];
+                int[]? array_2 = null;
+                if (activeColumns[2]) array_2 = new int[entities.Length];
+                string[]? array_3 = null;
+                if (activeColumns[3]) array_3 = new string[entities.Length];
+                string[]? array_4 = null;
+                if (activeColumns[4]) array_4 = new string[entities.Length];
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                    if (activeColumns[0]) array_0![i] = entity.Id;
+                    if (activeColumns[1]) array_1![i] = entity.SearchTerm;
+                    if (activeColumns[2]) array_2![i] = entity.SortOrder;
+                    if (activeColumns[3]) array_3![i] = entity.ComputedHash;
+                    if (activeColumns[4]) array_4![i] = entity.AutoCol;
+                }
+                if (activeColumns[0]) parameters.AddNamed("C0", array_0);
+                if (activeColumns[1]) parameters.AddNamed("C1", array_1);
+                if (activeColumns[2]) parameters.AddNamed("C2", array_2);
+                if (activeColumns[3]) parameters.AddNamed("C3", array_3);
+                if (activeColumns[4]) parameters.AddNamed("C4", array_4);
+            }
+        }
+        public void Serialize(SpecialEntity entity, object?[] values)
+        {
+            values[0] = entity.Id;
+            values[1] = entity.SearchTerm;
+            values[2] = entity.SortOrder;
+            values[3] = entity.ComputedHash;
+            values[4] = entity.AutoCol;
+        }
+    }
+}
+
+  ]
+}

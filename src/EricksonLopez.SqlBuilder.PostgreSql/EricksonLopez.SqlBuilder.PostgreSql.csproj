@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.PostgreSql.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql" VersionOverride="9.0.2" />
+
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+
+    <PackageId>EricksonLopez.SqlBuilder.PostgreSql</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Erickson Lopez</Authors>
+    <Description>AOT-compatible AST compiler for the PostgreSQL dialect with LATERAL joins, materialized CTEs, and window function FILTER support.</Description>
+    <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>$(CommonPackageTags);postgresql;postgres;npgsql;dialect;query-compiler;native-aot</PackageTags>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+</Project>

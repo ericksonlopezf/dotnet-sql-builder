@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <IsTestProject>false</IsTestProject>
+    <IsAotCompatible>false</IsAotCompatible>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <PackageId>EricksonLopez.SqlBuilder.Testing</PackageId>
+    <AssemblyName>EricksonLopez.SqlBuilder.Testing</AssemblyName>
+    <PackageTags>$(CommonPackageTags);testing;testcontainers;integration-testing;unit-testing;test-harness</PackageTags>
+    <NoWarn>$(NoWarn);RS0016;IL2026;IL3050</NoWarn>
+  </PropertyGroup>
+
+  <!-- DDL scripts as embedded resources -->
+  <ItemGroup>
+    <EmbeddedResource Include="Infrastructure\DDL\*.sql" />
+  </ItemGroup>
+
+  <!-- Test utilities (no Version= — managed centrally in Directory.Packages.props) -->
+  <ItemGroup>
+    <PackageReference Include="Verify.Xunit" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="Bogus" />
+  </ItemGroup>
+
+  <!-- Testcontainers -->
+  <ItemGroup>
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="Testcontainers.MySql" />
+    <PackageReference Include="Testcontainers.Oracle" />
+    <PackageReference Include="AwesomeAssertions" />
+  </ItemGroup>
+
+  <!-- Database drivers -->
+  <ItemGroup>
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="MySqlConnector" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" />
+  </ItemGroup>
+
+  <!-- Core project references -->
+  <ItemGroup>
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.SourceGenerators\EricksonLopez.SqlBuilder.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.Dapper\EricksonLopez.SqlBuilder.Dapper.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.PostgreSql\EricksonLopez.SqlBuilder.PostgreSql.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.SqlServer\EricksonLopez.SqlBuilder.SqlServer.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.MySql\EricksonLopez.SqlBuilder.MySql.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.Sqlite\EricksonLopez.SqlBuilder.Sqlite.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.Oracle\EricksonLopez.SqlBuilder.Oracle.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+</Project>
+
+
+

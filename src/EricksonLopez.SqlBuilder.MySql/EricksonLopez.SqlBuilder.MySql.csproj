@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
+    <PackageReference Include="MySqlConnector" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <PackageTags>$(CommonPackageTags);mysql;mysqlconnector;dialect;query-compiler;native-aot</PackageTags>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MySql.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MySql.IntegrationTests" />
+    <!-- MariaDB dialect inherits MySqlVisitor (internal) -->
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MariaDb" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MariaDb.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MariaDb.IntegrationTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+</Project>
+

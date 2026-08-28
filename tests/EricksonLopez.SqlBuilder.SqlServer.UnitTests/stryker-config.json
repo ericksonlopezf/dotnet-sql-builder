@@ -1,0 +1,32 @@
+{
+  "stryker-config": {
+    "project": "EricksonLopez.SqlBuilder.SqlServer.csproj",
+    "concurrency": 2,
+    "mutation-level": "Standard",
+    "coverage-analysis": "perTest",
+    "reporters": [
+      "html",
+      "json",
+      "progress"
+    ],
+    "thresholds": {
+      "high": 100,
+      "low": 98,
+      "break": 95
+    },
+    "ignore-methods": [
+      "*ConfigureAwait",
+      "*LogWarning",
+      "*LogError",
+      "*LogInformation",
+      "*LogDebug",
+      "*SetTag",
+      "*SetError",
+      "*AddParameter"
+    ],
+    "mutate": [
+      "**/*",
+      "!**/*Diagnostics.cs"
+    ]
+  }
+}

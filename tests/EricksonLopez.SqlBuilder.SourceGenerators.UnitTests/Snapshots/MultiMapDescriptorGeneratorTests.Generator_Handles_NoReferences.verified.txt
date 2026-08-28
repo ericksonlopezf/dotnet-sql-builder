@@ -1,0 +1,32 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    /// <summary>NativeAOT multi-map support for this entity (generated).</summary>
+    partial class User
+    {
+        /// <summary>
+        /// Returns a compile-time-generated factory that maps an <see cref="System.Data.IDataReader"/>
+        /// row to a boxed <see cref="User"/> instance, with no reflection.
+        /// Suitable for use with MultiMapBuilder and NativeAOT execution paths.
+        /// </summary>
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static System.Func<System.Data.IDataReader, object> GetMultiMapReaderFactory()
+        {
+            var parser = new Parser();
+            return reader => parser.Parse(reader);
+        }
+
+        /// <summary>Returns a typed reader factory for use with MultiMapBuilder.</summary>
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static System.Func<System.Data.IDataReader, User> GetTypedReaderFactory()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+    }
+}
+
+  ]
+}

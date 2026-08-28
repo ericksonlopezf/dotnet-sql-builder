@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="TngTech.ArchUnitNET.xUnit" />
+    
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Abstractions\EricksonLopez.SqlBuilder.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.PostgreSql\EricksonLopez.SqlBuilder.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.SqlServer\EricksonLopez.SqlBuilder.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Sqlite\EricksonLopez.SqlBuilder.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.MySql\EricksonLopez.SqlBuilder.MySql.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Oracle\EricksonLopez.SqlBuilder.Oracle.csproj" />
+  </ItemGroup>
+
+</Project>
+

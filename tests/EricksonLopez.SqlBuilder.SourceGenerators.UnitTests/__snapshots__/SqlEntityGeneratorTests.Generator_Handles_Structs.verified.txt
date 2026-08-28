@@ -1,0 +1,158 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial struct DataStruct : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<DataStruct>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<DataStruct>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>
+    {
+        public const string TableName = "structs";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+            public const string Id = "id";
+        }
+        public static readonly string SelectAllTemplate = $"SELECT {Columns.Id} FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { nameof(Id), Columns.Id },
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] { Columns.Id };
+        public object?[] GetValues() => new object?[] { this.Id };
+        public string[] GetAllColumnNames() => new[] { Columns.Id };
+        public object?[] GetAllValues() => new object?[] { this.Id };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => System.Array.Empty<string>();
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+            public string Id => $"{TableAlias}.{Columns.Id}";
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            private int _ordinal_Id;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _ordinal_Id = reader.GetOrdinal(Columns.Id);
+                _initialized = true;
+            }
+            public DataStruct Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new DataStruct();
+                if (!reader.IsDBNull(_ordinal_Id))
+                    entity.Id = reader.GetInt32(_ordinal_Id);
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, DataStruct> GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static DataStruct FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.ColumnCount => 1;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.IsNull(DataStruct entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.IsDefault(DataStruct entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.AreEqual(DataStruct entity, DataStruct snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, snapshot.Id),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => Columns.Id,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.BindParameter(DataStruct entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                0 => parameters.Add(entity.Id),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.ExtractColumnArrays(System.ReadOnlySpan<DataStruct> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, DataStruct> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.GetReaderParser() => GetReaderParser();
+        static DataStruct EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<DataStruct>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<DataStruct> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<DataStruct>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => DataStruct.TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(DataStruct.Columns.Id, "Id", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.PrimaryKey),
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(0, DataStruct.Columns.Id, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.PrimaryKey),
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull(DataStruct entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => false,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault(DataStruct entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, default!),
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue(DataStruct entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => entity.Id,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<DataStruct> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                int[]? array_0 = null;
+                if (activeColumns[0]) array_0 = new int[entities.Length];
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                    if (activeColumns[0]) array_0![i] = entity.Id;
+                }
+                if (activeColumns[0]) parameters.AddNamed("C0", array_0);
+            }
+        }
+        public void Serialize(DataStruct entity, object?[] values)
+        {
+            values[0] = entity.Id;
+        }
+    }
+}
+
+  ]
+}

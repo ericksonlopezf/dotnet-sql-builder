@@ -1,0 +1,86 @@
+# Copyright © Erickson Lopez. MIT License.
+# Top-most EditorConfig file
+root = true
+
+# All files
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# C# files
+[*.cs]
+indent_size = 4
+csharp_indent_braces = false
+csharp_indent_switch_labels = true
+csharp_indent_labels = one_less_than_current
+csharp_prefer_braces = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_pattern_matching = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_throw_expression = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+
+# Import sorting
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# Code Quality & Analyzers Severity
+dotnet_diagnostic.CS1591.severity = warning
+dotnet_diagnostic.CS1590.severity = warning
+dotnet_diagnostic.CS0618.severity = error
+dotnet_diagnostic.CS0619.severity = error
+dotnet_diagnostic.CA1852.severity = warning
+dotnet_diagnostic.CA1305.severity = warning
+dotnet_diagnostic.IDE1006.severity = warning
+dotnet_diagnostic.CA1707.severity = warning
+dotnet_diagnostic.xUnit1051.severity = warning
+
+# Domain/API Design & Library Rules
+dotnet_diagnostic.CA1716.severity = none
+dotnet_diagnostic.CA1711.severity = none
+dotnet_diagnostic.CA1000.severity = none
+dotnet_diagnostic.CA1805.severity = none
+dotnet_diagnostic.CA1834.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1310.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1311.severity = none
+dotnet_diagnostic.CA1848.severity = none
+dotnet_diagnostic.CA1068.severity = none
+
+# Public API Tracking Analyzers
+dotnet_diagnostic.RS0016.severity = suggestion
+dotnet_diagnostic.RS0017.severity = suggestion
+dotnet_diagnostic.RS0026.severity = suggestion
+dotnet_diagnostic.RS0027.severity = suggestion
+dotnet_diagnostic.RS0036.severity = suggestion
+dotnet_diagnostic.RS0037.severity = suggestion
+dotnet_diagnostic.RS0041.severity = suggestion
+
+# Living specifications / Osherove test naming pattern (Method_Scenario_Result) - ADR-041
+[{tests/**,src/EricksonLopez.SqlBuilder.Testing/**}/*.cs]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CA2201.severity = none
+dotnet_diagnostic.CA1825.severity = none
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1859.severity = none
+dotnet_diagnostic.CA1001.severity = none
+dotnet_diagnostic.CA1862.severity = none
+dotnet_diagnostic.CA1866.severity = none
+
+dotnet_diagnostic.CS8600.severity = none
+dotnet_diagnostic.CS8601.severity = none
+dotnet_diagnostic.CS8602.severity = none
+dotnet_diagnostic.CS8603.severity = none
+dotnet_diagnostic.CS8604.severity = none
+dotnet_diagnostic.CS8620.severity = none
+dotnet_diagnostic.CS8625.severity = none

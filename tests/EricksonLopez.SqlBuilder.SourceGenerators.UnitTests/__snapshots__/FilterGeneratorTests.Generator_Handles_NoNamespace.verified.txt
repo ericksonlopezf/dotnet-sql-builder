@@ -1,0 +1,62 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+using System;
+using EricksonLopez.SqlBuilder;
+
+namespace <global namespace>
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static partial class GlobalConfigFilters
+    {
+        public static SelectQuery<GlobalConfig> WhereKeyEq(this SelectQuery<GlobalConfig> query, int value)
+            => query.Where((System.FormattableString)$"key = {value}");
+        public static SelectQuery<GlobalConfig> WhereKeyNotEq(this SelectQuery<GlobalConfig> query, int value)
+            => query.Where((System.FormattableString)$"key != {value}");
+        public static SelectQuery<GlobalConfig> WhereKeyGt(this SelectQuery<GlobalConfig> query, int value)
+            => query.Where((System.FormattableString)$"key > {value}");
+        public static SelectQuery<GlobalConfig> WhereKeyLt(this SelectQuery<GlobalConfig> query, int value)
+            => query.Where((System.FormattableString)$"key < {value}");
+        public static SelectQuery<GlobalConfig> WhereValueEq(this SelectQuery<GlobalConfig> query, string value)
+            => query.Where((System.FormattableString)$"value = {value}");
+        public static SelectQuery<GlobalConfig> WhereValueNotEq(this SelectQuery<GlobalConfig> query, string value)
+            => query.Where((System.FormattableString)$"value != {value}");
+        public static SelectQuery<GlobalConfig> WhereValueContains(this SelectQuery<GlobalConfig> query, string value)
+        {
+            var escaped = value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            var pattern = "%" + escaped + "%";
+            return query.Where((System.FormattableString)$"value LIKE {pattern} ESCAPE '\\' ");
+        }
+        public static SelectQuery<GlobalConfig> WhereValueStartsWith(this SelectQuery<GlobalConfig> query, string value)
+        {
+            var escaped = value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            var pattern = escaped + "%";
+            return query.Where((System.FormattableString)$"value LIKE {pattern} ESCAPE '\\' ");
+        }
+    }
+
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class GlobalConfigFilter : EricksonLopez.SqlBuilder.Filters.ISqlFilter<GlobalConfig>
+    {
+        public int? KeyEq { get; set; }
+        public int? KeyGt { get; set; }
+        public int? KeyLt { get; set; }
+        public string? ValueEq { get; set; }
+        public string? ValueContains { get; set; }
+        public string? ValueStartsWith { get; set; }
+
+        public SelectQuery<GlobalConfig> Apply(SelectQuery<GlobalConfig> query)
+        {
+            if (KeyEq != null) query = query.WhereKeyEq(KeyEq.Value);
+            if (KeyGt != null) query = query.WhereKeyGt(KeyGt.Value);
+            if (KeyLt != null) query = query.WhereKeyLt(KeyLt.Value);
+            if (ValueEq != null) query = query.WhereValueEq(ValueEq!);
+            if (!string.IsNullOrEmpty(ValueContains)) query = query.WhereValueContains(ValueContains!);
+            if (!string.IsNullOrEmpty(ValueStartsWith)) query = query.WhereValueStartsWith(ValueStartsWith!);
+            return query;
+        }
+    }
+}
+
+  ]
+}

@@ -1,0 +1,8 @@
+﻿{
+  Sql: SELECT * FROM "test_entity" WHERE @p0 AND @p1 OR @p2 ORDER BY "name" LIMIT 10,
+  Parameters: {
+    p0: true,
+    p1: false,
+    p2: true
+  }
+}

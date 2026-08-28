@@ -1,0 +1,11 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: ESQL005,
+      Title: Class must be partial,
+      Category: Usage,
+      Message: The class NotPartialClass must be marked as partial to use [SqlEntity],
+      Severity: Error
+    }
+  ]
+}

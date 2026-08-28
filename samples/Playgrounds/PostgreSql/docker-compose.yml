@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sqlbuilder_pg_playground
+    environment:
+      POSTGRES_DB:       sqlbuilder_demo
+      POSTGRES_USER:     demo
+      POSTGRES_PASSWORD: Demo@SqlB1!
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo -d sqlbuilder_demo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - pg_net
+
+networks:
+  pg_net:
+    driver: bridge

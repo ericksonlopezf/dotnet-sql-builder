@@ -1,0 +1,178 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial class User : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<User>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<User>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>
+    {
+        public const string TableName = "users";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+            public const string Id = "id";
+            public const string FirstName = "first_name";
+        }
+        public static readonly string SelectAllTemplate = $"SELECT {Columns.Id}, {Columns.FirstName} FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { nameof(Id), Columns.Id },
+            { nameof(FirstName), Columns.FirstName },
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] { Columns.Id, Columns.FirstName };
+        public object?[] GetValues() => new object?[] { this.Id, this.FirstName };
+        public string[] GetAllColumnNames() => new[] { Columns.Id, Columns.FirstName };
+        public object?[] GetAllValues() => new object?[] { this.Id, this.FirstName };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => System.Array.Empty<string>();
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+            public string Id => $"{TableAlias}.{Columns.Id}";
+            public string FirstName => $"{TableAlias}.{Columns.FirstName}";
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            private int _ordinal_Id;
+            private int _ordinal_FirstName;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _ordinal_Id = reader.GetOrdinal(Columns.Id);
+                _ordinal_FirstName = reader.GetOrdinal(Columns.FirstName);
+                _initialized = true;
+            }
+            public User Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new User();
+                if (!reader.IsDBNull(_ordinal_Id))
+                    entity.Id = reader.GetInt32(_ordinal_Id);
+                if (!reader.IsDBNull(_ordinal_FirstName))
+                    entity.FirstName = reader.GetString(_ordinal_FirstName);
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, User> GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static User FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.ColumnCount => 2;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.IsNull(User entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.IsDefault(User entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.AreEqual(User entity, User snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, snapshot.Id),
+                1 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.FirstName, snapshot.FirstName),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => Columns.Id,
+                1 => Columns.FirstName,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.BindParameter(User entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                0 => parameters.Add(entity.Id),
+                1 => parameters.Add(entity.FirstName),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.ExtractColumnArrays(System.ReadOnlySpan<User> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, User> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.GetReaderParser() => GetReaderParser();
+        static User EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<User>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<User> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<User>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => User.TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(User.Columns.Id, "Id", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(User.Columns.FirstName, "FirstName", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(0, User.Columns.Id, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(1, User.Columns.FirstName, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull(User entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => false,
+                    1 => entity.FirstName is null,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault(User entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, default!),
+                    1 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.FirstName, default!),
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue(User entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => entity.Id,
+                    1 => entity.FirstName,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<User> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                int[]? array_0 = null;
+                if (activeColumns[0]) array_0 = new int[entities.Length];
+                string[]? array_1 = null;
+                if (activeColumns[1]) array_1 = new string[entities.Length];
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                    if (activeColumns[0]) array_0![i] = entity.Id;
+                    if (activeColumns[1]) array_1![i] = entity.FirstName;
+                }
+                if (activeColumns[0]) parameters.AddNamed("C0", array_0);
+                if (activeColumns[1]) parameters.AddNamed("C1", array_1);
+            }
+        }
+        public void Serialize(User entity, object?[] values)
+        {
+            values[0] = entity.Id;
+            values[1] = entity.FirstName;
+        }
+    }
+}
+
+  ]
+}

@@ -1,0 +1,598 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    partial class AllTypesEntity : EricksonLopez.SqlBuilder.Annotations.ISqlEntity, EricksonLopez.SqlBuilder.Metadata.IEntityMetadataProvider<AllTypesEntity>, EricksonLopez.SqlBuilder.Abstractions.IBulkSerializer<AllTypesEntity>, EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>
+    {
+        public const string TableName = "alltypesentitys";
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static class Columns
+        {
+            public const string Id = "id";
+            public const string LongVal = "long_val";
+            public const string ShortVal = "short_val";
+            public const string ByteVal = "byte_val";
+            public const string BoolVal = "bool_val";
+            public const string StringVal = "string_val";
+            public const string DateTimeVal = "date_time_val";
+            public const string DecimalVal = "decimal_val";
+            public const string DoubleVal = "double_val";
+            public const string FloatVal = "float_val";
+            public const string CharVal = "char_val";
+            public const string TimeSpanVal = "time_span_val";
+            public const string ByteArrayVal = "byte_array_val";
+            public const string NId = "n_id";
+            public const string NLongVal = "n_long_val";
+            public const string NShortVal = "n_short_val";
+            public const string NByteVal = "n_byte_val";
+            public const string NBoolVal = "n_bool_val";
+            public const string NDateTimeVal = "n_date_time_val";
+            public const string NDecimalVal = "n_decimal_val";
+            public const string NDoubleVal = "n_double_val";
+            public const string NFloatVal = "n_float_val";
+            public const string NCharVal = "n_char_val";
+        }
+        public static readonly string SelectAllTemplate = $"SELECT {Columns.Id}, {Columns.LongVal}, {Columns.ShortVal}, {Columns.ByteVal}, {Columns.BoolVal}, {Columns.StringVal}, {Columns.DateTimeVal}, {Columns.DecimalVal}, {Columns.DoubleVal}, {Columns.FloatVal}, {Columns.CharVal}, {Columns.TimeSpanVal}, {Columns.ByteArrayVal}, {Columns.NId}, {Columns.NLongVal}, {Columns.NShortVal}, {Columns.NByteVal}, {Columns.NBoolVal}, {Columns.NDateTimeVal}, {Columns.NDecimalVal}, {Columns.NDoubleVal}, {Columns.NFloatVal}, {Columns.NCharVal} FROM {TableName}";
+        public static readonly System.Collections.Generic.IReadOnlyDictionary<string, string> PropertyMap = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { nameof(Id), Columns.Id },
+            { nameof(LongVal), Columns.LongVal },
+            { nameof(ShortVal), Columns.ShortVal },
+            { nameof(ByteVal), Columns.ByteVal },
+            { nameof(BoolVal), Columns.BoolVal },
+            { nameof(StringVal), Columns.StringVal },
+            { nameof(DateTimeVal), Columns.DateTimeVal },
+            { nameof(DecimalVal), Columns.DecimalVal },
+            { nameof(DoubleVal), Columns.DoubleVal },
+            { nameof(FloatVal), Columns.FloatVal },
+            { nameof(CharVal), Columns.CharVal },
+            { nameof(TimeSpanVal), Columns.TimeSpanVal },
+            { nameof(ByteArrayVal), Columns.ByteArrayVal },
+            { nameof(NId), Columns.NId },
+            { nameof(NLongVal), Columns.NLongVal },
+            { nameof(NShortVal), Columns.NShortVal },
+            { nameof(NByteVal), Columns.NByteVal },
+            { nameof(NBoolVal), Columns.NBoolVal },
+            { nameof(NDateTimeVal), Columns.NDateTimeVal },
+            { nameof(NDecimalVal), Columns.NDecimalVal },
+            { nameof(NDoubleVal), Columns.NDoubleVal },
+            { nameof(NFloatVal), Columns.NFloatVal },
+            { nameof(NCharVal), Columns.NCharVal },
+        };
+        public string GetTableName() => TableName;
+        public string[] GetColumnNames() => new[] { Columns.Id, Columns.LongVal, Columns.ShortVal, Columns.ByteVal, Columns.BoolVal, Columns.StringVal, Columns.DateTimeVal, Columns.DecimalVal, Columns.DoubleVal, Columns.FloatVal, Columns.CharVal, Columns.TimeSpanVal, Columns.ByteArrayVal, Columns.NId, Columns.NLongVal, Columns.NShortVal, Columns.NByteVal, Columns.NBoolVal, Columns.NDateTimeVal, Columns.NDecimalVal, Columns.NDoubleVal, Columns.NFloatVal, Columns.NCharVal };
+        public object?[] GetValues() => new object?[] { this.Id, this.LongVal, this.ShortVal, this.ByteVal, this.BoolVal, this.StringVal, this.DateTimeVal, this.DecimalVal, this.DoubleVal, this.FloatVal, this.CharVal, this.TimeSpanVal, this.ByteArrayVal, this.NId, this.NLongVal, this.NShortVal, this.NByteVal, this.NBoolVal, this.NDateTimeVal, this.NDecimalVal, this.NDoubleVal, this.NFloatVal, this.NCharVal };
+        public string[] GetAllColumnNames() => new[] { Columns.Id, Columns.LongVal, Columns.ShortVal, Columns.ByteVal, Columns.BoolVal, Columns.StringVal, Columns.DateTimeVal, Columns.DecimalVal, Columns.DoubleVal, Columns.FloatVal, Columns.CharVal, Columns.TimeSpanVal, Columns.ByteArrayVal, Columns.NId, Columns.NLongVal, Columns.NShortVal, Columns.NByteVal, Columns.NBoolVal, Columns.NDateTimeVal, Columns.NDecimalVal, Columns.NDoubleVal, Columns.NFloatVal, Columns.NCharVal };
+        public object?[] GetAllValues() => new object?[] { this.Id, this.LongVal, this.ShortVal, this.ByteVal, this.BoolVal, this.StringVal, this.DateTimeVal, this.DecimalVal, this.DoubleVal, this.FloatVal, this.CharVal, this.TimeSpanVal, this.ByteArrayVal, this.NId, this.NLongVal, this.NShortVal, this.NByteVal, this.NBoolVal, this.NDateTimeVal, this.NDecimalVal, this.NDoubleVal, this.NFloatVal, this.NCharVal };
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() => PropertyMap;
+        public string[] GetIndexedColumns() => System.Array.Empty<string>();
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public class SqlAlias
+        {
+            public string TableAlias { get; }
+            public SqlAlias(string alias) { TableAlias = alias; }
+            public string Id => $"{TableAlias}.{Columns.Id}";
+            public string LongVal => $"{TableAlias}.{Columns.LongVal}";
+            public string ShortVal => $"{TableAlias}.{Columns.ShortVal}";
+            public string ByteVal => $"{TableAlias}.{Columns.ByteVal}";
+            public string BoolVal => $"{TableAlias}.{Columns.BoolVal}";
+            public string StringVal => $"{TableAlias}.{Columns.StringVal}";
+            public string DateTimeVal => $"{TableAlias}.{Columns.DateTimeVal}";
+            public string DecimalVal => $"{TableAlias}.{Columns.DecimalVal}";
+            public string DoubleVal => $"{TableAlias}.{Columns.DoubleVal}";
+            public string FloatVal => $"{TableAlias}.{Columns.FloatVal}";
+            public string CharVal => $"{TableAlias}.{Columns.CharVal}";
+            public string TimeSpanVal => $"{TableAlias}.{Columns.TimeSpanVal}";
+            public string ByteArrayVal => $"{TableAlias}.{Columns.ByteArrayVal}";
+            public string NId => $"{TableAlias}.{Columns.NId}";
+            public string NLongVal => $"{TableAlias}.{Columns.NLongVal}";
+            public string NShortVal => $"{TableAlias}.{Columns.NShortVal}";
+            public string NByteVal => $"{TableAlias}.{Columns.NByteVal}";
+            public string NBoolVal => $"{TableAlias}.{Columns.NBoolVal}";
+            public string NDateTimeVal => $"{TableAlias}.{Columns.NDateTimeVal}";
+            public string NDecimalVal => $"{TableAlias}.{Columns.NDecimalVal}";
+            public string NDoubleVal => $"{TableAlias}.{Columns.NDoubleVal}";
+            public string NFloatVal => $"{TableAlias}.{Columns.NFloatVal}";
+            public string NCharVal => $"{TableAlias}.{Columns.NCharVal}";
+        }
+        public class Parser
+        {
+            private bool _initialized;
+            private int _ordinal_Id;
+            private int _ordinal_LongVal;
+            private int _ordinal_ShortVal;
+            private int _ordinal_ByteVal;
+            private int _ordinal_BoolVal;
+            private int _ordinal_StringVal;
+            private int _ordinal_DateTimeVal;
+            private int _ordinal_DecimalVal;
+            private int _ordinal_DoubleVal;
+            private int _ordinal_FloatVal;
+            private int _ordinal_CharVal;
+            private int _ordinal_TimeSpanVal;
+            private int _ordinal_ByteArrayVal;
+            private int _ordinal_NId;
+            private int _ordinal_NLongVal;
+            private int _ordinal_NShortVal;
+            private int _ordinal_NByteVal;
+            private int _ordinal_NBoolVal;
+            private int _ordinal_NDateTimeVal;
+            private int _ordinal_NDecimalVal;
+            private int _ordinal_NDoubleVal;
+            private int _ordinal_NFloatVal;
+            private int _ordinal_NCharVal;
+            public void Initialize(System.Data.IDataReader reader)
+            {
+                if (_initialized) return;
+                _ordinal_Id = reader.GetOrdinal(Columns.Id);
+                _ordinal_LongVal = reader.GetOrdinal(Columns.LongVal);
+                _ordinal_ShortVal = reader.GetOrdinal(Columns.ShortVal);
+                _ordinal_ByteVal = reader.GetOrdinal(Columns.ByteVal);
+                _ordinal_BoolVal = reader.GetOrdinal(Columns.BoolVal);
+                _ordinal_StringVal = reader.GetOrdinal(Columns.StringVal);
+                _ordinal_DateTimeVal = reader.GetOrdinal(Columns.DateTimeVal);
+                _ordinal_DecimalVal = reader.GetOrdinal(Columns.DecimalVal);
+                _ordinal_DoubleVal = reader.GetOrdinal(Columns.DoubleVal);
+                _ordinal_FloatVal = reader.GetOrdinal(Columns.FloatVal);
+                _ordinal_CharVal = reader.GetOrdinal(Columns.CharVal);
+                _ordinal_TimeSpanVal = reader.GetOrdinal(Columns.TimeSpanVal);
+                _ordinal_ByteArrayVal = reader.GetOrdinal(Columns.ByteArrayVal);
+                _ordinal_NId = reader.GetOrdinal(Columns.NId);
+                _ordinal_NLongVal = reader.GetOrdinal(Columns.NLongVal);
+                _ordinal_NShortVal = reader.GetOrdinal(Columns.NShortVal);
+                _ordinal_NByteVal = reader.GetOrdinal(Columns.NByteVal);
+                _ordinal_NBoolVal = reader.GetOrdinal(Columns.NBoolVal);
+                _ordinal_NDateTimeVal = reader.GetOrdinal(Columns.NDateTimeVal);
+                _ordinal_NDecimalVal = reader.GetOrdinal(Columns.NDecimalVal);
+                _ordinal_NDoubleVal = reader.GetOrdinal(Columns.NDoubleVal);
+                _ordinal_NFloatVal = reader.GetOrdinal(Columns.NFloatVal);
+                _ordinal_NCharVal = reader.GetOrdinal(Columns.NCharVal);
+                _initialized = true;
+            }
+            public AllTypesEntity Parse(System.Data.IDataReader reader)
+            {
+                Initialize(reader);
+                var entity = new AllTypesEntity();
+                if (!reader.IsDBNull(_ordinal_Id))
+                    entity.Id = reader.GetInt32(_ordinal_Id);
+                if (!reader.IsDBNull(_ordinal_LongVal))
+                    entity.LongVal = reader.GetInt64(_ordinal_LongVal);
+                if (!reader.IsDBNull(_ordinal_ShortVal))
+                    entity.ShortVal = reader.GetInt16(_ordinal_ShortVal);
+                if (!reader.IsDBNull(_ordinal_ByteVal))
+                    entity.ByteVal = reader.GetByte(_ordinal_ByteVal);
+                if (!reader.IsDBNull(_ordinal_BoolVal))
+                    entity.BoolVal = reader.GetBoolean(_ordinal_BoolVal);
+                if (!reader.IsDBNull(_ordinal_StringVal))
+                    entity.StringVal = reader.GetString(_ordinal_StringVal);
+                if (!reader.IsDBNull(_ordinal_DateTimeVal))
+                    entity.DateTimeVal = reader.GetDateTime(_ordinal_DateTimeVal);
+                if (!reader.IsDBNull(_ordinal_DecimalVal))
+                    entity.DecimalVal = reader.GetDecimal(_ordinal_DecimalVal);
+                if (!reader.IsDBNull(_ordinal_DoubleVal))
+                    entity.DoubleVal = reader.GetDouble(_ordinal_DoubleVal);
+                if (!reader.IsDBNull(_ordinal_FloatVal))
+                    entity.FloatVal = reader.GetFloat(_ordinal_FloatVal);
+                if (!reader.IsDBNull(_ordinal_CharVal))
+                    entity.CharVal = reader.GetChar(_ordinal_CharVal);
+                if (!reader.IsDBNull(_ordinal_TimeSpanVal))
+                    entity.TimeSpanVal = (System.TimeSpan)reader.GetValue(_ordinal_TimeSpanVal);
+                if (!reader.IsDBNull(_ordinal_ByteArrayVal))
+                    entity.ByteArrayVal = (byte[])reader.GetValue(_ordinal_ByteArrayVal);
+                if (!reader.IsDBNull(_ordinal_NId))
+                    entity.NId = reader.GetInt32(_ordinal_NId);
+                if (!reader.IsDBNull(_ordinal_NLongVal))
+                    entity.NLongVal = reader.GetInt64(_ordinal_NLongVal);
+                if (!reader.IsDBNull(_ordinal_NShortVal))
+                    entity.NShortVal = reader.GetInt16(_ordinal_NShortVal);
+                if (!reader.IsDBNull(_ordinal_NByteVal))
+                    entity.NByteVal = reader.GetByte(_ordinal_NByteVal);
+                if (!reader.IsDBNull(_ordinal_NBoolVal))
+                    entity.NBoolVal = reader.GetBoolean(_ordinal_NBoolVal);
+                if (!reader.IsDBNull(_ordinal_NDateTimeVal))
+                    entity.NDateTimeVal = reader.GetDateTime(_ordinal_NDateTimeVal);
+                if (!reader.IsDBNull(_ordinal_NDecimalVal))
+                    entity.NDecimalVal = reader.GetDecimal(_ordinal_NDecimalVal);
+                if (!reader.IsDBNull(_ordinal_NDoubleVal))
+                    entity.NDoubleVal = reader.GetDouble(_ordinal_NDoubleVal);
+                if (!reader.IsDBNull(_ordinal_NFloatVal))
+                    entity.NFloatVal = reader.GetFloat(_ordinal_NFloatVal);
+                if (!reader.IsDBNull(_ordinal_NCharVal))
+                    entity.NCharVal = reader.GetChar(_ordinal_NCharVal);
+                return entity;
+            }
+        }
+        public static System.Func<System.Data.IDataReader, AllTypesEntity> GetReaderParser()
+        {
+            var parser = new Parser();
+            return parser.Parse;
+        }
+        public static AllTypesEntity FromReader(System.Data.IDataReader reader)
+        {
+            var parser = new Parser();
+            return parser.Parse(reader);
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.TableName => TableName;
+        static int EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.ColumnCount => 23;
+        static System.ReadOnlySpan<EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.GetColumns() => AotMetadata.StaticColumns;
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.IsNull(AllTypesEntity entity, int columnIndex) => AotMetadata.Instance.IsNull(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.IsDefault(AllTypesEntity entity, int columnIndex) => AotMetadata.Instance.IsDefault(entity, columnIndex);
+        static bool EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.AreEqual(AllTypesEntity entity, AllTypesEntity snapshot, int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, snapshot.Id),
+                1 => System.Collections.Generic.EqualityComparer<long>.Default.Equals(entity.LongVal, snapshot.LongVal),
+                2 => System.Collections.Generic.EqualityComparer<short>.Default.Equals(entity.ShortVal, snapshot.ShortVal),
+                3 => System.Collections.Generic.EqualityComparer<byte>.Default.Equals(entity.ByteVal, snapshot.ByteVal),
+                4 => System.Collections.Generic.EqualityComparer<bool>.Default.Equals(entity.BoolVal, snapshot.BoolVal),
+                5 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.StringVal, snapshot.StringVal),
+                6 => System.Collections.Generic.EqualityComparer<System.DateTime>.Default.Equals(entity.DateTimeVal, snapshot.DateTimeVal),
+                7 => System.Collections.Generic.EqualityComparer<decimal>.Default.Equals(entity.DecimalVal, snapshot.DecimalVal),
+                8 => System.Collections.Generic.EqualityComparer<double>.Default.Equals(entity.DoubleVal, snapshot.DoubleVal),
+                9 => System.Collections.Generic.EqualityComparer<float>.Default.Equals(entity.FloatVal, snapshot.FloatVal),
+                10 => System.Collections.Generic.EqualityComparer<char>.Default.Equals(entity.CharVal, snapshot.CharVal),
+                11 => System.Collections.Generic.EqualityComparer<System.TimeSpan>.Default.Equals(entity.TimeSpanVal, snapshot.TimeSpanVal),
+                12 => System.Collections.Generic.EqualityComparer<byte[]>.Default.Equals(entity.ByteArrayVal, snapshot.ByteArrayVal),
+                13 => System.Collections.Generic.EqualityComparer<int?>.Default.Equals(entity.NId, snapshot.NId),
+                14 => System.Collections.Generic.EqualityComparer<long?>.Default.Equals(entity.NLongVal, snapshot.NLongVal),
+                15 => System.Collections.Generic.EqualityComparer<short?>.Default.Equals(entity.NShortVal, snapshot.NShortVal),
+                16 => System.Collections.Generic.EqualityComparer<byte?>.Default.Equals(entity.NByteVal, snapshot.NByteVal),
+                17 => System.Collections.Generic.EqualityComparer<bool?>.Default.Equals(entity.NBoolVal, snapshot.NBoolVal),
+                18 => System.Collections.Generic.EqualityComparer<System.DateTime?>.Default.Equals(entity.NDateTimeVal, snapshot.NDateTimeVal),
+                19 => System.Collections.Generic.EqualityComparer<decimal?>.Default.Equals(entity.NDecimalVal, snapshot.NDecimalVal),
+                20 => System.Collections.Generic.EqualityComparer<double?>.Default.Equals(entity.NDoubleVal, snapshot.NDoubleVal),
+                21 => System.Collections.Generic.EqualityComparer<float?>.Default.Equals(entity.NFloatVal, snapshot.NFloatVal),
+                22 => System.Collections.Generic.EqualityComparer<char?>.Default.Equals(entity.NCharVal, snapshot.NCharVal),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.GetColumnName(int columnIndex)
+        {
+            return columnIndex switch
+            {
+                0 => Columns.Id,
+                1 => Columns.LongVal,
+                2 => Columns.ShortVal,
+                3 => Columns.ByteVal,
+                4 => Columns.BoolVal,
+                5 => Columns.StringVal,
+                6 => Columns.DateTimeVal,
+                7 => Columns.DecimalVal,
+                8 => Columns.DoubleVal,
+                9 => Columns.FloatVal,
+                10 => Columns.CharVal,
+                11 => Columns.TimeSpanVal,
+                12 => Columns.ByteArrayVal,
+                13 => Columns.NId,
+                14 => Columns.NLongVal,
+                15 => Columns.NShortVal,
+                16 => Columns.NByteVal,
+                17 => Columns.NBoolVal,
+                18 => Columns.NDateTimeVal,
+                19 => Columns.NDecimalVal,
+                20 => Columns.NDoubleVal,
+                21 => Columns.NFloatVal,
+                22 => Columns.NCharVal,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static string EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.BindParameter(AllTypesEntity entity, int columnIndex, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+        {
+            return columnIndex switch
+            {
+                0 => parameters.Add(entity.Id),
+                1 => parameters.Add(entity.LongVal),
+                2 => parameters.Add(entity.ShortVal),
+                3 => parameters.Add(entity.ByteVal),
+                4 => parameters.Add(entity.BoolVal),
+                5 => parameters.Add(entity.StringVal),
+                6 => parameters.Add(entity.DateTimeVal),
+                7 => parameters.Add(entity.DecimalVal),
+                8 => parameters.Add(entity.DoubleVal),
+                9 => parameters.Add(entity.FloatVal),
+                10 => parameters.Add(entity.CharVal),
+                11 => parameters.Add(entity.TimeSpanVal),
+                12 => parameters.Add(entity.ByteArrayVal),
+                13 => parameters.Add(entity.NId),
+                14 => parameters.Add(entity.NLongVal),
+                15 => parameters.Add(entity.NShortVal),
+                16 => parameters.Add(entity.NByteVal),
+                17 => parameters.Add(entity.NBoolVal),
+                18 => parameters.Add(entity.NDateTimeVal),
+                19 => parameters.Add(entity.NDecimalVal),
+                20 => parameters.Add(entity.NDoubleVal),
+                21 => parameters.Add(entity.NFloatVal),
+                22 => parameters.Add(entity.NCharVal),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+            };
+        }
+        static void EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.ExtractColumnArrays(System.ReadOnlySpan<AllTypesEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters) => AotMetadata.Instance.ExtractColumnArrays(entities, activeColumns, parameters);
+        static System.Func<System.Data.IDataReader, AllTypesEntity> EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.GetReaderParser() => GetReaderParser();
+        static AllTypesEntity EricksonLopez.SqlBuilder.Abstractions.Metadata.IStaticEntityMetadata<AllTypesEntity>.FromReader(System.Data.IDataReader reader) => FromReader(reader);
+        public static EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<AllTypesEntity> Metadata => AotMetadata.Instance;
+        private sealed class AotMetadata : EricksonLopez.SqlBuilder.Metadata.IEntityMetadata<AllTypesEntity>
+        {
+            public static readonly AotMetadata Instance = new();
+            public string TableName => AllTypesEntity.TableName;
+            private static readonly EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[] _columns;
+            public static readonly EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[] StaticColumns;
+            static AotMetadata()
+            {
+                _columns = new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.Id, "Id", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.LongVal, "LongVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.ShortVal, "ShortVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.ByteVal, "ByteVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.BoolVal, "BoolVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.StringVal, "StringVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.DateTimeVal, "DateTimeVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.DecimalVal, "DecimalVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.DoubleVal, "DoubleVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.FloatVal, "FloatVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.CharVal, "CharVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.TimeSpanVal, "TimeSpanVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.ByteArrayVal, "ByteArrayVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NId, "NId", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NLongVal, "NLongVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NShortVal, "NShortVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NByteVal, "NByteVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NBoolVal, "NBoolVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NDateTimeVal, "NDateTimeVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NDecimalVal, "NDecimalVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NDoubleVal, "NDoubleVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NFloatVal, "NFloatVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Metadata.ColumnMetadata(AllTypesEntity.Columns.NCharVal, "NCharVal", EricksonLopez.SqlBuilder.Metadata.ColumnFlags.None),
+                };
+                StaticColumns = new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata[]
+                {
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(0, AllTypesEntity.Columns.Id, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.PrimaryKey),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(1, AllTypesEntity.Columns.LongVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(2, AllTypesEntity.Columns.ShortVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(3, AllTypesEntity.Columns.ByteVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(4, AllTypesEntity.Columns.BoolVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(5, AllTypesEntity.Columns.StringVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(6, AllTypesEntity.Columns.DateTimeVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(7, AllTypesEntity.Columns.DecimalVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(8, AllTypesEntity.Columns.DoubleVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(9, AllTypesEntity.Columns.FloatVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(10, AllTypesEntity.Columns.CharVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(11, AllTypesEntity.Columns.TimeSpanVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(12, AllTypesEntity.Columns.ByteArrayVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(13, AllTypesEntity.Columns.NId, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(14, AllTypesEntity.Columns.NLongVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(15, AllTypesEntity.Columns.NShortVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(16, AllTypesEntity.Columns.NByteVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(17, AllTypesEntity.Columns.NBoolVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(18, AllTypesEntity.Columns.NDateTimeVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(19, AllTypesEntity.Columns.NDecimalVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(20, AllTypesEntity.Columns.NDoubleVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(21, AllTypesEntity.Columns.NFloatVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                new EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnMetadata(22, AllTypesEntity.Columns.NCharVal, EricksonLopez.SqlBuilder.Abstractions.Metadata.ColumnFlags.None),
+                };
+            }
+            public System.ReadOnlySpan<EricksonLopez.SqlBuilder.Metadata.ColumnMetadata> Columns => _columns;
+            public bool IsNull(AllTypesEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => false,
+                    1 => false,
+                    2 => false,
+                    3 => false,
+                    4 => false,
+                    5 => entity.StringVal is null,
+                    6 => false,
+                    7 => false,
+                    8 => false,
+                    9 => false,
+                    10 => false,
+                    11 => false,
+                    12 => false,
+                    13 => entity.NId is null,
+                    14 => entity.NLongVal is null,
+                    15 => entity.NShortVal is null,
+                    16 => entity.NByteVal is null,
+                    17 => entity.NBoolVal is null,
+                    18 => entity.NDateTimeVal is null,
+                    19 => entity.NDecimalVal is null,
+                    20 => entity.NDoubleVal is null,
+                    21 => entity.NFloatVal is null,
+                    22 => entity.NCharVal is null,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public bool IsDefault(AllTypesEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => System.Collections.Generic.EqualityComparer<int>.Default.Equals(entity.Id, default!),
+                    1 => System.Collections.Generic.EqualityComparer<long>.Default.Equals(entity.LongVal, default!),
+                    2 => System.Collections.Generic.EqualityComparer<short>.Default.Equals(entity.ShortVal, default!),
+                    3 => System.Collections.Generic.EqualityComparer<byte>.Default.Equals(entity.ByteVal, default!),
+                    4 => System.Collections.Generic.EqualityComparer<bool>.Default.Equals(entity.BoolVal, default!),
+                    5 => System.Collections.Generic.EqualityComparer<string>.Default.Equals(entity.StringVal, default!),
+                    6 => System.Collections.Generic.EqualityComparer<System.DateTime>.Default.Equals(entity.DateTimeVal, default!),
+                    7 => System.Collections.Generic.EqualityComparer<decimal>.Default.Equals(entity.DecimalVal, default!),
+                    8 => System.Collections.Generic.EqualityComparer<double>.Default.Equals(entity.DoubleVal, default!),
+                    9 => System.Collections.Generic.EqualityComparer<float>.Default.Equals(entity.FloatVal, default!),
+                    10 => System.Collections.Generic.EqualityComparer<char>.Default.Equals(entity.CharVal, default!),
+                    11 => System.Collections.Generic.EqualityComparer<System.TimeSpan>.Default.Equals(entity.TimeSpanVal, default!),
+                    12 => System.Collections.Generic.EqualityComparer<byte[]>.Default.Equals(entity.ByteArrayVal, default!),
+                    13 => System.Collections.Generic.EqualityComparer<int?>.Default.Equals(entity.NId, default!),
+                    14 => System.Collections.Generic.EqualityComparer<long?>.Default.Equals(entity.NLongVal, default!),
+                    15 => System.Collections.Generic.EqualityComparer<short?>.Default.Equals(entity.NShortVal, default!),
+                    16 => System.Collections.Generic.EqualityComparer<byte?>.Default.Equals(entity.NByteVal, default!),
+                    17 => System.Collections.Generic.EqualityComparer<bool?>.Default.Equals(entity.NBoolVal, default!),
+                    18 => System.Collections.Generic.EqualityComparer<System.DateTime?>.Default.Equals(entity.NDateTimeVal, default!),
+                    19 => System.Collections.Generic.EqualityComparer<decimal?>.Default.Equals(entity.NDecimalVal, default!),
+                    20 => System.Collections.Generic.EqualityComparer<double?>.Default.Equals(entity.NDoubleVal, default!),
+                    21 => System.Collections.Generic.EqualityComparer<float?>.Default.Equals(entity.NFloatVal, default!),
+                    22 => System.Collections.Generic.EqualityComparer<char?>.Default.Equals(entity.NCharVal, default!),
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public object? GetBoxedValue(AllTypesEntity entity, int columnIndex)
+            {
+                return columnIndex switch
+                {
+                    0 => entity.Id,
+                    1 => entity.LongVal,
+                    2 => entity.ShortVal,
+                    3 => entity.ByteVal,
+                    4 => entity.BoolVal,
+                    5 => entity.StringVal,
+                    6 => entity.DateTimeVal,
+                    7 => entity.DecimalVal,
+                    8 => entity.DoubleVal,
+                    9 => entity.FloatVal,
+                    10 => entity.CharVal,
+                    11 => entity.TimeSpanVal,
+                    12 => entity.ByteArrayVal,
+                    13 => entity.NId,
+                    14 => entity.NLongVal,
+                    15 => entity.NShortVal,
+                    16 => entity.NByteVal,
+                    17 => entity.NBoolVal,
+                    18 => entity.NDateTimeVal,
+                    19 => entity.NDecimalVal,
+                    20 => entity.NDoubleVal,
+                    21 => entity.NFloatVal,
+                    22 => entity.NCharVal,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(columnIndex))
+                };
+            }
+            public void ExtractColumnArrays(System.ReadOnlySpan<AllTypesEntity> entities, System.ReadOnlySpan<bool> activeColumns, EricksonLopez.SqlBuilder.Abstractions.IParameterManager parameters)
+            {
+                int[]? array_0 = null;
+                if (activeColumns[0]) array_0 = new int[entities.Length];
+                long[]? array_1 = null;
+                if (activeColumns[1]) array_1 = new long[entities.Length];
+                short[]? array_2 = null;
+                if (activeColumns[2]) array_2 = new short[entities.Length];
+                byte[]? array_3 = null;
+                if (activeColumns[3]) array_3 = new byte[entities.Length];
+                bool[]? array_4 = null;
+                if (activeColumns[4]) array_4 = new bool[entities.Length];
+                string[]? array_5 = null;
+                if (activeColumns[5]) array_5 = new string[entities.Length];
+                System.DateTime[]? array_6 = null;
+                if (activeColumns[6]) array_6 = new System.DateTime[entities.Length];
+                decimal[]? array_7 = null;
+                if (activeColumns[7]) array_7 = new decimal[entities.Length];
+                double[]? array_8 = null;
+                if (activeColumns[8]) array_8 = new double[entities.Length];
+                float[]? array_9 = null;
+                if (activeColumns[9]) array_9 = new float[entities.Length];
+                char[]? array_10 = null;
+                if (activeColumns[10]) array_10 = new char[entities.Length];
+                System.TimeSpan[]? array_11 = null;
+                if (activeColumns[11]) array_11 = new System.TimeSpan[entities.Length];
+                byte[][]? array_12 = null;
+                if (activeColumns[12]) array_12 = new byte[][entities.Length];
+                int?[]? array_13 = null;
+                if (activeColumns[13]) array_13 = new int?[entities.Length];
+                long?[]? array_14 = null;
+                if (activeColumns[14]) array_14 = new long?[entities.Length];
+                short?[]? array_15 = null;
+                if (activeColumns[15]) array_15 = new short?[entities.Length];
+                byte?[]? array_16 = null;
+                if (activeColumns[16]) array_16 = new byte?[entities.Length];
+                bool?[]? array_17 = null;
+                if (activeColumns[17]) array_17 = new bool?[entities.Length];
+                System.DateTime?[]? array_18 = null;
+                if (activeColumns[18]) array_18 = new System.DateTime?[entities.Length];
+                decimal?[]? array_19 = null;
+                if (activeColumns[19]) array_19 = new decimal?[entities.Length];
+                double?[]? array_20 = null;
+                if (activeColumns[20]) array_20 = new double?[entities.Length];
+                float?[]? array_21 = null;
+                if (activeColumns[21]) array_21 = new float?[entities.Length];
+                char?[]? array_22 = null;
+                if (activeColumns[22]) array_22 = new char?[entities.Length];
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    var entity = entities[i];
+                    if (activeColumns[0]) array_0![i] = entity.Id;
+                    if (activeColumns[1]) array_1![i] = entity.LongVal;
+                    if (activeColumns[2]) array_2![i] = entity.ShortVal;
+                    if (activeColumns[3]) array_3![i] = entity.ByteVal;
+                    if (activeColumns[4]) array_4![i] = entity.BoolVal;
+                    if (activeColumns[5]) array_5![i] = entity.StringVal;
+                    if (activeColumns[6]) array_6![i] = entity.DateTimeVal;
+                    if (activeColumns[7]) array_7![i] = entity.DecimalVal;
+                    if (activeColumns[8]) array_8![i] = entity.DoubleVal;
+                    if (activeColumns[9]) array_9![i] = entity.FloatVal;
+                    if (activeColumns[10]) array_10![i] = entity.CharVal;
+                    if (activeColumns[11]) array_11![i] = entity.TimeSpanVal;
+                    if (activeColumns[12]) array_12![i] = entity.ByteArrayVal;
+                    if (activeColumns[13]) array_13![i] = entity.NId;
+                    if (activeColumns[14]) array_14![i] = entity.NLongVal;
+                    if (activeColumns[15]) array_15![i] = entity.NShortVal;
+                    if (activeColumns[16]) array_16![i] = entity.NByteVal;
+                    if (activeColumns[17]) array_17![i] = entity.NBoolVal;
+                    if (activeColumns[18]) array_18![i] = entity.NDateTimeVal;
+                    if (activeColumns[19]) array_19![i] = entity.NDecimalVal;
+                    if (activeColumns[20]) array_20![i] = entity.NDoubleVal;
+                    if (activeColumns[21]) array_21![i] = entity.NFloatVal;
+                    if (activeColumns[22]) array_22![i] = entity.NCharVal;
+                }
+                if (activeColumns[0]) parameters.AddNamed("C0", array_0);
+                if (activeColumns[1]) parameters.AddNamed("C1", array_1);
+                if (activeColumns[2]) parameters.AddNamed("C2", array_2);
+                if (activeColumns[3]) parameters.AddNamed("C3", array_3);
+                if (activeColumns[4]) parameters.AddNamed("C4", array_4);
+                if (activeColumns[5]) parameters.AddNamed("C5", array_5);
+                if (activeColumns[6]) parameters.AddNamed("C6", array_6);
+                if (activeColumns[7]) parameters.AddNamed("C7", array_7);
+                if (activeColumns[8]) parameters.AddNamed("C8", array_8);
+                if (activeColumns[9]) parameters.AddNamed("C9", array_9);
+                if (activeColumns[10]) parameters.AddNamed("C10", array_10);
+                if (activeColumns[11]) parameters.AddNamed("C11", array_11);
+                if (activeColumns[12]) parameters.AddNamed("C12", array_12);
+                if (activeColumns[13]) parameters.AddNamed("C13", array_13);
+                if (activeColumns[14]) parameters.AddNamed("C14", array_14);
+                if (activeColumns[15]) parameters.AddNamed("C15", array_15);
+                if (activeColumns[16]) parameters.AddNamed("C16", array_16);
+                if (activeColumns[17]) parameters.AddNamed("C17", array_17);
+                if (activeColumns[18]) parameters.AddNamed("C18", array_18);
+                if (activeColumns[19]) parameters.AddNamed("C19", array_19);
+                if (activeColumns[20]) parameters.AddNamed("C20", array_20);
+                if (activeColumns[21]) parameters.AddNamed("C21", array_21);
+                if (activeColumns[22]) parameters.AddNamed("C22", array_22);
+            }
+        }
+        public void Serialize(AllTypesEntity entity, object?[] values)
+        {
+            values[0] = entity.Id;
+            values[1] = entity.LongVal;
+            values[2] = entity.ShortVal;
+            values[3] = entity.ByteVal;
+            values[4] = entity.BoolVal;
+            values[5] = entity.StringVal;
+            values[6] = entity.DateTimeVal;
+            values[7] = entity.DecimalVal;
+            values[8] = entity.DoubleVal;
+            values[9] = entity.FloatVal;
+            values[10] = entity.CharVal;
+            values[11] = entity.TimeSpanVal;
+            values[12] = entity.ByteArrayVal;
+            values[13] = entity.NId;
+            values[14] = entity.NLongVal;
+            values[15] = entity.NShortVal;
+            values[16] = entity.NByteVal;
+            values[17] = entity.NBoolVal;
+            values[18] = entity.NDateTimeVal;
+            values[19] = entity.NDecimalVal;
+            values[20] = entity.NDoubleVal;
+            values[21] = entity.NFloatVal;
+            values[22] = entity.NCharVal;
+        }
+    }
+}
+
+  ]
+}

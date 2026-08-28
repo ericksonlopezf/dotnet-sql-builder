@@ -1,0 +1,26 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+using System;
+using EricksonLopez.SqlBuilder;
+
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static partial class Filters
+    {
+    }
+
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class Filter : EricksonLopez.SqlBuilder.Filters.ISqlFilter<>
+    {
+
+        public SelectQuery<> Apply(SelectQuery<> query)
+        {
+            return query;
+        }
+    }
+}
+
+  ]
+}

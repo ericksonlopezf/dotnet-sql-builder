@@ -1,0 +1,138 @@
+﻿{
+  GeneratedCode: [    
+#nullable enable
+using System;
+using EricksonLopez.SqlBuilder;
+
+namespace TestNamespace
+{
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static partial class AllTypesEntityFilters
+    {
+        public static SelectQuery<AllTypesEntity> WhereIntValEq(this SelectQuery<AllTypesEntity> query, int value)
+            => query.Where((System.FormattableString)$"int_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereIntValNotEq(this SelectQuery<AllTypesEntity> query, int value)
+            => query.Where((System.FormattableString)$"int_val != {value}");
+        public static SelectQuery<AllTypesEntity> WhereIntValGt(this SelectQuery<AllTypesEntity> query, int value)
+            => query.Where((System.FormattableString)$"int_val > {value}");
+        public static SelectQuery<AllTypesEntity> WhereIntValLt(this SelectQuery<AllTypesEntity> query, int value)
+            => query.Where((System.FormattableString)$"int_val < {value}");
+        public static SelectQuery<AllTypesEntity> WhereLongValEq(this SelectQuery<AllTypesEntity> query, long value)
+            => query.Where((System.FormattableString)$"long_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereLongValNotEq(this SelectQuery<AllTypesEntity> query, long value)
+            => query.Where((System.FormattableString)$"long_val != {value}");
+        public static SelectQuery<AllTypesEntity> WhereLongValGt(this SelectQuery<AllTypesEntity> query, long value)
+            => query.Where((System.FormattableString)$"long_val > {value}");
+        public static SelectQuery<AllTypesEntity> WhereLongValLt(this SelectQuery<AllTypesEntity> query, long value)
+            => query.Where((System.FormattableString)$"long_val < {value}");
+        public static SelectQuery<AllTypesEntity> WhereDecimalValEq(this SelectQuery<AllTypesEntity> query, decimal value)
+            => query.Where((System.FormattableString)$"decimal_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereDecimalValNotEq(this SelectQuery<AllTypesEntity> query, decimal value)
+            => query.Where((System.FormattableString)$"decimal_val != {value}");
+        public static SelectQuery<AllTypesEntity> WhereDecimalValGt(this SelectQuery<AllTypesEntity> query, decimal value)
+            => query.Where((System.FormattableString)$"decimal_val > {value}");
+        public static SelectQuery<AllTypesEntity> WhereDecimalValLt(this SelectQuery<AllTypesEntity> query, decimal value)
+            => query.Where((System.FormattableString)$"decimal_val < {value}");
+        public static SelectQuery<AllTypesEntity> WhereDoubleValEq(this SelectQuery<AllTypesEntity> query, double value)
+            => query.Where((System.FormattableString)$"double_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereDoubleValNotEq(this SelectQuery<AllTypesEntity> query, double value)
+            => query.Where((System.FormattableString)$"double_val != {value}");
+        public static SelectQuery<AllTypesEntity> WhereDoubleValGt(this SelectQuery<AllTypesEntity> query, double value)
+            => query.Where((System.FormattableString)$"double_val > {value}");
+        public static SelectQuery<AllTypesEntity> WhereDoubleValLt(this SelectQuery<AllTypesEntity> query, double value)
+            => query.Where((System.FormattableString)$"double_val < {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateTimeValEq(this SelectQuery<AllTypesEntity> query, System.DateTime value)
+            => query.Where((System.FormattableString)$"date_time_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateTimeValNotEq(this SelectQuery<AllTypesEntity> query, System.DateTime value)
+            => query.Where((System.FormattableString)$"date_time_val != {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateTimeValGt(this SelectQuery<AllTypesEntity> query, System.DateTime value)
+            => query.Where((System.FormattableString)$"date_time_val > {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateTimeValLt(this SelectQuery<AllTypesEntity> query, System.DateTime value)
+            => query.Where((System.FormattableString)$"date_time_val < {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateOnlyValEq(this SelectQuery<AllTypesEntity> query, System.DateOnly value)
+            => query.Where((System.FormattableString)$"date_only_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateOnlyValNotEq(this SelectQuery<AllTypesEntity> query, System.DateOnly value)
+            => query.Where((System.FormattableString)$"date_only_val != {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateOnlyValGt(this SelectQuery<AllTypesEntity> query, System.DateOnly value)
+            => query.Where((System.FormattableString)$"date_only_val > {value}");
+        public static SelectQuery<AllTypesEntity> WhereDateOnlyValLt(this SelectQuery<AllTypesEntity> query, System.DateOnly value)
+            => query.Where((System.FormattableString)$"date_only_val < {value}");
+        public static SelectQuery<AllTypesEntity> WhereStringValEq(this SelectQuery<AllTypesEntity> query, string value)
+            => query.Where((System.FormattableString)$"string_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereStringValNotEq(this SelectQuery<AllTypesEntity> query, string value)
+            => query.Where((System.FormattableString)$"string_val != {value}");
+        public static SelectQuery<AllTypesEntity> WhereStringValContains(this SelectQuery<AllTypesEntity> query, string value)
+        {
+            var escaped = value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            var pattern = "%" + escaped + "%";
+            return query.Where((System.FormattableString)$"string_val LIKE {pattern} ESCAPE '\\' ");
+        }
+        public static SelectQuery<AllTypesEntity> WhereStringValStartsWith(this SelectQuery<AllTypesEntity> query, string value)
+        {
+            var escaped = value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            var pattern = escaped + "%";
+            return query.Where((System.FormattableString)$"string_val LIKE {pattern} ESCAPE '\\' ");
+        }
+        public static SelectQuery<AllTypesEntity> WhereBoolValEq(this SelectQuery<AllTypesEntity> query, bool value)
+            => query.Where((System.FormattableString)$"bool_val = {value}");
+        public static SelectQuery<AllTypesEntity> WhereBoolValNotEq(this SelectQuery<AllTypesEntity> query, bool value)
+            => query.Where((System.FormattableString)$"bool_val != {value}");
+    }
+
+    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class AllTypesEntityFilter : EricksonLopez.SqlBuilder.Filters.ISqlFilter<AllTypesEntity>
+    {
+        public int? IntValEq { get; set; }
+        public int? IntValGt { get; set; }
+        public int? IntValLt { get; set; }
+        public long? LongValEq { get; set; }
+        public long? LongValGt { get; set; }
+        public long? LongValLt { get; set; }
+        public decimal? DecimalValEq { get; set; }
+        public decimal? DecimalValGt { get; set; }
+        public decimal? DecimalValLt { get; set; }
+        public double? DoubleValEq { get; set; }
+        public double? DoubleValGt { get; set; }
+        public double? DoubleValLt { get; set; }
+        public System.DateTime? DateTimeValEq { get; set; }
+        public System.DateTime? DateTimeValGt { get; set; }
+        public System.DateTime? DateTimeValLt { get; set; }
+        public System.DateOnly? DateOnlyValEq { get; set; }
+        public System.DateOnly? DateOnlyValGt { get; set; }
+        public System.DateOnly? DateOnlyValLt { get; set; }
+        public string? StringValEq { get; set; }
+        public string? StringValContains { get; set; }
+        public string? StringValStartsWith { get; set; }
+        public bool? BoolValEq { get; set; }
+
+        public SelectQuery<AllTypesEntity> Apply(SelectQuery<AllTypesEntity> query)
+        {
+            if (IntValEq != null) query = query.WhereIntValEq(IntValEq.Value);
+            if (IntValGt != null) query = query.WhereIntValGt(IntValGt.Value);
+            if (IntValLt != null) query = query.WhereIntValLt(IntValLt.Value);
+            if (LongValEq != null) query = query.WhereLongValEq(LongValEq.Value);
+            if (LongValGt != null) query = query.WhereLongValGt(LongValGt.Value);
+            if (LongValLt != null) query = query.WhereLongValLt(LongValLt.Value);
+            if (DecimalValEq != null) query = query.WhereDecimalValEq(DecimalValEq.Value);
+            if (DecimalValGt != null) query = query.WhereDecimalValGt(DecimalValGt.Value);
+            if (DecimalValLt != null) query = query.WhereDecimalValLt(DecimalValLt.Value);
+            if (DoubleValEq != null) query = query.WhereDoubleValEq(DoubleValEq.Value);
+            if (DoubleValGt != null) query = query.WhereDoubleValGt(DoubleValGt.Value);
+            if (DoubleValLt != null) query = query.WhereDoubleValLt(DoubleValLt.Value);
+            if (DateTimeValEq != null) query = query.WhereDateTimeValEq(DateTimeValEq.Value);
+            if (DateTimeValGt != null) query = query.WhereDateTimeValGt(DateTimeValGt.Value);
+            if (DateTimeValLt != null) query = query.WhereDateTimeValLt(DateTimeValLt.Value);
+            if (DateOnlyValEq != null) query = query.WhereDateOnlyValEq(DateOnlyValEq.Value);
+            if (DateOnlyValGt != null) query = query.WhereDateOnlyValGt(DateOnlyValGt.Value);
+            if (DateOnlyValLt != null) query = query.WhereDateOnlyValLt(DateOnlyValLt.Value);
+            if (StringValEq != null) query = query.WhereStringValEq(StringValEq!);
+            if (!string.IsNullOrEmpty(StringValContains)) query = query.WhereStringValContains(StringValContains!);
+            if (!string.IsNullOrEmpty(StringValStartsWith)) query = query.WhereStringValStartsWith(StringValStartsWith!);
+            if (BoolValEq != null) query = query.WhereBoolValEq(BoolValEq.Value);
+            return query;
+        }
+    }
+}
+
+  ]
+}

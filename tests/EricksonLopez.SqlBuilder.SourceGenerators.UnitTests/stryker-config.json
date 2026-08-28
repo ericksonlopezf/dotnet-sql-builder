@@ -1,0 +1,19 @@
+{
+  "stryker-config": {
+    "project": "EricksonLopez.SqlBuilder.SourceGenerators.csproj",
+    "concurrency": 2,
+    "mutation-level": "Standard",
+    "coverage-analysis": "all",
+    "thresholds": {
+      "high": 100,
+      "low": 98,
+      "break": 95
+    },
+    "ignore-methods": [
+      "*ConfigureAwait"
+    ],
+    "mutate": [
+      "**/*.cs"
+    ]
+  }
+}

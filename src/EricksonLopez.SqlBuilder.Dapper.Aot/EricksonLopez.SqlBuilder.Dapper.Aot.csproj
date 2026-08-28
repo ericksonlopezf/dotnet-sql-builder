@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <IsAotCompatible>true</IsAotCompatible>
+
+    <PackageId>EricksonLopez.SqlBuilder.Dapper.Aot</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Erickson Lopez</Authors>
+    <Description>
+      Dapper.AOT and NativeAOT reflection-free execution extensions for EricksonLopez.SqlBuilder.
+      Provides strongly-typed, allocation-free SQL query execution over DbConnection without runtime code generation.
+    </Description>
+    <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>$(CommonPackageTags);dapper;dapper-aot;native-aot;aot;micro-orm;data-access</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.Aot\EricksonLopez.SqlBuilder.Aot.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
+    <ProjectReference Include="..\EricksonLopez.SqlBuilder.Abstractions\EricksonLopez.SqlBuilder.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+{
+  "stryker-config": {
+    "project": "EricksonLopez.SqlBuilder.Testing.csproj",
+    "concurrency": 8,
+    "mutation-level": "Standard",
+    "coverage-analysis": "off",
+    "thresholds": {
+      "high": 100,
+      "low": 98,
+      "break": 95
+    },
+    "reporters": [
+      "Progress",
+      "ClearText",
+      "Html",
+      "Json"
+    ],
+    "mutate": [
+      "**/*",
+      "!**/Infrastructure/**"
+    ]
+  }
+}
