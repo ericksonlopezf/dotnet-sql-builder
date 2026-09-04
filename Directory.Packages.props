@@ -16,23 +16,23 @@
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.11" />
     <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Resilience" Version="9.0.0" />
     <!-- PolySharp (overridden per-project via VersionOverride) -->
     <PackageVersion Include="PolySharp" Version="1.14.1" />
     <!-- Source Generators -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="5.6.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.400" />
     <!-- Testing framework -->
     <PackageVersion Include="TngTech.ArchUnitNET.xUnit" Version="0.13.3" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Verify.Xunit" Version="31.12.5" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="AwesomeAssertions" Version="9.6.0" />
@@ -47,8 +47,8 @@
     <PackageVersion Include="Testcontainers.Oracle" Version="4.4.0" />
     <!-- Database drivers -->
     <PackageVersion Include="Npgsql" Version="9.0.3" />
-    <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.0.2" />
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="9.0.5" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.11" />
     <PackageVersion Include="MySqlConnector" Version="2.4.0" />
     <PackageVersion Include="Oracle.ManagedDataAccess.Core" Version="23.26.300" />
     <!-- ORM comparison packages (Benchmarks) -->
@@ -79,6 +79,6 @@
     <!-- Testing Utilities -->
     <PackageVersion Include="FsCheck" Version="3.0.0-rc3" />
     <PackageVersion Include="FsCheck.Xunit" Version="3.0.0-rc3" />
-    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.11" />
   </ItemGroup>
 </Project>
