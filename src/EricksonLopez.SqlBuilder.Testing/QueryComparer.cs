@@ -6,6 +6,9 @@ using EricksonLopez.SqlBuilder.Abstractions;
 
 namespace EricksonLopez.SqlBuilder.Testing;
 
+/// <summary>
+/// Provides comparison functionality between SQL queries, evaluating compiled SQL, AST structures, and parameters.
+/// </summary>
 public static class QueryComparer
 {
     /// <summary>

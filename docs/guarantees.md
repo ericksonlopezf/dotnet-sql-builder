@@ -20,7 +20,7 @@ Sql.Delete<User>();
 Sql.Delete<User>().WhereAll();
 ```
 
-**How it''s enforced:** Roslyn Analyzer `ESQL001` reports `DiagnosticSeverity.Error`. The build pipeline stops.
+**How it's enforced:** Roslyn Analyzer `ESQL001` reports `DiagnosticSeverity.Error`. The build pipeline stops.
 
 ---
 

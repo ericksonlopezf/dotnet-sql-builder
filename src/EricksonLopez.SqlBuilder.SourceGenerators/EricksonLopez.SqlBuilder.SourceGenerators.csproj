@@ -8,12 +8,11 @@
     <IsRoslynComponent>true</IsRoslynComponent>
 
     <PackageId>EricksonLopez.SqlBuilder.SourceGenerators</PackageId>
-    <Version>1.0.0</Version>
     <Authors>Erickson Lopez</Authors>
     <Description>Roslyn analyzers and AOT source generators for EricksonLopez.SqlBuilder.</Description>
     <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>$(CommonPackageTags);roslyn;source-generator;incremental-generator;code-generation;native-aot</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;roslyn;source-generator;incremental-generator;code-generation;native-aot</PackageTags>
     <PublishAot>false</PublishAot>
     <PolySharpExcludeGeneratedTypes>System.Runtime.CompilerServices.ModuleInitializerAttribute</PolySharpExcludeGeneratedTypes>
     <NoWarn>$(NoWarn);RS2001;RS1038</NoWarn>

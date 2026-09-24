@@ -1,170 +1,327 @@
-# Architecture & Design
+# Architecture & Functional Map — EricksonLopez.SqlBuilder
 
-## System Overview
-
-**EricksonLopez.SqlBuilder** solves the problem of strongly-typed, safe, and performant SQL generation in C# applications that do not need a full ORM (like Entity Framework Core), but need more than raw SQL strings (which are error-prone and SQL-injection-prone).
-
-### Core Objectives
-
-1. **Immutability:** Every modification to a query builder instance yields a new instance, ensuring thread safety and predictability. See [ADR-017](decisions/adr-017-immutable-ast-record-semantics.md).
-2. **Native AOT Compatibility:** Zero runtime reflection. C# Source Generators analyze `[SqlEntity]` models at compile-time. See [ADR-013](decisions/adr-013-aot-guarantees.md).
-3. **High Performance:** Zero or minimal allocations during query compilation. See [ADR-014](decisions/adr-014-zero-allocation-benchmark-proof.md).
-4. **Modularity:** The core generates AST nodes. Dialect compilers (`ISqlCompiler`) transform the AST into valid SQL strings and parameters. See [ADR-009](decisions/adr-009-dialect-isolation-separate-packages.md).
-5. **Dapper & Native Execution:** Optional companions for Dapper execution (`EricksonLopez.SqlBuilder.Dapper`) or pure reflection-free ADO.NET execution (`EricksonLopez.SqlBuilder.Aot` and `EricksonLopez.SqlBuilder.Dapper.Aot`). See [ADR-002](decisions/adr-002-dapper-integration-optional.md) and [ADR-043](decisions/adr-043-dapper-aot-integration.md).
-6. **No Hidden State:** No change tracking, no automatic caching, no DI coupling. See [ADR-007](decisions/adr-007-no-change-tracking.md), [ADR-024](decisions/adr-024-no-automatic-query-caching.md), [ADR-023](decisions/adr-023-no-di-logging-core-dependencies.md).
+Comprehensive architectural specification and functional map of **EricksonLopez.SqlBuilder**, detailing component interactions, layer transitions, lifecycle invariants, and structural diagrams.
 
 ---
 
-## Internal Package Dependency Diagram
+## Table of Contents
+
+- [Architectural Mission & Objectives](#architectural-mission--objectives)
+- [Functional Map: System Flow from Input to Output](#functional-map-system-flow-from-input-to-output)
+  - [1. Application Entry Point](#1-application-entry-point)
+  - [2. Processing Layer & AST](#2-processing-layer--ast)
+  - [3. Dialect Compilation Layer](#3-dialect-compilation-layer)
+  - [4. Dispatch Layer](#4-dispatch-layer)
+  - [5. Persistence Layer](#5-persistence-layer)
+  - [6. Domain Consumers](#6-domain-consumers)
+  - [7. Confirmation & Observability](#7-confirmation--observability)
+  - [8. Cleanup & Resource Disposal](#8-cleanup--resource-disposal)
+- [Mermaid Architectural & Lifecycle Diagrams](#mermaid-architectural--lifecycle-diagrams)
+  - [Diagram 1: General Architecture](#diagram-1-general-architecture)
+  - [Diagram 2: Primary End-to-End Flow](#diagram-2-primary-end-to-end-flow)
+  - [Diagram 3: Compilation & Execution Sequence](#diagram-3-compilation--execution-sequence)
+  - [Diagram 4: Query Lifecycle State Machine](#diagram-4-query-lifecycle-state-machine)
+  - [Diagram 5: Component Dependency Map](#diagram-5-component-dependency-map)
+  - [Diagram 6: Bulk Ingestion & Streaming Pipeline](#diagram-6-bulk-ingestion--streaming-pipeline)
+  - [Diagram 7: Error Handling & Optimistic Concurrency](#diagram-7-error-handling--optimistic-concurrency)
+  - [Diagram 8: Pagination Mechanics: Offset vs Keyset Seek](#diagram-8-pagination-mechanics-offset-vs-keyset-seek)
+
+---
+
+## Architectural Mission & Objectives
+
+**EricksonLopez.SqlBuilder** bridges the gap between heavy, high-allocation Object-Relational Mappers (ORMs) and fragile, error-prone raw SQL strings.
+
+### Core Architectural Invariants
+1. **Absolute AST Immutability**: All query structures (`SelectQuery<T>`, `InsertQuery<T>`, `UpdateQuery<T>`, `DeleteQuery<T>`) are implemented as immutable C# records using non-destructive mutations (`with` expressions). Query instances can be shared across threads and reused as base templates without race conditions or memory side effects.
+2. **Zero-Reflection Native AOT Guarantees**: Entity metadata, column maps, and reader parsers are generated at compile time via C# Roslyn Source Generators (`[SqlEntity]`). Runtime execution is completely free of `System.Reflection.Emit`, `DynamicMethod`, or JIT compilation.
+3. **Strict Dialect Isolation**: Core query composition is engine-agnostic. Concrete dialect differences (identifier quoting, pagination, upsert semantics, parameter prefixes) are isolated inside standalone compiler packages (`ISqlCompiler`).
+4. **Compile-Time Safety Enforcement**: Built-in Roslyn Diagnostic Analyzers (`ESQL001`–`ESQL026`) detect unsafe patterns (such as unconstrained `DELETE`/`UPDATE` operations or invalid retry scopes) directly inside the developer's IDE and CI build gates.
+
+---
+
+## Functional Map: System Flow from Input to Output
 
 ```mermaid
-flowchart TD
-    subgraph "Core & Abstractions"
-        A[EricksonLopez.SqlBuilder.Abstractions]
-        B[EricksonLopez.SqlBuilder]
-        PG[EricksonLopez.SqlBuilder.Pagination]
+graph TD
+    subgraph "1. Entry Point"
+        EP["Sql.From&lt;T&gt;() / Sql.Insert / Sql.Update / Sql.Delete / Sql.BulkInsert / Sql.Raw"]
     end
 
-    subgraph "Dialect Compilers"
-        S[SqlBuilder.SqlServer]
-        P[SqlBuilder.PostgreSql]
-        M[SqlBuilder.MySql]
-        MB[SqlBuilder.MariaDb]
-        O[SqlBuilder.Oracle]
-        L[SqlBuilder.Sqlite]
+    subgraph "2. Processing Layer (AST)"
+        AST["Immutable Abstract Syntax Tree (AST)<br/>Nodos: Select, Where, Join, LimitOffset, Set"]
+        EXP["SqlExpressionVisitor & ParameterManager<br/>Expression Parsing + TypeHandler Param Extraction"]
+        EP --> AST --> EXP
     end
 
-    subgraph "Execution & Integrations"
-        D[SqlBuilder.Dapper]
-        DAOT[SqlBuilder.Dapper.Aot]
-        OT[SqlBuilder.OpenTelemetry]
+    subgraph "3. Dialect Compilation"
+        COMP["ISqlCompiler"]
+        PG["PostgreSqlCompiler"]
+        SS["SqlServerCompiler"]
+        SL["SqliteCompiler"]
+        MY["MySqlCompiler / MariaDbCompiler"]
+        ORA["OracleCompiler"]
+        EXP --> COMP
+        COMP --> PG & SS & SL & MY & ORA
     end
 
-    subgraph "Compile-Time Tools"
-        G[SqlBuilder.SourceGenerators]
-        Z[SqlBuilder.Analyzers]
+    subgraph "4. Dispatch Layer"
+        RES["SqlResult { Sql, Parameters }"]
+        PG & SS & SL & MY & ORA --> RES
+        DISP["ConnectionSqlExtensions / AotQueryExecutor / DapperMultiMapping"]
+        RES --> DISP
     end
 
-    subgraph "AOT Execution Engine"
-        AOT[SqlBuilder.Aot]
+    subgraph "5. Persistence Layer"
+        DB[("Database Engine<br/>PostgreSQL / SQL Server / SQLite / MySQL / MariaDB / Oracle")]
+        DISP -->|"ADO.NET DbCommand + DbParameters"| DB
     end
 
-    subgraph "Internal / Test Infrastructure"
-        T[SqlBuilder.Testing]
-        BM[SqlBuilder.Benchmarks]
+    subgraph "6. Consumers & Confirmation"
+        MAT["Materialized Entities (IEnumerable&lt;T&gt;, IPagedList&lt;T&gt;, Result&lt;T&gt;)"]
+        DIAG["SqlBuilderDiagnostics & OpenTelemetry ActivitySource"]
+        DB --> MAT
+        DISP --> DIAG
     end
 
-    B --> A
-    PG --> B
-    S --> B
-    P --> B
-    M --> B
-    MB --> M
-    MB --> B
-    O --> B
-    L --> B
+    subgraph "7. Cleanup"
+        CLEAN["Disposal of DbDataReader, DbCommand, Connections & GC of AST Nodes"]
+        MAT --> CLEAN
+    end
+```
 
-    D --> B
+### 1. Application Entry Point
+- **Components**: Static `Sql` entrypoint (`Sql.From<T>()`, `Sql.Insert<T>()`, `Sql.Update<T>()`, `Sql.Delete<T>()`, `Sql.BulkInsert<T>()`, `Sql.Raw()`).
+- **Function**: Provides strongly-typed API surface for domain consumers to initialize queries without coupling to any specific database engine.
+- **Transition**: Transfers domain models into immutable query builder records.
+
+### 2. Processing Layer & AST
+- **Components**: Immutable AST nodes (`SelectNode`, `WhereNode`, `JoinNode`, `LimitOffsetNode`, `SetNode`, `ReturningNode`, `OnConflictNode`), `SqlExpressionVisitor`, `SqlEntityCache<T>`, and `IParameterManager`.
+- **Function**: Evaluates C# lambda expressions (`x => x.IsActive`), resolves column names via static metadata (`IStaticEntityMetadata<T>`), and maps literal values into parameterized tokens (`@p0`, `@p1`).
+- **Transition**: Transforms high-level expressions into a normalized Abstract Syntax Tree.
+
+### 3. Dialect Compilation Layer
+- **Components**: `ISqlCompiler` and concrete implementations: `PostgreSqlCompiler`, `SqlServerCompiler`, `SqliteCompiler`, `MySqlCompiler`, `MariaDbCompiler`, `OracleCompiler`.
+- **Function**: Traverses the AST via the Visitor pattern (`SqlCompilerVisitor`), applying dialect-specific grammatical rules (quoting styles `[...]`, `"..."`, or `` `...` ``; pagination `LIMIT/OFFSET` vs `OFFSET...FETCH` vs `ROWNUM`; identity returns `RETURNING` vs `OUTPUT`).
+- **Transition**: Emits an immutable `SqlResult` containing the final SQL string and indexed parameters dictionary.
+
+### 4. Dispatch Layer
+- **Components**: `ConnectionSqlExtensions`, `AotQueryExecutor`, `DapperMultiMappingExtensions`, and `CursorPaginationExtensions`.
+- **Function**: Binds the `SqlResult` to an open `DbConnection`, constructing a parameterized `DbCommand` or delegating to the optimized materialization pipeline.
+- **Transition**: Transmits the SQL command to the underlying ADO.NET provider over the network socket.
+
+### 5. Persistence Layer
+- **Components**: Target database instance (PostgreSQL, SQL Server, SQLite, MySQL, MariaDB, Oracle).
+- **Function**: Executes the compiled query plan against database indexes and tables, streaming result sets (`DbDataReader`).
+- **Transition**: Returns binary data streams back to the consuming client.
+
+### 6. Domain Consumers
+- **Components**: Data repositories, CQRS query handlers (MediatR), Minimal API endpoints, or background processing services.
+- **Function**: Hydrates and consumes structured results (`IEnumerable<T>`, `IPagedList<T>`, `Result<T>`) to execute business logic.
+
+### 7. Confirmation & Observability
+- **Components**: `SqlBuilderDiagnostics`, `ActivitySource`, `Meter`, and `.WithTag()` query metadata.
+- **Function**: Records compiled query metrics, tracks execution latencies, and emits distributed traces correlated with query tags via OpenTelemetry.
+
+### 8. Cleanup & Resource Disposal
+- **Components**: C# `using` declarations, `IAsyncDisposable` on data readers and connections, and GC recycling of immutable AST records.
+- **Function**: Closes database cursors, releases connection socket handles, and returns buffer pools.
+
+---
+
+## Mermaid Architectural & Lifecycle Diagrams
+
+### Diagram 1: General Architecture
+
+```mermaid
+graph TB
+    subgraph "Public API — Core"
+        SQL["Sql.From&lt;T&gt;() / Sql.Insert / Sql.Update / Sql.Delete"]
+        SQ["SelectQuery&lt;T&gt;"]
+        IQ["InsertQuery&lt;T&gt;"]
+        UQ["UpdateQuery&lt;T&gt;"]
+        DQ["DeleteQuery&lt;T&gt;"]
+        SQL --> SQ & IQ & UQ & DQ
+    end
+
+    subgraph "Dialect Compilation"
+        COMP["ISqlCompiler"]
+        SQLITE["SqliteCompiler"]
+        PG["PostgreSqlCompiler"]
+        SS["SqlServerCompiler"]
+        ORA["OracleCompiler"]
+        MY["MySqlCompiler / MariaDbCompiler"]
+        COMP --> SQLITE & PG & SS & ORA & MY
+    end
+
+    subgraph "Execution Engines"
+        EXT["ConnectionSqlExtensions (Dapper)"]
+        AOT["AotQueryExecutor (Zero Reflection)"]
+        STREAM["ToStreamAsync (IAsyncEnumerable)"]
+        PAGE["ToPagedListAsync (Pagination)"]
+    end
+
+    subgraph "Compile-Time Metaprogramming"
+        SG["SqlEntityGenerator (Source Generator)"]
+        AZ["SqlSafetyAnalyzers (Roslyn Analyzers)"]
+    end
+
+    SQ & IQ & UQ & DQ --> COMP
+    COMP --> EXT & AOT & STREAM & PAGE
+    SG -.->|"Static Metadata"| SQ
+    AZ -.->|"Safety Rules"| DQ & UQ
+```
+
+---
+
+### Diagram 2: Primary End-to-End Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Domain / Service
+    participant Builder as Query Builder (SelectQuery&lt;T&gt;)
+    participant Compiler as ISqlCompiler (e.g. PostgreSql)
+    participant Exec as Execution Engine (Dapper / AOT)
+    participant DB as Database Engine
+
+    App->>Builder: Sql.From&lt;User&gt;().Where(u => u.IsActive).Limit(10)
+    Note over Builder: Builds immutable AST Nodes<br/>without network or DB I/O
+    App->>Exec: connection.QueryAsync&lt;User&gt;(query)
+    Exec->>Compiler: query.Build(compiler)
+    Compiler->>Compiler: Visit AST Nodes & Extract @p0
+    Compiler-->>Exec: SqlResult { Sql, Parameters }
+    Exec->>DB: Execute DbCommand with Parameters
+    DB-->>Exec: DbDataReader Stream
+    Exec-->>App: IReadOnlyList&lt;User&gt;
+```
+
+---
+
+### Diagram 3: Compilation & Execution Sequence
+
+```mermaid
+sequenceDiagram
+    participant Caller as Caller Code
+    participant Visitor as SqlCompilerVisitor
+    participant ParamMgr as IParameterManager
+    participant Dialect as Dialect Rules
+
+    Caller->>Visitor: Visit(SelectNode)
+    Visitor->>Dialect: QuoteIdentifier("users")
+    Visitor->>Visitor: Visit(WhereNode)
+    Visitor->>ParamMgr: AddParameter(value: true)
+    ParamMgr-->>Visitor: "@p0"
+    Visitor->>Dialect: RenderLimitOffset(limit: 10, offset: 0)
+    Visitor-->>Caller: SqlResult ("SELECT * FROM ...", {@p0: true})
+```
+
+---
+
+### Diagram 4: Query Lifecycle State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Construction: Sql.From&lt;T&gt;()
+    Construction --> Composition: .Where() / .OrderBy() / .Join()
+    Composition --> Composition: Non-destructive fork (returns new instance)
+    Composition --> ReadyToBuild: Fully composed AST
+    ReadyToBuild --> Compilation: .Build(compiler)
+    Compilation --> ParameterExtraction: IParameterManager resolves @p0, @p1
+    ParameterExtraction --> Execution: DbConnection.QueryAsync(SqlResult)
+    Execution --> Materialization: DataReader maps to entity
+    Materialization --> [*]: Disposed & Returned to caller
+```
+
+---
+
+### Diagram 5: Component Dependency Map
+
+```mermaid
+graph LR
+    ABST["SqlBuilder.Abstractions"]
+    CORE["SqlBuilder (Core)"]
+    PAG["SqlBuilder.Pagination"]
+    AOT["SqlBuilder.Aot"]
+    DAP["SqlBuilder.Dapper"]
+    DAOT["SqlBuilder.Dapper.Aot"]
+    OTEL["SqlBuilder.OpenTelemetry"]
+    TEST["SqlBuilder.Testing"]
+
+    DIALECTS["Dialects<br/>PostgreSQL / SqlServer / Sqlite / MySql / MariaDb / Oracle"]
+
+    CORE --> ABST
+    PAG --> CORE
+    AOT --> CORE
+    DAP --> CORE
     DAOT --> AOT
-    DAOT --> B
-    DAOT --> A
-    OT --> B
-    AOT --> B
-    AOT --> A
-
-    T --> B
-    T --> D
-    T --> P
-    T --> S
-    T --> M
-    T --> L
-    T --> O
-    BM --> B
+    DAOT --> DAP
+    OTEL --> CORE
+    DIALECTS --> CORE
+    TEST --> CORE
+    TEST --> DAP
+    TEST --> DIALECTS
 ```
 
 ---
 
-## Key Architectural Patterns
-
-### 1. Immutable AST via C# Record Semantics (ADR-017)
-
-All query builders (`SelectQuery<T>`, `InsertQuery<T>`, `UpdateQuery<T>`, `DeleteQuery<T>`) are implemented as immutable records or classes using **with-expressions**. Calling `.Where()` does not mutate the original — it returns a new instance.
-
-**Why:** Prevents unintended side effects when a base query is shared across threads or composed into variants.
-
-```csharp
-var baseQuery = Sql.From<User>().Where(u => u.IsActive);
-
-// Neither of these mutates 'baseQuery':
-var admins = baseQuery.Where(u => u.Role == "Admin");
-var paged  = baseQuery.Limit(20).Offset(40);
-```
-
-### 2. Source Generators & NativeAOT (ADR-006, ADR-013, ADR-043)
-
-Entity classes tagged with `[SqlEntity]` are processed at compile-time by the Roslyn incremental generator in `EricksonLopez.SqlBuilder.SourceGenerators`. The generator emits:
-
-- `IStaticEntityMetadata<T>` — static table name, column list, ordinal mapping
-- `IDataReaderMapper<T>` — zero-reflection materializer (ordinal-based)
-- Diff update support — computes changed columns at compile time
-
-**Why:** Enables NativeAOT compatibility and eliminates `System.Reflection.Emit` from all hot paths.
-
-### 3. Separation of AST and Compilers (ADR-009)
-
-The core library only generates an **Abstract Syntax Tree (AST)**. It does not know how to write SQL. The `ISqlCompiler` implementations in dialect packages transform the AST to SQL strings.
-
-**Why:** Adheres to the Open/Closed Principle. New dialects can be added without modifying the core.
+### Diagram 6: Bulk Ingestion & Streaming Pipeline
 
 ```mermaid
-flowchart LR
-    A["C# Expression\nu => u.IsActive"] --> B["AST Node\nWhereNode(IsActive)"]
-    B --> C{ISqlCompiler}
-    C --> D["SQL Server\nWHERE [is_active] = 1"]
-    C --> E["PostgreSQL\nWHERE is_active = TRUE"]
-    C --> F["SQLite\nWHERE is_active = 1"]
+graph LR
+    DATA["IEnumerable&lt;T&gt; (5,000 entities)"]
+    BULK["Sql.BulkInsert&lt;T&gt;()"]
+    BATCH["Batch Partitioner<br/>(BatchSize = 1,000)"]
+    TRANSPORT["Transport Driver<br/>(Binary COPY / SqlBulkCopy)"]
+    DB[("Database Engine")]
+
+    DATA --> BULK --> BATCH --> TRANSPORT --> DB
+
+    subgraph "Streaming Alternative (Zero Buffering)"
+        STREAM["SelectQuery&lt;T&gt;.ToStreamAsync()"]
+        AE["IAsyncEnumerable&lt;T&gt;"]
+        PROC["Process item-by-item on arrival"]
+        STREAM --> AE --> PROC
+    end
 ```
-
-### 4. Dapper and Native AOT Execution Layers (ADR-002, ADR-043)
-
-The core library has no dependency on Dapper. 
-- `EricksonLopez.SqlBuilder.Dapper` adds extension methods (`QueryAsync`, `ExecuteAsync`, `BulkInsertAsync`) for existing Dapper applications.
-- `EricksonLopez.SqlBuilder.Aot` and `EricksonLopez.SqlBuilder.Dapper.Aot` provide reflection-free execution paths over `IDbConnection` without runtime code generation.
-
-### 5. Granular Package Separation (ADR-009, ADR-030)
-
-The ecosystem is split into granular packages to implement **pay-for-play**:
-- A project using SQL Server does not download PostgreSQL or Oracle drivers.
-- The AOT execution path (`Aot` package) is isolated from Dapper's reflection.
-- Pagination extensions are centralized in `EricksonLopez.SqlBuilder.Pagination`.
-
-### 6. No DI, No Logging, No Hidden Dependencies (ADR-023)
-
-The core library does not depend on `Microsoft.Extensions.DependencyInjection` or `Microsoft.Extensions.Logging`. Users choose their own infrastructure. Observability is provided via standard `System.Diagnostics` / `ActivitySource`.
 
 ---
 
-## Architecture Decision Records (ADRs)
+### Diagram 7: Error Handling & Optimistic Concurrency
 
-All significant architectural decisions are documented in [`docs/decisions/`](decisions/index.md).
+```mermaid
+graph TD
+    UPDATE["UpdateQuery&lt;T&gt;<br/>.WithConcurrencyToken(v => v.Version, currentVal)"]
+    EXEC["ExecuteWithConcurrencyCheckAsync(connection)"]
+    CHECK{"RowsAffected > 0?"}
+    OK["Success (Committed)"]
+    FAIL["Throw DbConcurrencyException"]
+    RETRY["Resilience Policy<br/>Exponential Backoff"]
+    ABORT["Dead Letter / Log Diagnostic Error"]
 
-**Quick Reference:**
+    UPDATE --> EXEC --> CHECK
+    CHECK -->|"Yes"| OK
+    CHECK -->|"No"| FAIL
+    FAIL --> RETRY
+    RETRY -->|"Attempts &lt; Max"| UPDATE
+    RETRY -->|"Attempts &gt;= Max"| ABORT
+```
 
-| ADR | Decision | Status |
-|---|---|:---:|
-| [ADR-001](decisions/adr-001-stryker-source-generator-exclusion.md) | Stryker excludes Source Generators from mutation | ✅ Accepted |
-| [ADR-002](decisions/adr-002-dapper-integration-optional.md) | Dapper integration is optional | ✅ Accepted |
-| [ADR-003](decisions/adr-003-polly-not-core-dependency.md) | Polly is never a Core dependency | ✅ Accepted |
-| [ADR-007](decisions/adr-007-no-change-tracking.md) | No change tracking | ✅ Accepted |
-| [ADR-008](decisions/adr-008-no-linq-iqueryable-provider.md) | No LINQ IQueryable provider | ✅ Accepted |
-| [ADR-009](decisions/adr-009-dialect-isolation-separate-packages.md) | Dialect isolation in separate packages | ✅ Accepted |
-| [ADR-013](decisions/adr-013-aot-guarantees.md) | NativeAOT guarantees and scope | ✅ Accepted |
-| [ADR-017](decisions/adr-017-immutable-ast-record-semantics.md) | Immutable AST via record semantics | ✅ Accepted |
-| [ADR-023](decisions/adr-023-no-di-logging-core-dependencies.md) | No DI or logging as Core dependencies | ✅ Accepted |
-| [ADR-024](decisions/adr-024-no-automatic-query-caching.md) | No automatic query caching | ✅ Accepted |
-| [ADR-025](decisions/adr-025-no-generic-merge-abstraction.md) | No generic cross-dialect MERGE abstraction | ✅ Accepted |
-| [ADR-038](decisions/adr-038-opentelemetry-semantic-conventions.md) | OpenTelemetry database semantic conventions | ✅ Accepted |
-| [ADR-043](decisions/adr-043-dapper-aot-integration.md) | Dapper.AOT integration package strategy | ✅ Accepted |
-| [ADR-046](decisions/adr-046-bulk-identity-retrieval-boundary.md) | Bulk identity retrieval boundary and client UUIDv7 keys | ✅ Accepted |
+---
 
-See [ADR Index](decisions/index.md) for the complete list of all ADRs.
+### Diagram 8: Pagination Mechanics: Offset vs Keyset Seek
+
+```mermaid
+graph LR
+    subgraph "Offset Pagination (O(N) Complexity)"
+        OP["LIMIT 50 OFFSET 100,000"]
+        OSCAN["Engine scans and discards 100,000 rows"]
+        OP --> OSCAN
+    end
+
+    subgraph "Keyset / Cursor Pagination (O(1) Complexity)"
+        KP["WHERE (created_at > @p0 OR (created_at = @p0 AND id > @p1)) LIMIT 50"]
+        KSEEK["Direct B-Tree Index Seek to target record"]
+        KP --> KSEEK
+    end
+```

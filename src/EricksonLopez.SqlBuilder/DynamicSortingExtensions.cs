@@ -28,8 +28,32 @@ public static class DynamicSortingExtensions
 
         // Support aliases (e.g., "u.Name")
         var parts = sortBy.Split('.');
-        string propertyName = parts.Length > 1 ? parts[1] : parts[0];
-        string prefix = parts.Length > 1 ? $"{parts[0]}." : "";
+        if (parts.Length > 2)
+        {
+            throw new ArgumentException("Sort expression contains too many qualifiers.", nameof(sortBy));
+        }
+
+        string prefix = "";
+        string propertyName;
+        if (parts.Length == 2)
+        {
+            var alias = parts[0];
+            if (!System.Text.RegularExpressions.Regex.IsMatch(alias, @"^[a-zA-Z0-9_]+$", System.Text.RegularExpressions.RegexOptions.None, TimeSpan.FromSeconds(2)))
+            {
+                throw new ArgumentException("Invalid table alias in sort expression.", nameof(sortBy));
+            }
+            prefix = alias + ".";
+            propertyName = parts[1];
+        }
+        else
+        {
+            propertyName = parts[0];
+        }
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(propertyName, @"^[a-zA-Z0-9_]+$", System.Text.RegularExpressions.RegexOptions.None, TimeSpan.FromSeconds(2)))
+        {
+            throw new ArgumentException("Invalid sort column name", nameof(sortBy));
+        }
 
         string columnName;
         if (SqlEntityCache<T>.PropertyMap.TryGetValue(propertyName, out var mapped))
@@ -38,12 +62,6 @@ public static class DynamicSortingExtensions
         }
         else
         {
-            // Fallback for valid alphanumerics if not found in entity (e.g. dynamic queries)
-            if (!System.Text.RegularExpressions.Regex.IsMatch(propertyName, @"^[a-zA-Z0-9_]+$", System.Text.RegularExpressions.RegexOptions.None, TimeSpan.FromSeconds(2)))
-            {
-                throw new ArgumentException("Invalid sort column name");
-            }
-
             columnName = SqlNamingHelper.ToSnakeCase(propertyName);
         }
         return query.AddNode(new RawOrderByNode(prefix + columnName, descending));

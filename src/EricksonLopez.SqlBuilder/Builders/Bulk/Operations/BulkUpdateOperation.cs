@@ -8,6 +8,7 @@ namespace EricksonLopez.SqlBuilder.Builders.Bulk.Operations;
 /// <summary>
 /// Represents a bulk update operation.
 /// </summary>
+/// <typeparam name="T">The entity type implementing static metadata.</typeparam>
 internal sealed class BulkUpdateOperation<T> : IBulkOperation<T> where T : IStaticEntityMetadata<T>
 {
     private readonly IEnumerable<T> _entities;

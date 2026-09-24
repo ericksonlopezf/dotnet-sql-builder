@@ -6,18 +6,20 @@ When an API receives multiple filter parameters and they must be added condition
 ```csharp
 var q = Sql.From<Product>().Where(p => p.IsActive);
 
+// SelectQuery is immutable: always reassign the returned instance!
 if (request.MinPrice.HasValue)
-    q.Where(p => p.Price >= request.MinPrice.Value);
+    q = q.Where(p => p.Price >= request.MinPrice.Value);
 
 if (!string.IsNullOrEmpty(request.SearchTerm))
-    q.Where(p => p.Name.Contains(request.SearchTerm)); // AOT compiled to ILIKE / LIKE pattern
+    q = q.Where(p => p.Name.Contains(request.SearchTerm));
 
-var products = await conn.QueryAsync(q, compiler);
+var products = await conn.QueryAsync<Product>(q);
 ```
 
 ### 2. Multitenant Support
-Adding a Tenant filter to the entire builder:
+Adding a tenant filter to a shared base query factory using parameterized interpolation:
 
 ```csharp
-public SelectQuery<T> BaseQuery<T>(int tenantId) => Sql.From<T>().Where("TenantId = @TenantId").WithParam("TenantId", tenantId);
+public SelectQuery<T> BaseQuery<T>(int tenantId) where T : class, new() 
+    => Sql.From<T>().Where($"TenantId = {tenantId}");
 ```

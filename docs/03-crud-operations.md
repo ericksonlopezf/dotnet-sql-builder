@@ -10,7 +10,7 @@ var newCustomer = new Customer { Name = "Acme Corp", IsActive = true };
 var query = Sql.Insert(newCustomer);
 var result = query.Build(new SqlServerCompiler());
 
-// SQL: INSERT INTO [Customers] ([Name], [IsActive]) VALUES (@Name, @IsActive)
+// SQL: INSERT INTO [Customers] ([Name], [IsActive]) VALUES (@p0, @p1)
 ```
 
 ## UPDATE
@@ -35,10 +35,22 @@ var result = query.Build(new SqlServerCompiler());
 // SQL: DELETE FROM [Customers] WHERE [Id] = @p0
 ```
 
-## MERGE / UPSERT
-(Adaptive syntax depending on the engine)
+## UPSERT (OnConflict / DoUpdate)
 
+Instead of fragile and error-prone `MERGE` statements (which trigger Roslyn error **`ESQL026`**), use native conflict resolution:
+
+### PostgreSQL / SQLite (ON CONFLICT DO UPDATE)
 ```csharp
-var query = Sql.Merge<Customer>().Into("Customers")
-    // ...
+var customer = new Customer { Id = 10, Name = "Acme Corp", IsActive = true };
+
+var query = Sql.Insert(customer)
+    .OnConflict(c => c.Id)
+    .DoUpdate(c => new { c.Name, c.IsActive });
+```
+
+### MySQL (ON DUPLICATE KEY UPDATE)
+```csharp
+var query = Sql.Insert(customer)
+    .OnConflict()
+    .DoUpdate(c => new { c.Name, c.IsActive });
 ```

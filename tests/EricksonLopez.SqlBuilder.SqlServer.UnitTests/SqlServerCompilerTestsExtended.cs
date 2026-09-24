@@ -30,7 +30,7 @@ public class SqlServerCompilerTestsExtended
             new RawSelectNode("MAX(col2)", null, true)
         }.ToImmutableList());
         var result = _compiler.Compile((ISqlQuery)query);
-        result.Sql.Trim().Should().Be("SELECT DISTINCT MAX(col2)");
+        result.Sql.Trim().Should().Be("SELECT DISTINCT [col1], id, name, MAX(col2)");
     }
     
     [Fact]

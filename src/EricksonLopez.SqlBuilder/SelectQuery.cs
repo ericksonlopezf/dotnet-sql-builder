@@ -108,12 +108,22 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
         return AddNode(new RawSelectNode(sql.Format, sql.GetArguments(), false));
     }
 
+    private static void ValidateIdentifier(string identifier, string paramName)
+        => SqlNamingHelper.ValidateIdentifier(identifier, paramName);
+
+    private static void ValidateOperator(string op, string paramName)
+        => SqlNamingHelper.ValidateOperator(op, paramName);
+
     /// <summary>
     /// Projects a COUNT(*) aggregation.
     /// </summary>
     /// <param name="alias">The column alias (default: "count").</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the count projection applied.</returns>
-    public SelectQuery<T> AsCount(string alias = "count") => AddNode(new RawSelectNode(string.IsNullOrWhiteSpace(alias) ? "COUNT(*)" : $"COUNT(*) AS {alias}", null, false));
+    public SelectQuery<T> AsCount(string alias = "count")
+    {
+        if (!string.IsNullOrWhiteSpace(alias)) ValidateIdentifier(alias, nameof(alias));
+        return AddNode(new RawSelectNode(string.IsNullOrWhiteSpace(alias) ? "COUNT(*)" : $"COUNT(*) AS {alias}", null, false));
+    }
 
     /// <summary>
     /// Projects a SUM(column) aggregation.
@@ -121,10 +131,12 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="column">The column name to sum.</param>
     /// <param name="alias">Optional column alias.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the sum projection applied.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> AsSum(string column, string? alias = null)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
+        ValidateIdentifier(column, nameof(column));
+        if (!string.IsNullOrWhiteSpace(alias)) ValidateIdentifier(alias, nameof(alias));
         var sql = string.IsNullOrWhiteSpace(alias) ? $"SUM({column})" : $"SUM({column}) AS {alias}";
         return AddNode(new RawSelectNode(sql, null, false));
     }
@@ -135,10 +147,12 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="column">The column name to average.</param>
     /// <param name="alias">Optional column alias.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the average projection applied.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> AsAvg(string column, string? alias = null)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
+        ValidateIdentifier(column, nameof(column));
+        if (!string.IsNullOrWhiteSpace(alias)) ValidateIdentifier(alias, nameof(alias));
         var sql = string.IsNullOrWhiteSpace(alias) ? $"AVG({column})" : $"AVG({column}) AS {alias}";
         return AddNode(new RawSelectNode(sql, null, false));
     }
@@ -149,10 +163,12 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="column">The column name to find the minimum for.</param>
     /// <param name="alias">Optional column alias.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the min projection applied.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> AsMin(string column, string? alias = null)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
+        ValidateIdentifier(column, nameof(column));
+        if (!string.IsNullOrWhiteSpace(alias)) ValidateIdentifier(alias, nameof(alias));
         var sql = string.IsNullOrWhiteSpace(alias) ? $"MIN({column})" : $"MIN({column}) AS {alias}";
         return AddNode(new RawSelectNode(sql, null, false));
     }
@@ -163,10 +179,12 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="column">The column name to find the maximum for.</param>
     /// <param name="alias">Optional column alias.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the max projection applied.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> AsMax(string column, string? alias = null)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
+        ValidateIdentifier(column, nameof(column));
+        if (!string.IsNullOrWhiteSpace(alias)) ValidateIdentifier(alias, nameof(alias));
         var sql = string.IsNullOrWhiteSpace(alias) ? $"MAX({column})" : $"MAX({column}) AS {alias}";
         return AddNode(new RawSelectNode(sql, null, false));
     }
@@ -237,7 +255,14 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="tableName">The name of the source table.</param>
     /// <param name="alias">An optional alias for the source table.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the FROM clause applied.</returns>
-    public SelectQuery<T> From(string tableName, string? alias = null) => AddNode(new FromNode(tableName, alias));
+    /// <exception cref="ArgumentException"><paramref name="tableName"/> is empty or whitespace, or <paramref name="alias"/> is whitespace</exception>
+    public SelectQuery<T> From(string tableName, string? alias = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        if (alias != null && string.IsNullOrWhiteSpace(alias))
+            throw new ArgumentException("Alias cannot be whitespace.", nameof(alias));
+        return AddNode(new FromNode(tableName, alias));
+    }
     
     /// <summary>
     /// Specifies a subquery as the primary data source.
@@ -245,14 +270,23 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="query">The subquery to execute.</param>
     /// <param name="alias">The alias for the subquery result set.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the subquery FROM clause applied.</returns>
-    public SelectQuery<T> From(ISqlQuery query, string alias) => AddNode(new SubqueryFromNode(query, alias));
+    public SelectQuery<T> From(ISqlQuery query, string alias)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        return AddNode(new SubqueryFromNode(query, alias));
+    }
     
     /// <summary>
     /// Applies an alias to the current query when used as a subquery.
     /// </summary>
     /// <param name="alias">The alias to apply.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the alias applied.</returns>
-    public SelectQuery<T> Alias(string alias) => AddNode(new QueryAliasNode(alias));
+    public SelectQuery<T> Alias(string alias)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        return AddNode(new QueryAliasNode(alias));
+    }
 
     /// <summary>
     /// Appends an INNER JOIN clause to the query.
@@ -261,7 +295,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="alias">The alias for the joined table.</param>
     /// <param name="on">The join condition.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the join clause applied.</returns>
-    public SelectQuery<T> Join(string tableName, string alias, string on) => AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    public SelectQuery<T> Join(string tableName, string alias, string on)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        ArgumentException.ThrowIfNullOrWhiteSpace(on);
+        return AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    }
     
     /// <summary>
     /// Appends a strongly-typed INNER JOIN clause to the query based on a predicate.
@@ -273,12 +313,21 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     
     /// <summary>
     /// Appends an INNER JOIN clause to the query.
+    /// This overload is an explicit alias for <see cref="Join(string, string, string)"/> and produces identical SQL.
+    /// Prefer <see cref="Join{TOther}(System.Linq.Expressions.Expression{System.Func{T, TOther, bool}})"/> for
+    /// strongly-typed joins using entity expressions.
     /// </summary>
     /// <param name="tableName">The name of the table to join.</param>
     /// <param name="alias">The alias for the joined table.</param>
     /// <param name="on">The join condition.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the join clause applied.</returns>
-    public SelectQuery<T> InnerJoin(string tableName, string alias, string on) => AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    public SelectQuery<T> InnerJoin(string tableName, string alias, string on)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        ArgumentException.ThrowIfNullOrWhiteSpace(on);
+        return AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    }
     
     /// <summary>
     /// Appends a LEFT OUTER JOIN clause to the query.
@@ -287,7 +336,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="alias">The alias for the joined table.</param>
     /// <param name="on">The join condition.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the join clause applied.</returns>
-    public SelectQuery<T> LeftJoin(string tableName, string alias, string on) => AddNode(new JoinNode(JoinType.Left, tableName, alias, on));
+    public SelectQuery<T> LeftJoin(string tableName, string alias, string on)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        ArgumentException.ThrowIfNullOrWhiteSpace(on);
+        return AddNode(new JoinNode(JoinType.Left, tableName, alias, on));
+    }
     
     /// <summary>
     /// Appends a RIGHT OUTER JOIN clause to the query.
@@ -296,7 +351,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="alias">The alias for the joined table.</param>
     /// <param name="on">The join condition.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the join clause applied.</returns>
-    public SelectQuery<T> RightJoin(string tableName, string alias, string on) => AddNode(new JoinNode(JoinType.Right, tableName, alias, on));
+    public SelectQuery<T> RightJoin(string tableName, string alias, string on)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        ArgumentException.ThrowIfNullOrWhiteSpace(on);
+        return AddNode(new JoinNode(JoinType.Right, tableName, alias, on));
+    }
     
     /// <summary>
     /// Appends a CROSS JOIN clause to the query.
@@ -304,7 +365,12 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="tableName">The name of the table to join.</param>
     /// <param name="alias">The alias for the joined table.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the join clause applied.</returns>
-    public SelectQuery<T> CrossJoin(string tableName, string alias) => AddNode(new JoinNode(JoinType.Cross, tableName, alias));
+    public SelectQuery<T> CrossJoin(string tableName, string alias)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        return AddNode(new JoinNode(JoinType.Cross, tableName, alias));
+    }
     
     /// <summary>
     /// Appends a FULL OUTER JOIN clause to the query.
@@ -313,7 +379,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="alias">The alias for the joined table.</param>
     /// <param name="on">The join condition.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the join clause applied.</returns>
-    public SelectQuery<T> FullJoin(string tableName, string alias, string on) => AddNode(new JoinNode(JoinType.Full, tableName, alias, on));
+    public SelectQuery<T> FullJoin(string tableName, string alias, string on)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        ArgumentException.ThrowIfNullOrWhiteSpace(on);
+        return AddNode(new JoinNode(JoinType.Full, tableName, alias, on));
+    }
     
     /// <summary>
     /// Appends a raw SQL JOIN clause to the query.
@@ -343,18 +415,33 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <summary>
     /// Appends a LATERAL JOIN clause (INNER JOIN LATERAL) with a typed ON expression.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subquery">The correlated subquery to laterally join.</param>
+    /// <param name="alias">The alias for the lateral result set.</param>
+    /// <param name="on">The typed predicate expression defining the join condition between the outer query and the lateral subquery.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the LATERAL JOIN applied.</returns>
     public SelectQuery<T> LateralJoin<TSub>(IAstQuery subquery, string alias, Expression<Func<T, TSub, bool>> on)
         => AddNode(new SubqueryJoinNode(JoinType.Inner, subquery, alias, null, IsLateral: true, ExpressionCondition: on));
 
     /// <summary>
     /// Appends a LATERAL JOIN clause constructed via a fluent subquery factory.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subqueryFactory">A delegate that configures and returns the correlated subquery.</param>
+    /// <param name="alias">The alias for the lateral result set.</param>
+    /// <param name="on">Optional raw ON condition string.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the LATERAL JOIN applied.</returns>
     public SelectQuery<T> LateralJoin<TSub>(Func<SelectQuery<TSub>, IAstQuery> subqueryFactory, string alias, string? on = null) where TSub : class, new()
         => LateralJoin(subqueryFactory(Sql.From<TSub>()), alias, on);
 
     /// <summary>
     /// Appends a LATERAL JOIN clause constructed via a fluent subquery factory with a typed ON expression.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subqueryFactory">A delegate that configures and returns the correlated subquery.</param>
+    /// <param name="alias">The alias for the lateral result set.</param>
+    /// <param name="on">The typed predicate expression defining the join condition.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the LATERAL JOIN applied.</returns>
     public SelectQuery<T> LateralJoin<TSub>(Func<SelectQuery<TSub>, IAstQuery> subqueryFactory, string alias, Expression<Func<T, TSub, bool>> on) where TSub : class, new()
         => LateralJoin(subqueryFactory(Sql.From<TSub>()), alias, on);
 
@@ -372,18 +459,33 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <summary>
     /// Appends a LEFT LATERAL JOIN clause (LEFT JOIN LATERAL) with a typed ON expression.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subquery">The correlated subquery to laterally join.</param>
+    /// <param name="alias">The alias for the lateral result set.</param>
+    /// <param name="on">The typed predicate expression defining the join condition between the outer query and the lateral subquery.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the LEFT LATERAL JOIN applied.</returns>
     public SelectQuery<T> LateralLeftJoin<TSub>(IAstQuery subquery, string alias, Expression<Func<T, TSub, bool>> on)
         => AddNode(new SubqueryJoinNode(JoinType.Left, subquery, alias, null, IsLateral: true, ExpressionCondition: on));
 
     /// <summary>
     /// Appends a LEFT LATERAL JOIN clause constructed via a fluent subquery factory.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subqueryFactory">A delegate that configures and returns the correlated subquery.</param>
+    /// <param name="alias">The alias for the lateral result set.</param>
+    /// <param name="on">Optional raw ON condition string.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the LEFT LATERAL JOIN applied.</returns>
     public SelectQuery<T> LateralLeftJoin<TSub>(Func<SelectQuery<TSub>, IAstQuery> subqueryFactory, string alias, string? on = null) where TSub : class, new()
         => LateralLeftJoin(subqueryFactory(Sql.From<TSub>()), alias, on);
 
     /// <summary>
     /// Appends a LEFT LATERAL JOIN clause constructed via a fluent subquery factory with a typed ON expression.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subqueryFactory">A delegate that configures and returns the correlated subquery.</param>
+    /// <param name="alias">The alias for the lateral result set.</param>
+    /// <param name="on">The typed predicate expression defining the join condition.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the LEFT LATERAL JOIN applied.</returns>
     public SelectQuery<T> LateralLeftJoin<TSub>(Func<SelectQuery<TSub>, IAstQuery> subqueryFactory, string alias, Expression<Func<T, TSub, bool>> on) where TSub : class, new()
         => LateralLeftJoin(subqueryFactory(Sql.From<TSub>()), alias, on);
 
@@ -400,6 +502,11 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <summary>
     /// Appends a JOIN to a subquery with a typed ON expression.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the subquery.</typeparam>
+    /// <param name="subquery">The subquery to join.</param>
+    /// <param name="alias">The alias for the derived table.</param>
+    /// <param name="on">The typed predicate expression defining the join condition.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the subquery join applied.</returns>
     public SelectQuery<T> JoinSubquery<TSub>(IAstQuery subquery, string alias, Expression<Func<T, TSub, bool>> on)
         => AddNode(new SubqueryJoinNode(JoinType.Inner, subquery, alias, null, IsLateral: false, ExpressionCondition: on));
 
@@ -416,6 +523,11 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <summary>
     /// Appends a LEFT JOIN to a subquery with a typed ON expression.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the subquery.</typeparam>
+    /// <param name="subquery">The subquery to join.</param>
+    /// <param name="alias">The alias for the derived table.</param>
+    /// <param name="on">The typed predicate expression defining the join condition.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the subquery join applied.</returns>
     public SelectQuery<T> LeftJoinSubquery<TSub>(IAstQuery subquery, string alias, Expression<Func<T, TSub, bool>> on)
         => AddNode(new SubqueryJoinNode(JoinType.Left, subquery, alias, null, IsLateral: false, ExpressionCondition: on));
 
@@ -449,6 +561,9 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
         if (string.IsNullOrWhiteSpace(column1)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column1));
         if (string.IsNullOrWhiteSpace(@operator)) throw new ArgumentException("Operator cannot be null or whitespace.", nameof(@operator));
         if (string.IsNullOrWhiteSpace(column2)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column2));
+        ValidateIdentifier(column1, nameof(column1));
+        ValidateOperator(@operator, nameof(@operator));
+        ValidateIdentifier(column2, nameof(column2));
         return AddNode(new RawWhereNode($"{column1} {@operator} {column2}", null));
     }
 
@@ -459,11 +574,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="operator">The comparison operator (e.g., "=", "&gt;", "&lt;").</param>
     /// <param name="value">The date value to compare against.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> WhereDate(string column, string @operator, object value)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
         if (string.IsNullOrWhiteSpace(@operator)) throw new ArgumentException("Operator cannot be null or whitespace.", nameof(@operator));
+        ValidateIdentifier(column, nameof(column));
+        ValidateOperator(@operator, nameof(@operator));
         return AddNode(new RawWhereNode($"{column} {@operator} {{0}}", new object?[] { value }));
     }
 
@@ -474,11 +591,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="operator">The comparison operator (e.g., "=", "&gt;", "&lt;").</param>
     /// <param name="year">The year integer to compare against.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> WhereYear(string column, string @operator, int year)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
         if (string.IsNullOrWhiteSpace(@operator)) throw new ArgumentException("Operator cannot be null or whitespace.", nameof(@operator));
+        ValidateIdentifier(column, nameof(column));
+        ValidateOperator(@operator, nameof(@operator));
         return AddNode(new RawWhereNode($"EXTRACT(YEAR FROM {column}) {@operator} {{0}}", new object?[] { year }));
     }
 
@@ -489,11 +608,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="operator">The comparison operator (e.g., "=", "&gt;", "&lt;").</param>
     /// <param name="month">The month integer (1-12) to compare against.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> WhereMonth(string column, string @operator, int month)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
         if (string.IsNullOrWhiteSpace(@operator)) throw new ArgumentException("Operator cannot be null or whitespace.", nameof(@operator));
+        ValidateIdentifier(column, nameof(column));
+        ValidateOperator(@operator, nameof(@operator));
         return AddNode(new RawWhereNode($"EXTRACT(MONTH FROM {column}) {@operator} {{0}}", new object?[] { month }));
     }
 
@@ -504,11 +625,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="operator">The comparison operator (e.g., "=", "&gt;", "&lt;").</param>
     /// <param name="day">The day integer (1-31) to compare against.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance.</returns>
-    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty or whitespace</exception>
+    /// <exception cref="ArgumentException"><paramref name="column"/> or <paramref name="operator"/> is empty, whitespace, or invalid</exception>
     public SelectQuery<T> WhereDay(string column, string @operator, int day)
     {
         if (string.IsNullOrWhiteSpace(column)) throw new ArgumentException("Column name cannot be null or whitespace.", nameof(column));
         if (string.IsNullOrWhiteSpace(@operator)) throw new ArgumentException("Operator cannot be null or whitespace.", nameof(@operator));
+        ValidateIdentifier(column, nameof(column));
+        ValidateOperator(@operator, nameof(@operator));
         return AddNode(new RawWhereNode($"EXTRACT(DAY FROM {column}) {@operator} {{0}}", new object?[] { day }));
     }
     
@@ -531,28 +654,44 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside EXISTS.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the EXISTS filter applied.</returns>
-    public SelectQuery<T> WhereExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: false));
+    public SelectQuery<T> WhereExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: false));
+    }
     
     /// <summary>
     /// Appends a WHERE NOT EXISTS (subquery) condition to the query.
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside NOT EXISTS.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the NOT EXISTS filter applied.</returns>
-    public SelectQuery<T> WhereNotExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: false));
+    public SelectQuery<T> WhereNotExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: false));
+    }
     
     /// <summary>
     /// Appends an OR EXISTS (subquery) condition to the query.
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside EXISTS.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the OR EXISTS filter applied.</returns>
-    public SelectQuery<T> OrExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: true));
+    public SelectQuery<T> OrExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: true));
+    }
     
     /// <summary>
     /// Appends an OR NOT EXISTS (subquery) condition to the query.
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside NOT EXISTS.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the OR NOT EXISTS filter applied.</returns>
-    public SelectQuery<T> OrNotExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: true));
+    public SelectQuery<T> OrNotExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: true));
+    }
     
     /// <summary>
     /// Appends a GROUP BY clause to the query to aggregate results.
@@ -701,25 +840,25 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// </summary>
     /// <param name="limit">The maximum number of rows.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the row limit applied.</returns>
-    public SelectQuery<T> Limit(int limit) => AddNode(new LimitOffsetNode(limit, null));
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="limit"/> is negative</exception>
+    public SelectQuery<T> Limit(int limit)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(limit);
+        return AddNode(new LimitOffsetNode(limit, null));
+    }
     
     /// <summary>
     /// Specifies the number of rows to skip before returning results.
     /// </summary>
     /// <param name="offset">The number of rows to skip.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the offset applied.</returns>
-    public SelectQuery<T> Offset(int offset) => AddNode(new LimitOffsetNode(null, offset));
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> is negative</exception>
+    public SelectQuery<T> Offset(int offset)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(offset);
+        return AddNode(new LimitOffsetNode(null, offset));
+    }
     
-    /// <summary>
-    /// Restricts the maximum number of rows returned by the query.
-    /// </summary>
-    /// <remarks>
-    /// Obsolete. Use <see cref="Limit(int)"/> instead, which provides the identical functionality.
-    /// </remarks>
-    /// <param name="rows">The maximum number of rows to fetch.</param>
-    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the row limit applied.</returns>
-    /// <summary>Specifies row limit (synonym for Limit).</summary>
-    public SelectQuery<T> Fetch(int rows) => AddNode(new LimitOffsetNode(rows, null));
     
     /// <summary>
     /// Defines a Common Table Expression (CTE) for the query.
@@ -727,7 +866,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="name">The name assigned to the CTE.</param>
     /// <param name="query">The query defining the CTE data set.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the CTE applied.</returns>
-    public SelectQuery<T> CTE(string name, ISqlQuery query) => AddNode(new CteNode(name, query));
+    public SelectQuery<T> CTE(string name, ISqlQuery query)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ValidateIdentifier(name, nameof(name));
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new CteNode(name, query));
+    }
 
     /// <summary>
     /// Defines a Common Table Expression (CTE) for the query with an explicit materialization hint.
@@ -736,7 +881,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="query">The query defining the CTE data set.</param>
     /// <param name="hint">The materialization hint (e.g. MATERIALIZED or NOT MATERIALIZED in PostgreSQL).</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the CTE applied.</returns>
-    public SelectQuery<T> CTE(string name, ISqlQuery query, MaterializationHint hint) => AddNode(new CteNode(name, query, false, hint));
+    public SelectQuery<T> CTE(string name, ISqlQuery query, MaterializationHint hint)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ValidateIdentifier(name, nameof(name));
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new CteNode(name, query, false, hint));
+    }
     
     /// <summary>
     /// Defines a recursive Common Table Expression (CTE) for the query.
@@ -744,7 +895,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="name">The name assigned to the CTE.</param>
     /// <param name="query">The query defining the CTE data set.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the recursive CTE applied.</returns>
-    public SelectQuery<T> RecursiveCTE(string name, ISqlQuery query) => AddNode(new CteNode(name, query, true));
+    public SelectQuery<T> RecursiveCTE(string name, ISqlQuery query)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ValidateIdentifier(name, nameof(name));
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new CteNode(name, query, true));
+    }
 
     /// <summary>
     /// Defines a recursive Common Table Expression (CTE) for the query with an explicit materialization hint.
@@ -753,7 +910,13 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="query">The query defining the CTE data set.</param>
     /// <param name="hint">The materialization hint (e.g. MATERIALIZED or NOT MATERIALIZED in PostgreSQL).</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the recursive CTE applied.</returns>
-    public SelectQuery<T> RecursiveCTE(string name, ISqlQuery query, MaterializationHint hint) => AddNode(new CteNode(name, query, true, hint));
+    public SelectQuery<T> RecursiveCTE(string name, ISqlQuery query, MaterializationHint hint)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ValidateIdentifier(name, nameof(name));
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new CteNode(name, query, true, hint));
+    }
     
     /// <summary>
     /// Defines a named window specification for window functions.
@@ -762,49 +925,99 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="partitionBy">An optional array of column names to partition the window.</param>
     /// <param name="orderBy">An optional array of column names to order the window.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the window specification applied.</returns>
-    public SelectQuery<T> Window(string name, string[]? partitionBy = null, string[]? orderBy = null) => AddNode(new WindowNode(name, partitionBy, orderBy));
+    /// <exception cref="ArgumentException"><paramref name="name"/> is empty, whitespace, or invalid, or an element in <paramref name="orderBy"/> is invalid</exception>
+    public SelectQuery<T> Window(string name, string[]? partitionBy = null, string[]? orderBy = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ValidateIdentifier(name, nameof(name));
+        if (partitionBy != null)
+        {
+            foreach (var col in partitionBy)
+            {
+                ValidateIdentifier(col, nameof(partitionBy));
+            }
+        }
+        if (orderBy != null)
+        {
+            foreach (var col in orderBy)
+            {
+                if (string.IsNullOrWhiteSpace(col)) throw new ArgumentException("OrderBy clause cannot be null or whitespace.", nameof(orderBy));
+                var parts = col.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                ValidateIdentifier(parts[0], nameof(orderBy));
+                if (parts.Length > 1 && !string.Equals(parts[1], "ASC", StringComparison.OrdinalIgnoreCase) && !string.Equals(parts[1], "DESC", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ArgumentException($"Invalid sort direction '{parts[1]}' in orderBy.", nameof(orderBy));
+                }
+            }
+        }
+        return AddNode(new WindowNode(name, partitionBy, orderBy));
+    }
     
     /// <summary>
     /// Appends a UNION set operation to combine results with another query, eliminating duplicates.
     /// </summary>
     /// <param name="query">The query to union with.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the set operation applied.</returns>
-    public SelectQuery<T> Union(ISqlQuery query) => AddNode(new SetOperationNode("UNION", query));
+    public SelectQuery<T> Union(ISqlQuery query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new SetOperationNode("UNION", query));
+    }
     
     /// <summary>
     /// Appends a UNION ALL set operation to combine results with another query, retaining duplicates.
     /// </summary>
     /// <param name="query">The query to union with.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the set operation applied.</returns>
-    public SelectQuery<T> UnionAll(ISqlQuery query) => AddNode(new SetOperationNode("UNION ALL", query));
+    public SelectQuery<T> UnionAll(ISqlQuery query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new SetOperationNode("UNION ALL", query));
+    }
     
     /// <summary>
     /// Appends an INTERSECT set operation to return only the rows present in both query results.
     /// </summary>
     /// <param name="query">The query to intersect with.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the set operation applied.</returns>
-    public SelectQuery<T> Intersect(ISqlQuery query) => AddNode(new SetOperationNode("INTERSECT", query));
+    public SelectQuery<T> Intersect(ISqlQuery query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new SetOperationNode("INTERSECT", query));
+    }
 
     /// <summary>
     /// Appends an INTERSECT ALL set operation to return matching rows from both queries, preserving duplicates.
     /// </summary>
     /// <param name="query">The query to intersect with.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the set operation applied.</returns>
-    public SelectQuery<T> IntersectAll(ISqlQuery query) => AddNode(new SetOperationNode("INTERSECT ALL", query));
+    public SelectQuery<T> IntersectAll(ISqlQuery query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new SetOperationNode("INTERSECT ALL", query));
+    }
     
     /// <summary>
     /// Appends an EXCEPT set operation to return rows from the current query that are not present in the specified query.
     /// </summary>
     /// <param name="query">The query to compare against.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the set operation applied.</returns>
-    public SelectQuery<T> Except(ISqlQuery query) => AddNode(new SetOperationNode("EXCEPT", query));
+    public SelectQuery<T> Except(ISqlQuery query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new SetOperationNode("EXCEPT", query));
+    }
 
     /// <summary>
     /// Appends an EXCEPT ALL set operation to return rows from the current query not present in the specified query, preserving duplicate counts.
     /// </summary>
     /// <param name="query">The query to compare against.</param>
     /// <returns>A new <see cref="SelectQuery{T}"/> instance with the set operation applied.</returns>
-    public SelectQuery<T> ExceptAll(ISqlQuery query) => AddNode(new SetOperationNode("EXCEPT ALL", query));
+    public SelectQuery<T> ExceptAll(ISqlQuery query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return AddNode(new SetOperationNode("EXCEPT ALL", query));
+    }
 
     /// <summary>
     /// Applies Window-based pagination (ROW_NUMBER) using the specified column for ordering.
@@ -824,6 +1037,7 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
         {
             throw new System.ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
         }
+        ValidateIdentifier(orderByColumn, nameof(orderByColumn));
         
         int p = System.Math.Max(1, pageNumber);
         return AddNode(new WindowPageNode(p, pageSize, orderByColumn, descending));
@@ -848,6 +1062,10 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <summary>
     /// Appends a CROSS APPLY clause constructed via a fluent subquery factory.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subqueryFactory">A delegate that configures and returns the correlated subquery.</param>
+    /// <param name="alias">The alias for the applied result set.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the CROSS APPLY applied.</returns>
     [RequiresCapability(ProviderCapability.Apply | ProviderCapability.Lateral)]
     public SelectQuery<T> CrossApply<TSub>(Func<SelectQuery<TSub>, IAstQuery> subqueryFactory, string alias) where TSub : class, new()
         => CrossApply(subqueryFactory(Sql.From<TSub>()), alias);
@@ -866,6 +1084,10 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <summary>
     /// Appends an OUTER APPLY clause constructed via a fluent subquery factory.
     /// </summary>
+    /// <typeparam name="TSub">The entity type of the correlated subquery.</typeparam>
+    /// <param name="subqueryFactory">A delegate that configures and returns the correlated subquery.</param>
+    /// <param name="alias">The alias for the applied result set.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance with the OUTER APPLY applied.</returns>
     [RequiresCapability(ProviderCapability.Apply | ProviderCapability.Lateral)]
     public SelectQuery<T> OuterApply<TSub>(Func<SelectQuery<TSub>, IAstQuery> subqueryFactory, string alias) where TSub : class, new()
         => OuterApply(subqueryFactory(Sql.From<TSub>()), alias);
@@ -911,6 +1133,7 @@ public sealed record SelectQuery<T> : IAstQuery where T : class, new()
     /// <remarks>
     /// For two ascending keys <c>(col1, col2)</c> with values <c>(v1, v2)</c>, generates:
     /// <code>WHERE (col1 &gt; @p0 OR (col1 = @p0 AND col2 &gt; @p1))</code>
+    /// Keyset pagination requires deterministic column ordering.
     /// </remarks>
     public SelectQuery<T> SeekAfter(params CursorKey[] keys)
         => AddNode(new CompositeCursorNode(keys, IsAfter: true));

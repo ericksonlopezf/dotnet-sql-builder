@@ -71,7 +71,7 @@ var active = Sql.From<Order>()
 
 // SELECT * FROM [orders] ORDER BY [created_at] DESC LIMIT 20
 var recent = Sql.From<Order>()
-    .OrderByDesc(o => o.CreatedAt)
+    .OrderByDescending(o => o.CreatedAt)
     .Limit(20)
     .Build(compiler);
 ```

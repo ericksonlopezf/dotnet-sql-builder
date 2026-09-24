@@ -11,8 +11,8 @@ namespace EricksonLopez.SqlBuilder.Abstractions.Nodes;
 /// Represents a window function expression in a SELECT clause (inline OVER clause).
 /// </summary>
 /// <remarks>
-/// Generates SQL of the form:
-/// <code>FUNC([Column]) OVER (PARTITION BY col1, col2 ORDER BY col3 DESC) AS alias</code>
+/// Generates SQL conforming to:
+/// <code>FUNC([Column]) OVER (PARTITION BY col1, col2 ORDER BY col3 DESC) AS alias</code>.
 /// </remarks>
 /// <param name="FunctionName">
 /// The SQL window function name. Examples: ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, SUM, AVG, COUNT, MIN, MAX.

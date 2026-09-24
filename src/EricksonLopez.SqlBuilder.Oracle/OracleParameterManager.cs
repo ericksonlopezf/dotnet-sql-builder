@@ -24,7 +24,10 @@ public class OracleParameterManager : IParameterManager
 
     /// <inheritdoc />
     public string Add(object? value) => _inner.Add(Process(value));
-    /// <summary>Adds a strongly-typed parameter.</summary>
+    /// <summary>Adds a strongly-typed parameter to the manager.</summary>
+    /// <typeparam name="TParam">The type of the parameter value.</typeparam>
+    /// <param name="value">The parameter value to register and process.</param>
+    /// <returns>The generated parameter placeholder name.</returns>
     public string Add<TParam>(TParam value) => _inner.Add(Process(value));
     /// <inheritdoc />
     public string AddNamed(string name, object? value) => _inner.AddNamed(name, Process(value));

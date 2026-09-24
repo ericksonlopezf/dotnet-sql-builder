@@ -16,7 +16,7 @@ public ref struct ColumnSelectionContext<TEntity> where TEntity : IStaticEntityM
     public TEntity Entity { get; }
     
     /// <summary>
-    /// Gets an optional snapshot entity representing the original state, used for diff-based updates.
+    /// Gets an optional snapshot entity representing the original state for diff-based updates.
     /// </summary>
     public TEntity? Snapshot { get; }
     

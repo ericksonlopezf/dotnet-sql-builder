@@ -15,23 +15,11 @@ using Testcontainers.Oracle;
 namespace EricksonLopez.SqlBuilder.Testing.Infrastructure;
 
 /// <summary>
-/// Oracle Database XE 21c test fixture backed by Testcontainers.
-/// Uses the official Oracle XE image (gvenzl/oracle-xe).
-///
-/// Behavior:
-///   • Docker container is started once per fixture instance
-///   • Schema is created under a dedicated user/schema: SQLBUILDER
-///   • All tables use Oracle-compatible DDL (NUMBER, VARCHAR2, CLOB)
-///   • No BOOLEAN type — uses NUMBER(1,0) / CHAR(1) conventions
-///   • SEQUENCES + TRIGGERS for AUTO_INCREMENT equivalent (12c+ uses IDENTITY)
-///   • For mutation tests: use transactions rolled back after each test
-///
-/// Docker image: gvenzl/oracle-xe:21-slim (≈ 2.1 GB, cached after first pull)
-/// Startup time: ~60-90 seconds on first run
-///
-/// NOTE: Oracle requires the system-level SID (XE) and a separate schema user.
-/// The container creates a SQLBUILDER user with CONNECT + RESOURCE privileges.
+/// Represents an Oracle Database test fixture backed by Testcontainers.
 /// </summary>
+/// <remarks>
+/// Starts an Oracle XE container, creates schema with IDENTITY columns and indexes, and seeds test data.
+/// </remarks>
 public sealed class OracleFixture : DatabaseFixture
 {
     static OracleFixture()
@@ -51,11 +39,14 @@ public sealed class OracleFixture : DatabaseFixture
 
     // ─── DatabaseFixture implementation ───────────────────────────────────────
 
+    /// <inheritdoc/>
     public override string ConnectionString =>
         _connectionString ?? throw new InvalidOperationException("Oracle container not started.");
 
+    /// <inheritdoc/>
     public override string EngineName => "Oracle";
 
+    /// <inheritdoc/>
     public override IDbConnection CreateConnection()
     {
         var conn = new OracleConnection(_connectionString);
@@ -63,10 +54,12 @@ public sealed class OracleFixture : DatabaseFixture
         return conn;
     }
 
+    /// <inheritdoc/>
     public override ISqlCompiler CreateCompiler() => new OracleCompiler();
 
     // ─── Container lifecycle ──────────────────────────────────────────────────
 
+    /// <inheritdoc/>
     protected override async Task StartContainerAsync()
     {
         _container = new OracleBuilder()
@@ -84,6 +77,7 @@ public sealed class OracleFixture : DatabaseFixture
         DefaultTypeMap.MatchNamesWithUnderscores = true;
     }
 
+    /// <inheritdoc/>
     protected override async Task StopContainerAsync()
     {
         if (_container != null)
@@ -96,11 +90,7 @@ public sealed class OracleFixture : DatabaseFixture
 
     // ─── Schema initialization ────────────────────────────────────────────────
 
-    /// <summary>
-    /// Creates the full Oracle 21c schema.
-    /// Uses IDENTITY columns (Oracle 12c+), VARCHAR2, NUMBER, CLOB, TIMESTAMP.
-    /// All identifiers are uppercase (Oracle default).
-    /// </summary>
+    /// <inheritdoc/>
     protected override async Task InitializeSchemaAsync(System.Data.Common.DbConnection connection)
     {
         foreach (var ddl in GetOracleDdl())
@@ -311,6 +301,7 @@ public sealed class OracleFixture : DatabaseFixture
 
     // ─── Data seeding ─────────────────────────────────────────────────────────
 
+    /// <inheritdoc/>
     protected override async Task SeedCoreDataAsync(System.Data.Common.DbConnection connection)
     {
         foreach (var cat in TestDataSeeder.Categories())
@@ -326,6 +317,7 @@ public sealed class OracleFixture : DatabaseFixture
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedTestDataAsync(System.Data.Common.DbConnection connection)
     {
         var dataset = Data;

@@ -39,8 +39,10 @@ public static class NpgsqlCopyStrategy
     /// <param name="entities">The entities to insert.</param>
     /// <param name="options">Optional bulk operation options.</param>
     /// <param name="transaction">An optional open <see cref="NpgsqlTransaction"/> to enlist.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="entities"/> is <see langword="null"/></exception>
     [ExcludeFromCodeCoverage(Justification = "Requires live PostgreSQL; covered by integration tests.")]
     public static async Task<BulkInsertResult<T>> BulkInsertAsync<T>(
@@ -113,8 +115,10 @@ public static class NpgsqlCopyStrategy
     /// <param name="entities">The entities to insert.</param>
     /// <param name="options">Optional bulk operation options.</param>
     /// <param name="transaction">An optional database transaction.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.
+    /// </returns>
     /// <exception cref="InvalidOperationException"><paramref name="connection"/> is not an instance of <see cref="NpgsqlConnection"/></exception>
     [ExcludeFromCodeCoverage(Justification = "Requires live PostgreSQL; covered by integration tests.")]
     public static Task<BulkInsertResult<T>> BulkInsertAsync<T>(

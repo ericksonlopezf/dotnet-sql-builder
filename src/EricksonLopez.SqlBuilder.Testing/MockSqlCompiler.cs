@@ -8,7 +8,7 @@ using EricksonLopez.SqlBuilder.Abstractions.Nodes;
 namespace EricksonLopez.SqlBuilder.Testing;
 
 /// <summary>
-/// A mock implementation of <see cref="ISqlCompiler"/> for testing purposes.
+/// Provides a mock implementation of <see cref="ISqlCompiler"/> for testing purposes.
 /// </summary>
 public class MockSqlCompiler : ISqlCompiler
 {

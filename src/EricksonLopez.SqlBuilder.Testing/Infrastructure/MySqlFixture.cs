@@ -15,18 +15,11 @@ using Testcontainers.MySql;
 namespace EricksonLopez.SqlBuilder.Testing.Infrastructure;
 
 /// <summary>
-/// MySQL 8.0 test fixture backed by Testcontainers.
-/// Provides a real MySQL container for integration tests.
-///
-/// Behavior:
-///   • Docker container is started once per fixture instance (class-level, via IClassFixture)
-///   • Schema is created once at startup from inline DDL
-///   • Data is seeded once at startup via TestDataSeeder
-///   • For mutation tests: use transactions rolled back after each test
-///
-/// Testcontainers image: mysql:8.0.36
-/// Default credentials: root / Password=sqlbuilder_test_pw
+/// Represents a MySQL 8.0 test fixture backed by Testcontainers.
 /// </summary>
+/// <remarks>
+/// Starts a MySQL 8.0 container, applies DDL schema, and seeds test data for integration tests.
+/// </remarks>
 public sealed class MySqlFixture : DatabaseFixture
 {
     // ─── Container configuration ──────────────────────────────────────────────
@@ -40,12 +33,15 @@ public sealed class MySqlFixture : DatabaseFixture
 
     // ─── DatabaseFixture implementation ───────────────────────────────────────
 
+    /// <inheritdoc/>
     public override string ConnectionString =>
         _container?.GetConnectionString()
             ?? throw new InvalidOperationException("MySQL container has not been started.");
 
+    /// <inheritdoc/>
     public override string EngineName => "MySQL";
 
+    /// <inheritdoc/>
     public override IDbConnection CreateConnection()
     {
         var conn = new MySqlConnection(ConnectionString);
@@ -53,10 +49,12 @@ public sealed class MySqlFixture : DatabaseFixture
         return conn;
     }
 
+    /// <inheritdoc/>
     public override ISqlCompiler CreateCompiler() => new MySqlCompiler();
 
     // ─── Container lifecycle ──────────────────────────────────────────────────
 
+    /// <inheritdoc/>
     protected override async Task StartContainerAsync()
     {
         _container = new MySqlBuilder()
@@ -75,6 +73,7 @@ public sealed class MySqlFixture : DatabaseFixture
         DefaultTypeMap.MatchNamesWithUnderscores = true;
     }
 
+    /// <inheritdoc/>
     protected override async Task StopContainerAsync()
     {
         if (_container != null)
@@ -87,11 +86,7 @@ public sealed class MySqlFixture : DatabaseFixture
 
     // ─── Schema initialization ────────────────────────────────────────────────
 
-    /// <summary>
-    /// Creates the full schema for MySQL 8.0.
-    /// Uses MySQL-specific syntax: backtick identifiers, TINYINT(1) for booleans,
-    /// ENGINE=InnoDB, utf8mb4 charset, JSON columns.
-    /// </summary>
+    /// <inheritdoc/>
     protected override async Task InitializeSchemaAsync(System.Data.Common.DbConnection connection)
     {
         // Enable multiple statement execution by using individual ExecuteAsync calls
@@ -328,6 +323,7 @@ public sealed class MySqlFixture : DatabaseFixture
 
     // ─── Data seeding ─────────────────────────────────────────────────────────
 
+    /// <inheritdoc/>
     protected override async Task SeedCoreDataAsync(System.Data.Common.DbConnection connection)
     {
         foreach (var cat in TestDataSeeder.Categories())
@@ -341,6 +337,7 @@ public sealed class MySqlFixture : DatabaseFixture
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedTestDataAsync(System.Data.Common.DbConnection connection)
     {
         var dataset = Data;

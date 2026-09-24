@@ -1,6 +1,6 @@
 # Multi-Mapping — EricksonLopez.SqlBuilder
 
-> **Package:** `EricksonLopez.SqlBuilder.Dapper` (2-7 entities) + `EricksonLopez.SqlBuilder.Dapper.MultiMap` (8+ entities, v1.x)
+> **Package:** `EricksonLopez.SqlBuilder.Dapper` (2-7 entities). *Note: 8+ entity mapping via MultiMapBuilder is a planned architectural specification (ADR-005, v1.2+).*
 > **ADR:** [ADR-005](decisions/adr-005-multi-mapping-beyond-7-entities.md)
 
 ---
@@ -71,43 +71,16 @@ var result = await connection.QueryAsync<User, Order, Product, User>(
 
 ---
 
-## 8+ Entity Mapping (Dapper.MultiMap package)
+## 8+ Entity Mapping (Planned Specification — ADR-005, v1.2+)
 
-For queries with 8 or more entities, use the fluent `MultiMapBuilder<TReturn>`:
-
-```csharp
-var result = await connection.MultiMapAsync<User>(
-    query,
-    map => map
-        .Split<Order>(on: "order_id")
-        .Split<Product>(on: "product_id")
-        .Split<Category>(on: "category_id")
-        .Split<Supplier>(on: "supplier_id")
-        .Split<Warehouse>(on: "warehouse_id")
-        .Split<Region>(on: "region_id")
-        .Split<Country>(on: "country_id")
-        .Into((user, order, product, category, supplier, warehouse, region, country) =>
-        {
-            product.Category = category;
-            product.Supplier = supplier;
-            supplier.Warehouse = warehouse;
-            warehouse.Region = region;
-            region.Country = country;
-            order.Product = product;
-            user.Order = order;
-            return user;
-        }));
-```
-
-### Source Generator (AOT Path, v1.0)
-
-Annotate your multi-map usage to enable compile-time descriptor generation:
+> [!NOTE]
+> The `MultiMapBuilder<TReturn>` fluent API described below is an architectural specification from ADR-005 planned for future releases. In v1.0, use the 2–7 entity overloads or `QueryMultipleAsync` (described in the next section) for deep entity hierarchies.
+>
+> The Roslyn generator `MultiMapDescriptorGenerator` currently emits compile-time `GetMultiMapReaderFactory()` methods on `[SqlEntity]` models to support reflection-free tuple hydration.
 
 ```csharp
-// With [GenerateMultiMap] attribute, Source Generator emits
-// MultiMapDescriptor<User, Order, Product, Category, ...> at compile time
-[GenerateMultiMap(typeof(User), typeof(Order), typeof(Product), typeof(Category))]
-public partial class OrderRepository { }
+// Target design for v1.2+ fluent 8+ multi-mapping:
+// var result = await connection.MultiMapAsync<User>(query, map => map.Split<Order>(...).Into(...));
 ```
 
 ---

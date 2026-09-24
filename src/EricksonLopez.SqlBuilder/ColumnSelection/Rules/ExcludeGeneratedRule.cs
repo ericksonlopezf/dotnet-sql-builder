@@ -5,7 +5,7 @@ using EricksonLopez.SqlBuilder.Abstractions.Metadata;
 namespace EricksonLopez.SqlBuilder.ColumnSelection.Rules;
 
 /// <summary>
-/// A column selection rule that automatically excludes database-generated columns (such as identity or computed columns) from the SQL operation.
+/// Represents a column selection rule that automatically excludes database-generated columns (such as identity or computed columns) from the SQL operation.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity being processed.</typeparam>
 public readonly struct ExcludeGeneratedRule<TEntity> : IColumnSelectionRule<TEntity> 

@@ -285,9 +285,9 @@ public static class EnterpriseArchitectureSample
         Console.WriteLine($"    Active users: {allUsers.Count()}");
 
         // ────────────────────────────────────────────────────────────────────
-        // 7. Observabilidad — Tags + OpenTelemetry (conceptual demo)
+        // 7. Observability — Tags + OpenTelemetry (conceptual demo)
         // ────────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 7. Observabilidad — WithTag + OpenTelemetry (ActivitySource)");
+        Console.WriteLine("\n[+] 7. Observability — WithTag + OpenTelemetry (ActivitySource)");
 
         // Tags are added to OpenTelemetry Activity spans automatically
         SqlBuilderDiagnostics.LogParameters = false; // Production: don't log parameter values

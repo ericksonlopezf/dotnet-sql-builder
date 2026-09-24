@@ -8,22 +8,22 @@ namespace EricksonLopez.SqlBuilder.ColumnSelection;
 public enum RulePhase : byte
 {
     /// <summary>
-    /// The initial phase establishing the baseline selection (e.g., OnlyColumnsRule).
+    /// Specifies the initial phase establishing the baseline selection (e.g., OnlyColumnsRule).
     /// </summary>
     Phase1Baseline = 0,
     
     /// <summary>
-    /// The phase evaluating structural metadata attributes (e.g., ExcludeGenerated, ExcludePrimaryKeys).
+    /// Specifies the phase evaluating structural metadata attributes (e.g., ExcludeGenerated, ExcludePrimaryKeys).
     /// </summary>
     Phase2Structural = 1,
     
     /// <summary>
-    /// The phase evaluating runtime property values (e.g., IgnoreNulls, IgnoreDefaults).
+    /// Specifies the phase evaluating runtime property values (e.g., IgnoreNulls, IgnoreDefaults).
     /// </summary>
     Phase3ValueBased = 2,
     
     /// <summary>
-    /// The final phase applying explicit user overrides (e.g., ExceptColumnsRule).
+    /// Specifies the final phase applying explicit user overrides (e.g., ExceptColumnsRule).
     /// </summary>
     Phase4Overrides = 3
 }

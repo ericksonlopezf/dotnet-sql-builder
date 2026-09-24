@@ -3,8 +3,11 @@
 ## Status
 Accepted — August 2026
 
+## Date
+2026-09-04
+
 ## Context
-`EricksonLopez.SqlBuilder.Abstractions` defines compilation and dialect interfaces where query building can fail functionally. The package directly references `EricksonLopez.Result` to return `Result<QueryResult>`.
+`EricksonLopez.SqlBuilder.Abstractions` defines compilation, validation, and dialect interfaces where operations can fail functionally. The package references `EricksonLopez.Result` to provide functional error handling across parsing, AST validation, and AST transformation pipelines.
 
 The ecosystem audit reviewed whether a Foundation package should pull in `EricksonLopez.Result`.
 
@@ -16,3 +19,5 @@ Formally approve and maintain the direct technical dependency of `EricksonLopez.
 
 ## Consequences
 - All consumers of `SqlBuilder.Abstractions` transitively consume `EricksonLopez.Result`. Given the struct-based, zero-dependency nature of `Result`, this footprint is negligible and functionally coherent.
+- **Current State (v1.0):** To preserve natural and idiomatic C# developer ergonomics, `ISqlCompiler.Compile(IAstQuery)` currently returns `SqlResult` directly and throws standard exceptions on syntax/dialect violations.
+- **Roadmap (v2.0):** Functional compilation overloads returning `Result<SqlResult>` will be introduced in v2.0 alongside strict AST validation pipelines, eliminating exception-based control flow in high-throughput compilation.

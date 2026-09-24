@@ -1,4 +1,4 @@
-# ADR-021: RETURNING / OUTPUT Clause Design
+﻿# ADR-021: RETURNING / OUTPUT Clause Design
 
 ## Status
 Accepted (implemented in v1.1)
@@ -22,13 +22,13 @@ This requires two round trips and is non-atomic (if another insert occurs betwee
 |---------|--------|---------|
 | PostgreSQL | `INSERT ... RETURNING id, created_at` | Result set |
 | SQL Server | `INSERT ... OUTPUT INSERTED.id, INSERTED.created_at` | Result set |
-| MySQL | No RETURNING (use `LAST_INSERT_ID()`) | — |
+| MySQL | No RETURNING (use `LAST_INSERT_ID()`) | â€” |
 | SQLite 3.35+ | `INSERT ... RETURNING id` | Result set |
 | Oracle | `INSERT ... RETURNING id INTO :v_id` | OUT parameter |
 
 ## Options Considered
 
-### Option A: No RETURNING support — document LAST_INSERT_ID() workaround
+### Option A: No RETURNING support â€” document LAST_INSERT_ID() workaround
 - Rejected: too common a requirement; two round trips violate atomicity guarantees
 
 ### Option B: Database-agnostic `.Returning()` that maps to each dialect's mechanism
@@ -64,13 +64,13 @@ INSERT INTO [users] ([name]) OUTPUT INSERTED.[id], INSERTED.[created_at] VALUES 
 -- SQLite 3.35+
 INSERT INTO "users" ("name") VALUES (@p0) RETURNING "id", "created_at"
 
--- MySQL — throws NotSupportedException (use LAST_INSERT_ID() via separate query)
--- Oracle — throws NotSupportedException (use RETURNING INTO OUT parameter via Sql.Raw)
+-- MySQL â€” throws NotSupportedException (use LAST_INSERT_ID() via separate query)
+-- Oracle â€” throws NotSupportedException (use RETURNING INTO OUT parameter via Sql.Raw)
 ```
 
 **Key design decisions:**
-1. `MySqlCompiler.Visit(ReturningNode)` → throws `NotSupportedException` with guidance
-2. `OracleCompiler.Visit(ReturningNode)` → throws `NotSupportedException` with guidance
+1. `MySqlCompiler.Visit(ReturningNode)` â†’ throws `NotSupportedException` with guidance
+2. `OracleCompiler.Visit(ReturningNode)` â†’ throws `NotSupportedException` with guidance
 3. The `NotSupportedException` message includes the correct workaround for that dialect
 
 **Dapper execution:**
@@ -82,22 +82,22 @@ var id = await connection.QuerySingleAsync<int>(query);
 ## Consequences
 
 ### Positive
-- ✅ Single `.Returning()` call works for PostgreSQL, SQL Server, SQLite
-- ✅ Atomic insert + read in one round trip
-- ✅ Expression-based — compile-time column name validation
-- ✅ Clear `NotSupportedException` guides users to correct workaround on MySQL/Oracle
+- âœ… Single `.Returning()` call works for PostgreSQL, SQL Server, SQLite
+- âœ… Atomic insert + read in one round trip
+- âœ… Expression-based â€” compile-time column name validation
+- âœ… Clear `NotSupportedException` guides users to correct workaround on MySQL/Oracle
 
 ### Negative
-- ❌ MySQL does not support `RETURNING` — must use `LAST_INSERT_ID()` separately
-- ❌ Oracle's `RETURNING INTO` requires OUT parameters — different execution model
-- ❌ Multi-row insert RETURNING is only PostgreSQL-native (SQL Server requires OUTPUT INTO a temp table)
+- âŒ MySQL does not support `RETURNING` â€” must use `LAST_INSERT_ID()` separately
+- âŒ Oracle's `RETURNING INTO` requires OUT parameters â€” different execution model
+- âŒ Multi-row insert RETURNING is only PostgreSQL-native (SQL Server requires OUTPUT INTO a temp table)
 
 ## Reconsideration Criteria
 If MySQL 9+ adds `RETURNING` clause support, implement `MySqlCompiler.Visit(ReturningNode)`.
 
 ## References
-- [FEATURE_MATRIX.md §4 — Complete Feature Discovery](../../FEATURE_MATRIX.md)
-- `src/EricksonLopez.SqlBuilder.Abstractions/Nodes/InsertNodes.cs` — `ReturningNode`
-- `src/EricksonLopez.SqlBuilder/InsertQuery.cs` — `.Returning()` methods
+- [FEATURE_MATRIX.md Â§4 â€” Complete Feature Discovery](../master-feature-matrix.md)
+- `src/EricksonLopez.SqlBuilder.Abstractions/Nodes/InsertNodes.cs` â€” `ReturningNode`
+- `src/EricksonLopez.SqlBuilder/InsertQuery.cs` â€” `.Returning()` methods
 - `src/EricksonLopez.SqlBuilder.PostgreSql/PostgreSqlCompiler.cs`
 - `src/EricksonLopez.SqlBuilder.SqlServer/SqlServerCompiler.cs`

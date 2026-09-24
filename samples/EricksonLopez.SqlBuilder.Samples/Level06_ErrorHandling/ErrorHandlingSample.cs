@@ -33,7 +33,7 @@ public static class ErrorHandlingSample
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("\n=== NIVEL 6: MANEJO DE ERRORES, RESILIENCIA Y CONCURRENCIA ===");
+        Console.WriteLine("\n=== LEVEL 6: ERROR HANDLING, RESILIENCE, AND CONCURRENCY ===");
 
         using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync();
@@ -46,7 +46,7 @@ public static class ErrorHandlingSample
         ");
 
         // ────────────────────────────────────────────────────────────────────
-        // 1. Retry + Exponential Backoff (errores transitorios vs permanentes)
+        // 1. Retry + Exponential Backoff (transient vs permanent errors)
         // ────────────────────────────────────────────────────────────────────
         Console.WriteLine("\n[+] 1. Execution with Retry and Exponential Backoff");
 
@@ -61,7 +61,7 @@ public static class ErrorHandlingSample
             try
             {
                 await connection.ExecuteAsync(sqlResult.Sql, sqlResult.Parameters);
-                Console.WriteLine($"    [Attempt {attempt}] Job insertado correctamente.");
+                Console.WriteLine($"    [Attempt {attempt}] Job inserted successfully.");
                 break;
             }
             catch (SqliteException ex) when (IsTransient(ex))
@@ -120,7 +120,7 @@ public static class ErrorHandlingSample
         }
         catch (DbConcurrencyException ex)
         {
-            Console.WriteLine($"    [!] DbConcurrencyException capturada: {ex.Message}");
+            Console.WriteLine($"    [!] DbConcurrencyException caught: {ex.Message}");
             Console.WriteLine($"        EntityType: {ex.EntityTypeName}, RowsAffected: {ex.RowsAffected}");
         }
 
@@ -141,9 +141,9 @@ public static class ErrorHandlingSample
         Console.WriteLine($"    Explicit token SQL:\n    {explicitSql.Sql}");
 
         // ────────────────────────────────────────────────────────────────────
-        // 5. RETURNING clause — recuperar valores generados
+        // 5. RETURNING clause — retrieve generated values
         // ────────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 5. RETURNING clause en INSERT y UPDATE");
+        Console.WriteLine("\n[+] 5. RETURNING clause in INSERT and UPDATE");
 
         // INSERT ... RETURNING id — to retrieve generated IDs
         var insertWithReturning = Sql.Insert(new Job { Name = "Return Test", Status = "New" })
@@ -162,10 +162,10 @@ public static class ErrorHandlingSample
         // ────────────────────────────────────────────────────────────────────
         // 6. Diagnostics — SqlBuilderDiagnostics
         // ────────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 6. SqlBuilderDiagnostics — Observabilidad de errores");
+        Console.WriteLine("\n[+] 6. SqlBuilderDiagnostics — Error observability");
 
         // Access diagnostic counters
-        Console.WriteLine($"    Queries ejecutados (contador acumulado): {SqlBuilderDiagnostics.QueryExecutionCounter}");
+        Console.WriteLine($"    Queries executed (cumulative counter): {SqlBuilderDiagnostics.QueryExecutionCounter}");
         Console.WriteLine($"    Slow query threshold: {SqlBuilderDiagnostics.SlowQueryThresholdMs}ms");
         Console.WriteLine($"    Log Parameters: {SqlBuilderDiagnostics.LogParameters}");
     }

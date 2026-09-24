@@ -25,10 +25,14 @@ internal class PostgreSqlVisitor : SqlCompilerVisitor
     }
 
     /// <summary>
-    /// PostgreSQL does not support SQL Server's APPLY operators.
-    /// Maps <c>CROSS APPLY</c> → <c>CROSS JOIN LATERAL</c>
-    /// and <c>OUTER APPLY</c> → <c>LEFT JOIN LATERAL</c>.
+    /// Emits the LATERAL join clause corresponding to cross or outer apply semantics in PostgreSQL.
     /// </summary>
+    /// <param name="node">The subquery join node to process.</param>
+    /// <remarks>
+    /// PostgreSQL does not support SQL Server's APPLY operators.
+    /// Maps <c>CROSS APPLY</c> to <c>CROSS JOIN LATERAL</c>
+    /// and <c>OUTER APPLY</c> to <c>LEFT JOIN LATERAL</c>.
+    /// </remarks>
     public override void Visit(SubqueryJoinNode node)
     {
         var joinType = node.Type;

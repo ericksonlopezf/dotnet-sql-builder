@@ -44,8 +44,8 @@ All `*Query<T>` types are `sealed partial record` with `ImmutableArray<ISqlNode>
 ```csharp
 // EricksonLopez.SqlBuilder — correct:
 var baseQuery = Sql.From<User>().Where(u => u.Active);
-var adminQuery = baseQuery.And(u => u.Role == "admin"); // new instance
-var userQuery  = baseQuery.And(u => u.Role == "user");  // new instance, baseQuery unchanged
+var adminQuery = baseQuery.Where(u => u.Role == "admin"); // new instance — [updated: method is .Where(), not .And()]
+var userQuery  = baseQuery.Where(u => u.Role == "user");  // new instance, baseQuery unchanged
 
 // baseQuery still has only: WHERE active = true
 // adminQuery has: WHERE active = true AND role = 'admin'
@@ -64,9 +64,10 @@ private static readonly SelectQuery<User> _activeUsers = Sql.From<User>()
 var page = _activeUsers.Page(pageNumber, pageSize);
 ```
 
-**`AddNode` helper:** Internal method that produces a new query with the node appended:
+**`AddNode` helper:** Public method on each `*Query<T>` type that produces a new query with the node appended:
 ```csharp
-protected TQuery AddNode(ISqlNode node) =>
+// Each query type exposes AddNode as public:
+public SelectQuery<T> AddNode(ISqlNode node) =>
     this with { Nodes = Nodes.Add(node) };
 ```
 
@@ -91,7 +92,7 @@ A new record allocation per fluent call is negligible — queries are built once
 If `ImmutableArray` causes measurable performance issues in benchmarks (due to copy-on-add semantics for large node lists), evaluate moving to a persistent linked-list structure.
 
 ## References
-- [FEATURE_MATRIX.md §4 — Complete Feature Discovery](../../FEATURE_MATRIX.md)
+- [FEATURE_MATRIX.md §4 — Complete Feature Discovery](../master-feature-matrix.md)
 - `src/EricksonLopez.SqlBuilder/SelectQuery.cs`
 - `src/EricksonLopez.SqlBuilder/InsertQuery.cs`
 - [ADR-007: No Change Tracking](./adr-007-no-change-tracking.md)

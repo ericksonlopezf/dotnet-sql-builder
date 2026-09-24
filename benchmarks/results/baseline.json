@@ -1,0 +1,199 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/BenchmarkDotNet/master/docs/guide/reports.md",
+  "SchemaVersion": "1.0",
+  "GeneratedAt": "2026-09-08T00:00:00Z",
+  "Description": "Canonical zero-allocation and latency performance baseline for dotnet-sql-builder",
+  "ZeroAllocPattern": "^(Bind|Map|Tap|ValidateAll|Success|Failure|ZeroAlloc|Span|Stackalloc|TryFormat|.*_TState.*)",
+  "Benchmarks": {
+    "Baseline_RawString": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_AotSelect_Compile": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "RawQuery_FormattableString_Compile": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "AotPath_RenderInsert_Stackalloc": {
+      "MeanNs": 25.0,
+      "AllocatedBytes": 0,
+      "ZeroAlloc": true
+    },
+    "AotPath_RenderUpdate_Stackalloc": {
+      "MeanNs": 25.0,
+      "AllocatedBytes": 0,
+      "ZeroAlloc": true
+    },
+    "SqlBuilder_BulkInsert": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_BulkUpdate": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_BulkDelete": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Baseline_RawString_SimpleSelect": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Baseline_RawString_ComplexSelect": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_SimpleSelect": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_ComplexSelect": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_SelectWithPagination": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_SelectWithGroupBy": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_SelectWithCte": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Baseline_RawString_Insert": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_InsertSingleEntity": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Baseline_RawString_Update": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_UpdateWithWhere": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Baseline_RawString_Delete": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_DeleteWithWhere": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_RawQuery": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_KeysetPagination_SingleKey": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_CompositeCursorPagination": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_CaseExpression": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Ast_ImmutableArray_AllocationAndEnumeration": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Ast_List_AllocationAndEnumeration": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_Insert": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_Update": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_Delete": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlServer_OffsetFetch": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "PostgreSql_LimitOffset": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlBuilder_GroupBy": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "ManualAstInstantiation": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "SqlExpressionVisitor": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Expression_Compile_Cold": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Expression_Compiled_Warm": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    },
+    "Expression_AstVisitor_Evaluation": {
+      "MeanNs": 150.0,
+      "AllocatedBytes": 32,
+      "ZeroAlloc": false
+    }
+  }
+}

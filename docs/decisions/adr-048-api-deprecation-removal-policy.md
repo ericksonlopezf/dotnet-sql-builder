@@ -3,6 +3,9 @@
 ## Status
 Proposed — August 2026
 
+## Date
+2026-09-04
+
 ## Context
 During the consistency audit (August 2026), the state of Sql.Merge<T>() was found to be contradicted across four different sources simultaneously:
 

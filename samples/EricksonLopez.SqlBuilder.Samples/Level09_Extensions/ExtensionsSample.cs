@@ -36,7 +36,7 @@ public static class ExtensionsSample
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("\n=== NIVEL 9: EXTENSIONES Y UTILITARIOS AVANZADOS ===");
+        Console.WriteLine("\n=== LEVEL 9: EXTENSIONS AND ADVANCED UTILITIES ===");
 
         using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync();
@@ -74,7 +74,7 @@ public static class ExtensionsSample
         }
 
         // ────────────────────────────────────────────────────────────────────
-        // 2. GetFingerprint() — Identificar estructura de query sin valores
+        // 2. GetFingerprint() — Identify query structure without values
         // ────────────────────────────────────────────────────────────────────
         Console.WriteLine("\n[+] 2. GetFingerprint() — Hash identifier for query structure");
 
@@ -91,8 +91,8 @@ public static class ExtensionsSample
         Console.WriteLine($"    Fingerprint q3 (Year=2024, Limit=20): {fp3[..16]}...");
 
         // Note: fingerprints reflect structural shape (node types), not parameter values
-        Console.WriteLine($"    ¿q1 == q2 (mismo shape, distinto valor)? {fp1 == fp2}");
-        Console.WriteLine($"    ¿q1 == q3 (distinto Limit)? {fp1 == fp3}");
+        Console.WriteLine($"    q1 == q2 (same shape, different value)? {fp1 == fp2}");
+        Console.WriteLine($"    q1 == q3 (different Limit)? {fp1 == fp3}");
 
         // Practical use: query-level cache keys without exposing parameter values
         Console.WriteLine("\n    Practical use: Cache Key based on fingerprint + param values");
@@ -147,7 +147,7 @@ public static class ExtensionsSample
 
         if (resultAsync.IsSuccess)
         {
-            Console.WriteLine($"    Success: {resultAsync.Value!.Count} reportes obtenidos.");
+            Console.WriteLine($"    Success: {resultAsync.Value!.Count} reports retrieved.");
         }
         else
         {
@@ -157,7 +157,7 @@ public static class ExtensionsSample
         // ────────────────────────────────────────────────────────────────────
         // 6. ToPagedListAsync — Pagination as Result<IPagedList<T>>
         // ────────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 6. ToPagedListAsync — Result<IPagedList<T>> unificado");
+        Console.WriteLine("\n[+] 6. ToPagedListAsync — Result<IPagedList<T>> unified");
 
         var pagedResult = await Sql.From<Report>()
             .Where(r => r.Year == 2024)
