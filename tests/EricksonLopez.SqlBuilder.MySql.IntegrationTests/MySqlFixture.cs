@@ -18,8 +18,7 @@ public class MySqlFixture : IAsyncLifetime
     public MySqlFixture()
     {
         DapperExtensions.RegisterCompiler<MySqlConnection>(() => new MySqlCompiler());
-        _MySqlContainer = new MySqlBuilder()
-            .WithImage("mysql:8.0")
+        _MySqlContainer = new MySqlBuilder("mysql:8.0")
             .Build();
     }
 

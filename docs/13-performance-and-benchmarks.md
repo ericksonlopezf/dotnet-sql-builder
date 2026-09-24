@@ -24,7 +24,7 @@ According to the suite, generating a complex `SELECT` with 5 parameters and seve
 To test the results on your own machine (Requires .NET SDK):
 
 ```bash
-cd src/EricksonLopez.SqlBuilder.Benchmarks
+cd benchmarks/EricksonLopez.SqlBuilder.Benchmarks
 dotnet build -c Release
 dotnet run -c Release --project EricksonLopez.SqlBuilder.Benchmarks.csproj
 ```

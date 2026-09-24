@@ -48,6 +48,7 @@ public static class SnapshotAssert
     /// <param name="compiler">The SQL compiler used to build the query.</param>
     /// <param name="snapshotSql">The expected SQL snapshot string.</param>
     /// <param name="normalizeWhitespace">If <see langword="true"/>, collapses all whitespace before comparing SQL strings.</param>
+    /// <exception cref="InvalidOperationException">The actual compiled SQL does not match the expected snapshot</exception>
     public static void MatchesSnapshot(ISqlQuery query, ISqlCompiler compiler, string snapshotSql, bool normalizeWhitespace = true)
     {
         var result = query.Build(compiler);
@@ -88,6 +89,7 @@ public static class SnapshotAssert
     /// </summary>
     /// <param name="query">The AST query whose fingerprint is to be compared.</param>
     /// <param name="expectedFingerprint">The expected fingerprint string.</param>
+    /// <exception cref="InvalidOperationException">The actual query fingerprint does not match the expected fingerprint</exception>
     public static void MatchesContract(IAstQuery query, string expectedFingerprint)
     {
         var contract = query.GetContract();

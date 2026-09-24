@@ -18,8 +18,7 @@ public class PostgreSqlFixture : IAsyncLifetime
     public PostgreSqlFixture()
     {
         DapperExtensions.RegisterCompiler<NpgsqlConnection>(() => new PostgreSqlCompiler());
-        _postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:15-alpine")
+        _postgreSqlContainer = new PostgreSqlBuilder("postgres:15-alpine")
             .Build();
     }
 

@@ -4,7 +4,7 @@ Thank you for your interest in contributing to **EricksonLopez.SqlBuilder**! We 
 
 ## Prerequisites
 
-- **.NET SDK 10.0.x** — version pinned in [`global.json`](global.json). Install from [dotnet.microsoft.com](https://dotnet.microsoft.com/download).
+- **.NET SDK 9.0.100 or higher (.NET 10 supported)** — baseline pinned in [`global.json`](global.json) with `rollForward: latestMajor`. Install from [dotnet.microsoft.com](https://dotnet.microsoft.com/download).
 - **Docker** — required for running integration tests against PostgreSQL, SQL Server, MySQL, and Oracle via [Testcontainers](https://dotnet.testcontainers.org/). Not needed for SQLite or unit tests.
 
 ## Build Commands
@@ -116,7 +116,7 @@ If your PR adds or removes public API surface (types, methods, properties), you 
 2. If adding new public APIs, update `PublicAPI.Unshipped.txt` in the affected project.
 3. If changing core AST/compilers, run Stryker and verify mutation score stays above 95%.
 4. If changing core/compilers, run benchmarks and confirm no regressions.
-5. Follow the [PR template](.github/pull-request-template.md) checklist.
+5. Follow the [PR template](.github/PULL_REQUEST_TEMPLATE.md) checklist.
 6. Wait for all CI checks to pass: Build, Unit Tests, Integration Tests, Stryker, SonarCloud.
 
 Please review the [Code of Conduct](CODE_OF_CONDUCT.md) before participating.

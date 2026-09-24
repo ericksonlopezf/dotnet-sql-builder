@@ -3,6 +3,9 @@
 ## Status
 Proposed
 
+## Date
+2026-09-04
+
 ## Context
 Combining retry policies with database transactions is a well-known source of data corruption and phantom duplicate records. If a transaction partially executes and the connection drops before commit, retrying the entire operation will execute the operations a second time — leading to duplicate inserts, double-counted updates, or inconsistent state.
 

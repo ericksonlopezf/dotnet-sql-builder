@@ -110,7 +110,9 @@ public static class DapperPaginationExtensions
     /// <param name="param">Optional Dapper parameters shared between both queries.</param>
     /// <param name="transaction">Optional transaction.</param>
     /// <param name="commandTimeout">Optional command timeout in seconds.</param>
-    /// <returns>A <see cref="PagedList{T}"/> with items and full pagination metadata.</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="PagedList{T}"/> with items and full pagination metadata.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="sql"/> or <paramref name="countSql"/> is null, empty, or whitespace</exception>
     /// <remarks>
     /// Usage:
@@ -121,6 +123,7 @@ public static class DapperPaginationExtensions
     ///     parameters: PaginationParameters.Create(page: 1, pageSize: 20),
     ///     param:      new { Active = true });
     /// </code>
+    /// Both queries are executed sequentially against the provided connection.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("csharpsquid", "S2077:Formatting queries is susceptible to SQL injection", Justification = "Page and PageSize are strongly-typed validated integers.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "Page and PageSize are strongly-typed validated integers.")]
@@ -163,7 +166,9 @@ public static class DapperPaginationExtensions
     /// <param name="param">Optional Dapper parameters (LIMIT, OFFSET, filters, etc.).</param>
     /// <param name="transaction">Optional transaction.</param>
     /// <param name="commandTimeout">Optional command timeout in seconds.</param>
-    /// <returns>A <see cref="PagedList{T}"/> with items and full pagination metadata.</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="PagedList{T}"/> with items and full pagination metadata.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="sql"/> is null, empty, or whitespace</exception>
     /// <remarks>
     /// Expected SQL pattern:
@@ -171,6 +176,7 @@ public static class DapperPaginationExtensions
     /// SELECT id, name FROM products WHERE active = @Active ORDER BY name LIMIT @Limit OFFSET @Offset;
     /// SELECT COUNT(*) FROM products WHERE active = @Active;
     /// </code>
+    /// Requires database driver support for multiple result sets in a single command execution.
     /// </remarks>
     public static async Task<IPagedList<T>> QueryPagedMultipleAsync<T>(
         this IDbConnection connection,

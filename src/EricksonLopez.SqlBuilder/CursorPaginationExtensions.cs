@@ -41,7 +41,16 @@ public static class CursorPaginationExtensions
             throw new ArgumentException("Must be a property expression");
         }
 
-        var colName = SqlNamingHelper.ToSnakeCase(memberExp.Member.Name);
+        string colName;
+        if (typeof(EricksonLopez.SqlBuilder.Annotations.ISqlEntity).IsAssignableFrom(typeof(T)) &&
+            SqlEntityCache<T>.PropertyMap.TryGetValue(memberExp.Member.Name, out var mapped))
+        {
+            colName = mapped;
+        }
+        else
+        {
+            colName = SqlNamingHelper.ToSnakeCase(memberExp.Member.Name);
+        }
         
         var op = ascending ? ">" : "<";
         

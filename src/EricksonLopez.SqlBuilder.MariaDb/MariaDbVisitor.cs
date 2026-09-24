@@ -8,7 +8,7 @@ using EricksonLopez.SqlBuilder.MySql;
 namespace EricksonLopez.SqlBuilder.MariaDb;
 
 /// <summary>
-/// MariaDB-specific SQL visitor that extends the MySQL visitor with native MariaDB features.
+/// Represents a MariaDB-specific SQL visitor that extends the MySQL visitor with native MariaDB features.
 /// </summary>
 /// <remarks>
 /// Key differences from <see cref="MySqlVisitor"/>:
@@ -28,9 +28,9 @@ internal sealed class MariaDbVisitor : MySqlVisitor
     }
 
     /// <summary>
-    /// MariaDB 10.5+ natively supports the <c>RETURNING</c> clause on INSERT, UPDATE, and DELETE.
-    /// Generates: <c>RETURNING col1, col2</c> (or <c>RETURNING *</c> when no columns specified).
+    /// Emits the native <c>RETURNING</c> clause for MariaDB 10.5+ on INSERT, UPDATE, and DELETE statements.
     /// </summary>
+    /// <param name="node">The returning AST node containing column specifications.</param>
     /// <remarks>
     /// This overrides the MySQL behavior which throws <see cref="NotSupportedException"/>.
     /// Requires MariaDB 10.5.0 or later.

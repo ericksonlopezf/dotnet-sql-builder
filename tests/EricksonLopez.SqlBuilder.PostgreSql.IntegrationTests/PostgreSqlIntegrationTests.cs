@@ -20,7 +20,7 @@ namespace EricksonLopez.SqlBuilder.PostgreSql.IntegrationTests;
 [Trait("Category", "Integration")]
 public class PostgreSqlIntegrationTests : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _pgSqlContainer = new PostgreSqlBuilder().Build();
+    private readonly PostgreSqlContainer _pgSqlContainer = new PostgreSqlBuilder("postgres:16-alpine").Build();
 
     public async Task InitializeAsync()
     {

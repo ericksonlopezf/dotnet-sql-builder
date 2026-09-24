@@ -72,7 +72,7 @@ All verifiable technical capabilities have been preserved with architectural and
 
 ## 5. Benchmarks Retained
 
-BenchmarkDotNet benchmarks are maintained strictly as engineering baselines, following [ADR-014](file:///d:/DevData/ericksonlopez.dev/dotnet-sql-builder/docs/decisions/adr-014-zero-allocation-benchmark-proof.md):
+BenchmarkDotNet benchmarks are maintained strictly as engineering baselines, following [ADR-014](../decisions/adr-014-zero-allocation-benchmark-proof.md):
 
 - **Baseline:** Raw SQL string construction (`Baseline_RawString_*`).
 - **Metrics Tracked:** Latency (median, P95), Memory allocations (Allocated Bytes, Gen0/Gen1/Gen2 collections).
@@ -128,7 +128,7 @@ Each capability was reconciled across Documentation, Source Code, Test Suite, an
 
 ## 8. Features Rejected by Architecture (Permanent Boundaries)
 
-The following features are permanently excluded from the library scope per [architecture-boundaries.md](file:///d:/DevData/ericksonlopez.dev/dotnet-sql-builder/docs/architecture-boundaries.md):
+The following features are permanently excluded from the library scope per [architecture-boundaries.md](../architecture-boundaries.md):
 
 | Feature | ADR | Technical & Architectural Justification |
 |:---|:---:|:---|

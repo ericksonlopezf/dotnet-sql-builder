@@ -8,12 +8,11 @@
     <IsRoslynComponent>true</IsRoslynComponent>
 
     <PackageId>EricksonLopez.SqlBuilder.Analyzers</PackageId>
-    <Version>1.0.0</Version>
     <Authors>Erickson Lopez</Authors>
     <Description>Roslyn Analyzers for EricksonLopez.SqlBuilder.</Description>
     <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>$(CommonPackageTags);roslyn;roslyn-analyzers;code-analysis;static-analysis;code-quality</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;roslyn;analyzers;code-analysis;static-analysis</PackageTags>
     <NoWarn>$(NoWarn);RS2001;RS1038</NoWarn>
   </PropertyGroup>
 

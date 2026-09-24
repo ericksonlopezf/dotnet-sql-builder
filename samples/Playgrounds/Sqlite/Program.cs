@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using EricksonLopez.Pagination;
 
-class Program
+internal sealed class Program
 {
     static void Main()
     {

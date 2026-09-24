@@ -14,17 +14,11 @@ using Microsoft.Data.Sqlite;
 namespace EricksonLopez.SqlBuilder.Testing.Infrastructure;
 
 /// <summary>
-/// SQLite in-memory fixture. Does NOT require Docker.
-/// Uses a named shared-cache connection string so all connections
-/// within the fixture share the same in-memory database.
-///
-/// Behavior:
-///   • Database is created in-memory per fixture instance
-///   • Schema is created once at startup
-///   • Data is seeded once at startup
-///   • All tests share the same data (read tests should not modify)
-///   • For mutation tests: use transactions rolled back after each test
+/// Represents a SQLite in-memory test fixture using a shared-cache connection.
 /// </summary>
+/// <remarks>
+/// Initializes an in-memory SQLite database, configures schema, and seeds test data without requiring Docker.
+/// </remarks>
 public sealed class SqliteFixture : DatabaseFixture
 {
     // Shared cache allows multiple connections to see the same data
@@ -34,9 +28,13 @@ public sealed class SqliteFixture : DatabaseFixture
     // Keep a "root" connection alive so the in-memory DB persists for the fixture lifetime
     private SqliteConnection? _rootConnection;
 
+    /// <inheritdoc/>
     public override string ConnectionString => SharedConnectionString;
+
+    /// <inheritdoc/>
     public override string EngineName => "SQLite";
 
+    /// <inheritdoc/>
     public override IDbConnection CreateConnection()
     {
         var conn = new SqliteConnection(SharedConnectionString);
@@ -47,8 +45,10 @@ public sealed class SqliteFixture : DatabaseFixture
         return conn;
     }
 
+    /// <inheritdoc/>
     public override ISqlCompiler CreateCompiler() => new SqliteCompiler();
 
+    /// <inheritdoc/>
     protected override async Task StartContainerAsync()
     {
         // No container needed — open the root connection to keep in-memory DB alive
@@ -61,6 +61,7 @@ public sealed class SqliteFixture : DatabaseFixture
         DefaultTypeMap.MatchNamesWithUnderscores = true;
     }
 
+    /// <inheritdoc/>
     protected override Task StopContainerAsync()
     {
         _rootConnection?.Close();
@@ -69,6 +70,7 @@ public sealed class SqliteFixture : DatabaseFixture
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc/>
     protected override async Task InitializeSchemaAsync(System.Data.Common.DbConnection connection)
     {
         // SQLite DDL: create all tables
@@ -224,6 +226,7 @@ public sealed class SqliteFixture : DatabaseFixture
         ");
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedCoreDataAsync(System.Data.Common.DbConnection connection)
     {
         // Seed categories first (referenced by products)
@@ -236,6 +239,7 @@ public sealed class SqliteFixture : DatabaseFixture
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedTestDataAsync(System.Data.Common.DbConnection connection)
     {
         var dataset = Data;

@@ -9,14 +9,10 @@ namespace EricksonLopez.SqlBuilder.Testing.Seeders;
 
 /// <summary>
 /// Generates realistic test data for integration tests using the Bogus library.
-/// All data is deterministic when a seed is provided.
-///
-/// Usage:
-///   var customers = TestDataSeeder.Customers(100);
-///   var products  = TestDataSeeder.Products(500, categories);
-///   var orders    = TestDataSeeder.Orders(1000, customers);
-///   var items     = TestDataSeeder.OrderItems(5000, orders, products);
 /// </summary>
+/// <remarks>
+/// All generated data is deterministic when a seed is provided.
+/// </remarks>
 public static class TestDataSeeder
 {
     // Deterministic seed for reproducible test data
@@ -25,9 +21,11 @@ public static class TestDataSeeder
     // ─── Customers ────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a list of fake Customer entities.
-    /// Default: 100 records.
+    /// Generates a collection of fake <see cref="Customer"/> entities.
     /// </summary>
+    /// <param name="count">The number of customer records to generate.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="Customer"/> entities.</returns>
     public static IReadOnlyList<Customer> Customers(int count = 100, int seed = DefaultSeed)
     {
         Randomizer.Seed = new Random(seed);
@@ -49,8 +47,11 @@ public static class TestDataSeeder
     // ─── Addresses ────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates 1-3 addresses per customer.
+    /// Generates one to three <see cref="Address"/> entities per specified customer.
     /// </summary>
+    /// <param name="customers">The list of customers to generate addresses for.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="Address"/> entities.</returns>
     public static IReadOnlyList<Address> Addresses(IReadOnlyList<Customer> customers, int seed = DefaultSeed)
     {
         Randomizer.Seed = new Random(seed + 1);
@@ -84,9 +85,9 @@ public static class TestDataSeeder
     // ─── Categories ───────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Returns the standard 10-category hierarchy used in DDL seed data.
-    /// Used to ensure consistency between DDL and test data.
+    /// Returns the standard ten-category hierarchy used in DDL seed data.
     /// </summary>
+    /// <returns>A read-only list of standard <see cref="Category"/> entities.</returns>
     public static IReadOnlyList<Category> Categories()
     {
         return new List<Category>
@@ -107,9 +108,12 @@ public static class TestDataSeeder
     // ─── Products ─────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a list of fake Product entities.
-    /// Default: 500 records.
+    /// Generates a collection of fake <see cref="Product"/> entities.
     /// </summary>
+    /// <param name="count">The number of product records to generate.</param>
+    /// <param name="categories">The optional category list to assign products to; defaults to standard categories when <see langword="null"/>.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="Product"/> entities.</returns>
     public static IReadOnlyList<Product> Products(
         int count = 500,
         IReadOnlyList<Category>? categories = null,
@@ -140,8 +144,11 @@ public static class TestDataSeeder
     // ─── Users ────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a list of fake User entities.
+    /// Generates a collection of fake <see cref="User"/> entities.
     /// </summary>
+    /// <param name="count">The number of user records to generate.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="User"/> entities.</returns>
     public static IReadOnlyList<User> Users(int count = 20, int seed = DefaultSeed)
     {
         Randomizer.Seed = new Random(seed + 3);
@@ -166,9 +173,12 @@ public static class TestDataSeeder
     // ─── Orders ───────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a list of fake Order entities.
-    /// Default: 1000 records.
+    /// Generates a collection of fake <see cref="Order"/> entities.
     /// </summary>
+    /// <param name="count">The number of order records to generate.</param>
+    /// <param name="customers">The optional customer list to associate orders with; defaults to generated customers when <see langword="null"/>.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="Order"/> entities.</returns>
     public static IReadOnlyList<Order> Orders(
         int count = 1000,
         IReadOnlyList<Customer>? customers = null,
@@ -209,9 +219,13 @@ public static class TestDataSeeder
     // ─── Order Items ──────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a list of fake OrderItem entities.
-    /// Default: 5000 records (5 items per order on average).
+    /// Generates a collection of fake <see cref="OrderItem"/> entities.
     /// </summary>
+    /// <param name="count">The number of order item records to generate.</param>
+    /// <param name="orders">The optional order list to associate items with; defaults to generated orders when <see langword="null"/>.</param>
+    /// <param name="products">The optional product list to associate items with; defaults to generated products when <see langword="null"/>.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="OrderItem"/> entities.</returns>
     public static IReadOnlyList<OrderItem> OrderItems(
         int count = 5000,
         IReadOnlyList<Order>? orders = null,
@@ -241,8 +255,11 @@ public static class TestDataSeeder
     // ─── Invoices ─────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates invoices for completed orders.
+    /// Generates <see cref="Invoice"/> records for confirmed, shipped, or delivered orders.
     /// </summary>
+    /// <param name="orders">The optional order list to invoice; defaults to generated orders when <see langword="null"/>.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="Invoice"/> entities.</returns>
     public static IReadOnlyList<Invoice> Invoices(
         IReadOnlyList<Order>? orders = null,
         int seed = DefaultSeed)
@@ -287,8 +304,11 @@ public static class TestDataSeeder
     // ─── Payments ─────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates payment records for paid invoices.
+    /// Generates <see cref="Payment"/> records for paid invoices.
     /// </summary>
+    /// <param name="invoices">The optional invoice list to pay; defaults to generated invoices when <see langword="null"/>.</param>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A read-only list of generated <see cref="Payment"/> entities.</returns>
     public static IReadOnlyList<Payment> Payments(
         IReadOnlyList<Invoice>? invoices = null,
         int seed = DefaultSeed)
@@ -321,9 +341,10 @@ public static class TestDataSeeder
     // ─── Full Dataset ─────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates the complete standard dataset:
-    /// 100 customers, 500 products, 1000 orders, 5000 order items.
+    /// Generates the complete standard dataset containing customers, categories, products, orders, order items, invoices, and payments.
     /// </summary>
+    /// <param name="seed">The random seed for deterministic data generation.</param>
+    /// <returns>A <see cref="StandardDataset"/> instance populated with seeded entities.</returns>
     public static StandardDataset Generate(int seed = DefaultSeed)
     {
         var customers  = Customers(100, seed);

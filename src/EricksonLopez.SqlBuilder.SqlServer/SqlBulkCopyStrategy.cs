@@ -40,9 +40,9 @@ public static class SqlBulkCopyStrategy
     /// <param name="entities">The entities to insert.</param>
     /// <param name="options">Optional bulk operation options. Defaults to <see cref="BulkOptions.Default"/>.</param>
     /// <param name="transaction">An optional open <see cref="SqlTransaction"/> to enlist.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
     /// <returns>
-    /// A <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.
+    /// A task representing the asynchronous operation. The task result contains a <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.
     /// When <see cref="BulkOptions.ReturnIdentities"/> is <see langword="true"/>, the original entity
     /// list is returned (identity population requires OUTPUT clause — use <see cref="InsertQuery{T}"/> for that).
     /// </returns>
@@ -108,8 +108,10 @@ public static class SqlBulkCopyStrategy
     /// <param name="entities">The entities to insert.</param>
     /// <param name="options">Optional bulk operation options.</param>
     /// <param name="transaction">An optional database transaction.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="BulkInsertResult{T}"/> with the total number of rows inserted.
+    /// </returns>
     /// <exception cref="InvalidOperationException"><paramref name="connection"/> is not a <see cref="SqlConnection"/></exception>
     [ExcludeFromCodeCoverage(Justification = "Requires live SQL Server; covered by integration tests.")]
     public static Task<BulkInsertResult<T>> BulkInsertAsync<T>(

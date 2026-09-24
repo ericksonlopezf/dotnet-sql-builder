@@ -19,6 +19,7 @@ public static class GoldenFileAssert
     /// <param name="goldenFilePath">The path to the golden file containing the expected SQL.</param>
     /// <param name="updateGoldenFiles">If <see langword="true"/>, overwrites the golden file with the actual output instead of asserting.</param>
     /// <param name="normalizeWhitespace">If <see langword="true"/>, collapses all whitespace before comparing SQL strings.</param>
+    /// <exception cref="InvalidOperationException">The actual compiled SQL does not match the expected content of the golden file</exception>
     public static void MatchesGoldenFile(
         ISqlQuery query,
         ISqlCompiler compiler,

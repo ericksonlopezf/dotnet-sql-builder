@@ -9,12 +9,14 @@ using EricksonLopez.SqlBuilder.Builders.Bulk.Operations;
 namespace EricksonLopez.SqlBuilder;
 
 /// <summary>
-/// Provides a base implementation for an AOT-compatible SQL renderer used to generate fast, allocation-free SQL statements for single entity and bulk operations.
+/// Provides a base implementation for an AOT-compatible SQL renderer that generates SQL statements
+/// using pooled <see cref="System.Text.StringBuilder"/> buffers (pool-rented, not allocation-free for SQL assembly)
+/// and zero-allocation data materialization for the <c>IDataReader → T</c> hot path.
 /// </summary>
 public abstract class AotSqlRendererBase : ISqlRenderer
 {
     /// <summary>
-    /// Gets the SQL compiler used for dialect-specific generation.
+    /// Gets the SQL compiler that handles dialect-specific generation.
     /// </summary>
     protected ISqlCompiler Compiler { get; }
 
@@ -23,7 +25,7 @@ public abstract class AotSqlRendererBase : ISqlRenderer
     /// </summary>
     /// <param name="compiler">The SQL compiler to delegate identifier escaping and parameter management to.</param>
     /// <exception cref="ArgumentNullException"><paramref name="compiler"/> is <see langword="null"/></exception>
-    public AotSqlRendererBase(ISqlCompiler compiler)
+    protected AotSqlRendererBase(ISqlCompiler compiler)
     {
         Compiler = compiler ?? throw new ArgumentNullException(nameof(compiler));
     }

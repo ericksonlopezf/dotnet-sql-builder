@@ -10,7 +10,7 @@ While Dapper excels at object hydration and connection management, it lacks a st
 
 - **Zero Additional Reflection:** Reuses Dapper's internal mapper caches and SqlBuilder's source-generated metadata.
 - **Fluent Integration:** Seamlessly extends `IDbConnection` and `ISqlQuery` for natural query-and-execute workflows.
-- **Multi-Mapping Beyond 7 Entities:** Provides `MultiMapBuilder<T>` supporting 8+ entity graphs.
+- **Multi-Mapping:** Provides strongly typed multi-mapping overloads (2 to 7 entities) directly on `IDbConnection`.
 - **Clean Execution Semantics:** Connects parameterized SQL queries directly to Dapper commands.
 
 ## Quick Example

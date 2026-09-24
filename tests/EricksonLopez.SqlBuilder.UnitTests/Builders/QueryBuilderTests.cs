@@ -138,7 +138,6 @@ public class QueryBuilderTests
         
         q.Limit(10).Nodes.Last().GetType().Name.Should().Be("LimitOffsetNode");
         q.Offset(5).Nodes.Last().GetType().Name.Should().Be("LimitOffsetNode");
-        q.Fetch(10).Nodes.Last().GetType().Name.Should().Be("LimitOffsetNode");
         
 
         

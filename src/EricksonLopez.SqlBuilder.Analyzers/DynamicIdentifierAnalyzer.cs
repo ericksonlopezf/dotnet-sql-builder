@@ -23,7 +23,7 @@ namespace EricksonLopez.SqlBuilder.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class DynamicIdentifierAnalyzer : DiagnosticAnalyzer
     {
-        /// <summary>The diagnostic identifier for ELSB004.</summary>
+        /// <summary>Represents the diagnostic identifier for ELSB004.</summary>
         public const string DiagnosticId = "ELSB004";
 
         private static readonly LocalizableString Title =

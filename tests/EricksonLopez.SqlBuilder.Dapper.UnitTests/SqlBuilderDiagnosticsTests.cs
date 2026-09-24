@@ -21,7 +21,7 @@ public class SqlBuilderDiagnosticsTests
         SqlBuilderDiagnostics.ActivitySource.Version.Should().Be(expectedVersion);
         
         SqlBuilderDiagnostics.Meter.Name.Should().Be("EricksonLopez.SqlBuilder");
-        SqlBuilderDiagnostics.Meter.Version.Should().Be("1.0.0");
+        SqlBuilderDiagnostics.Meter.Version.Should().Be("2.0.0");
         
         SqlBuilderDiagnostics.QueryExecutionCounter.Name.Should().Be("sql_builder.query.count");
         SqlBuilderDiagnostics.QueryExecutionCounter.Unit.Should().Be("queries");

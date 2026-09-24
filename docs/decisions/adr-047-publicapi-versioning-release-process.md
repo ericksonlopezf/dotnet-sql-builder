@@ -1,7 +1,10 @@
 # ADR-047: PublicAPI.txt Versioning and Release Process
 
 ## Status
-Proposed — August 2026
+Accepted — September 2026
+
+## Date
+2026-09-04
 
 ## Context
 During the consistency audit (August 2026), PublicAPI.Unshipped.txt was found to contain entries for MergeQuery<T> and Sql.Merge<T>() despite these types having no corresponding implementation files in src/EricksonLopez.SqlBuilder/. The Roslyn Analyzer ESQL026 reports an Error for MergeQuery<T> usage, labeling it as "removed in v2.0", while PublicAPI.Unshipped.txt treats it as a pending addition.

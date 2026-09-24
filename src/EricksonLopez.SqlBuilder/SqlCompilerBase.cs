@@ -188,7 +188,11 @@ public abstract class SqlCompilerBase : ISqlCompiler, ISqlRenderer
     public virtual void EscapeIdentifier(System.Text.StringBuilder sb, System.ReadOnlySpan<char> identifier)
     {
         sb.Append('"');
-        sb.Append(identifier);
+        foreach (var c in identifier)
+        {
+            if (c == '"') sb.Append('"');
+            sb.Append(c);
+        }
         sb.Append('"');
     }
 
@@ -199,7 +203,7 @@ public abstract class SqlCompilerBase : ISqlCompiler, ISqlRenderer
     /// <returns>The escaped identifier string.</returns>
     public virtual string EscapeIdentifier(string identifier)
     {
-        return "\"" + identifier + "\"";
+        return "\"" + identifier.Replace("\"", "\"\"") + "\"";
     }
 
     /// <summary>
@@ -268,30 +272,84 @@ public abstract class SqlCompilerBase : ISqlCompiler, ISqlRenderer
             try
             {
                 var subVisitor = CreateVisitor(subContext);
-                selectNodes[selectNodes.Count - 1].Accept(subVisitor);
-                
-                if (subContext.Sql.Length >= 7 && subContext.Sql.ToString(0, 7) == "SELECT ")
+                bool needsSelectPrefix = false;
+                var effectiveNodes = (IReadOnlyList<ISqlNode>)selectNodes;
+                if (selectNodes.Count > 1 && selectNodes.Any(n => n is SelectNode sn && sn.Columns.Length == 1 && sn.Columns[0] == "*"))
+                {
+                    var nonWildcards = selectNodes.Where(n => !(n is SelectNode sn && sn.Columns.Length == 1 && sn.Columns[0] == "*")).ToList();
+                    if (nonWildcards.Count > 0)
+                    {
+                        effectiveNodes = nonWildcards;
+                    }
+                }
+
+                var compiledProjections = new List<string>(effectiveNodes.Count);
+
+                bool isDistinct = effectiveNodes.Any(n => 
+                    (n is SelectNode sn && sn.IsDistinct) || 
+                    (n is ExpressionSelectNode esn && esn.IsDistinct) || 
+                    (n is RawSelectNode rsn && rsn.IsDistinct));
+
+                for (int i = 0; i < effectiveNodes.Count; i++)
+                {
+                    subContext.Sql.Clear();
+                    var node = effectiveNodes[i];
+                    node.Accept(subVisitor);
+
+                    var raw = subContext.Sql.ToString().Trim();
+                    if (raw.StartsWith("SELECT DISTINCT ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        needsSelectPrefix = true;
+                        raw = raw.Substring(16).Trim();
+                    }
+                    else if (raw.StartsWith("SELECT ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        needsSelectPrefix = true;
+                        raw = raw.Substring(7).Trim();
+                    }
+                    else if (raw.Equals("SELECT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        needsSelectPrefix = true;
+                        raw = string.Empty;
+                    }
+                    else if (node is WindowFunctionNode || node is CaseNode)
+                    {
+                        needsSelectPrefix = true;
+                    }
+
+                    if (!string.IsNullOrEmpty(raw))
+                    {
+                        compiledProjections.Add(raw);
+                    }
+                }
+
+                if (needsSelectPrefix)
                 {
                     context.Sql.Append("SELECT ");
+                    if (isDistinct && partition.DistinctOnNode == null)
+                    {
+                        context.Sql.Append("DISTINCT ");
+                    }
                     CompileDistinct(partition, visitor, context);
-                    subContext.Sql.Remove(0, 7);
                 }
-                
-                if (subContext.Sql.Length > 0 && subContext.Sql[subContext.Sql.Length - 1] == ' ') 
+
+                if (compiledProjections.Count > 0)
                 {
-                    subContext.Sql.Length--;
+                    context.Sql.Append(string.Join(", ", compiledProjections));
                 }
-                
+
                 if (windowPageNode != null)
                 {
-                    subContext.Sql.Append(", ROW_NUMBER() OVER(ORDER BY ").Append(Escape(windowPageNode.OrderByColumn)).Append(windowPageNode.Descending ? " DESC) AS __row_num " : " ASC) AS __row_num ");
+                    if (compiledProjections.Count > 0)
+                    {
+                        context.Sql.Append(", ");
+                    }
+                    context.Sql.Append("ROW_NUMBER() OVER(ORDER BY ").Append(Escape(windowPageNode.OrderByColumn)).Append(windowPageNode.Descending ? " DESC) AS __row_num " : " ASC) AS __row_num ");
                 }
                 else
                 {
-                    subContext.Sql.Append(" ");
+                    context.Sql.Append(" ");
                 }
-                
-                context.Sql.Append(subContext.Sql);
             }
             // Stryker disable once Block : SubContext resource disposal is unobservable functionally
             finally

@@ -59,6 +59,30 @@ public class CursorPaginationExtensionsTests
 
         result.Nodes.OfType<OrderByNode>().Single().IsDescending.Should().BeTrue();
     }
+
+    private class CustomMappedEntity : EricksonLopez.SqlBuilder.Annotations.ISqlEntity
+    {
+        public int CustomId { get; set; }
+        public string GetTableName() => "custom_entities";
+        public string[] GetColumnNames() => new[] { "custom_db_col_id" };
+        public object?[] GetValues() => new object?[] { CustomId };
+        public string[] GetAllColumnNames() => GetColumnNames();
+        public object?[] GetAllValues() => GetValues();
+        public System.Collections.Generic.IReadOnlyDictionary<string, string> GetPropertyMap() =>
+            new System.Collections.Generic.Dictionary<string, string> { ["CustomId"] = "custom_db_col_id" };
+        public string[] GetIndexedColumns() => Array.Empty<string>();
+    }
+
+    [Fact]
+    public void Seek_UsesCustomMappedColumn_WhenConfigured()
+    {
+        var query = new SelectQuery<CustomMappedEntity>();
+        var result = query.Seek(x => x.CustomId, 42, ascending: true);
+
+        var where = result.Nodes.OfType<RawWhereNode>().Single();
+        where.Condition.Should().Be("custom_db_col_id > {0}");
+        where.Parameters.Should().BeEquivalentTo(new object?[] { 42 });
+    }
 }
 
 

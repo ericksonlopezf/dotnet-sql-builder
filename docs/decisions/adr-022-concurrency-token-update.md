@@ -1,4 +1,4 @@
-# ADR-022: Concurrency Token in UPDATE (Optimistic Locking)
+﻿# ADR-022: Concurrency Token in UPDATE (Optimistic Locking)
 
 ## Status
 Proposed (deferred to v1.2)
@@ -7,14 +7,14 @@ Proposed (deferred to v1.2)
 2026-08-12
 
 ## Context
-Optimistic concurrency control prevents lost updates in concurrent write scenarios. The standard pattern is a "concurrency token" — a column whose value changes on every write (e.g., `version INT`, `row_version ROWVERSION`, `updated_at TIMESTAMP`).
+Optimistic concurrency control prevents lost updates in concurrent write scenarios. The standard pattern is a "concurrency token" â€” a column whose value changes on every write (e.g., `version INT`, `row_version ROWVERSION`, `updated_at TIMESTAMP`).
 
 ```sql
 -- Safe optimistic update:
 UPDATE users
 SET name = @name, version = version + 1
 WHERE id = @id AND version = @expectedVersion
--- If 0 rows affected → someone else updated it → throw OptimisticConcurrencyException
+-- If 0 rows affected â†’ someone else updated it â†’ throw OptimisticConcurrencyException
 ```
 
 ## Problem
@@ -24,7 +24,7 @@ WHERE id = @id AND version = @expectedVersion
 
 ## Options Considered
 
-### Option A: No support — document the pattern manually
+### Option A: No support â€” document the pattern manually
 - Rejected: too common in DDD; manual implementation is error-prone
 
 ### Option B: `[ConcurrencyCheck]` attribute + Source Generator support
@@ -45,7 +45,7 @@ WHERE id = @id AND version = @expectedVersion
 
 **Planned implementation (v1.2):**
 
-**Option A — Attribute-based (Source Generator path):**
+**Option A â€” Attribute-based (Source Generator path):**
 ```csharp
 [SqlEntity]
 public partial class User
@@ -57,19 +57,19 @@ public partial class User
     public int Version { get; set; }
 }
 
-// Usage — version check is automatic:
+// Usage â€” version check is automatic:
 await connection.ExecuteAsync(Sql.Update(user));
-// → UPDATE users SET name = @name, version = version + 1
+// â†’ UPDATE users SET name = @name, version = version + 1
 //   WHERE id = @id AND version = @version
 ```
 
-**Option B — Explicit fluent API:**
+**Option B â€” Explicit fluent API:**
 ```csharp
 var query = Sql.Update<User>()
     .Set(u => u.Name, "Bob")
     .Where(u => u.Id == 42)
     .WithConcurrencyToken(u => u.Version, expectedVersion: 3);
-// → UPDATE users SET name = @name WHERE id = @id AND version = 3
+// â†’ UPDATE users SET name = @name WHERE id = @id AND version = 3
 ```
 
 **Conflict detection:**
@@ -81,23 +81,23 @@ if (rowsAffected == 0) throw new ConcurrencyConflictException(typeof(User), id: 
 ## Consequences
 
 ### Positive (when implemented)
-- ✅ Lost-update prevention with minimal boilerplate
-- ✅ Consistent with DDD aggregate pattern
-- ✅ Source Generator integration means zero runtime overhead
+- âœ… Lost-update prevention with minimal boilerplate
+- âœ… Consistent with DDD aggregate pattern
+- âœ… Source Generator integration means zero runtime overhead
 
 ### Negative (while deferred)
-- ❌ Users must manually add concurrency WHERE condition
-- ❌ No library-level `ConcurrencyConflictException` type
+- âŒ Users must manually add concurrency WHERE condition
+- âŒ No library-level `ConcurrencyConflictException` type
 
 ## Dialect Notes
-- SQL Server `ROWVERSION` / `TIMESTAMP` — binary, auto-updated by server; read-back via `OUTPUT INSERTED.ts`
-- PostgreSQL `xmin` — system column; free but not portable
+- SQL Server `ROWVERSION` / `TIMESTAMP` â€” binary, auto-updated by server; read-back via `OUTPUT INSERTED.ts`
+- PostgreSQL `xmin` â€” system column; free but not portable
 - Standard approach: `INT version` + increment on every UPDATE (portable, explicit)
 
 ## Reconsideration Criteria
 If multiple users report concurrency-related data corruption bugs caused by lack of support, reprioritize to v0.7.
 
 ## References
-- [FEATURE_MATRIX.md §25 — Master Backlog P2](../../FEATURE_MATRIX.md)
-- [ADR-007: No Change Tracking](./adr-007-no-change-tracking.md) — `ApplyDiff()` context
+- [FEATURE_MATRIX.md Â§25 â€” Master Backlog P2](../master-feature-matrix.md)
+- [ADR-007: No Change Tracking](./adr-007-no-change-tracking.md) â€” `ApplyDiff()` context
 - [ADR-006: Source Generator Strategy](./adr-006-source-generator-strategy.md)

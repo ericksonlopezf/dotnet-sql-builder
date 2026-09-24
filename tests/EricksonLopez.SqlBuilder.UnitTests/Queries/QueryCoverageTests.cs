@@ -9,10 +9,12 @@ using EricksonLopez.SqlBuilder.Abstractions.Nodes;
 using EricksonLopez.SqlBuilder.Annotations;
 using EricksonLopez.SqlBuilder.Builders;
 using EricksonLopez.SqlBuilder.Testing;
+using EricksonLopez.SqlBuilder.UnitTests.Infrastructure;
 using Xunit;
 
 namespace EricksonLopez.SqlBuilder.UnitTests.Queries;
 
+[Collection("SqlBuilderDiagnosticsCollection")]
 public class QueryCoverageTests
 {
 

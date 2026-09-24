@@ -18,13 +18,17 @@ namespace EricksonLopez.SqlBuilder.MySql;
 public class MySqlCompiler : SqlCompilerBase
 {
     /// <inheritdoc />
-    public override string EscapeIdentifier(string identifier) => $"`{identifier}`";
+    public override string EscapeIdentifier(string identifier) => $"`{identifier.Replace("`", "``")}`";
     
     /// <inheritdoc />
     public override void EscapeIdentifier(System.Text.StringBuilder sb, System.ReadOnlySpan<char> identifier)
     {
         sb.Append('`');
-        sb.Append(identifier);
+        foreach (var c in identifier)
+        {
+            if (c == '`') sb.Append('`');
+            sb.Append(c);
+        }
         sb.Append('`');
     }
 

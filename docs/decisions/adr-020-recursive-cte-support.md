@@ -1,4 +1,4 @@
-# ADR-020: Recursive CTE Support
+﻿# ADR-020: Recursive CTE Support
 
 ## Status
 Accepted
@@ -7,7 +7,7 @@ Accepted
 2026-08-12
 
 ## Context
-Common Table Expressions (CTEs) — both non-recursive and recursive — are essential for hierarchical queries (org charts, category trees, bill-of-materials), graph traversal, and complex query decomposition.
+Common Table Expressions (CTEs) â€” both non-recursive and recursive â€” are essential for hierarchical queries (org charts, category trees, bill-of-materials), graph traversal, and complex query decomposition.
 
 ## Problem
 Recursive CTEs have a specific SQL structure (`WITH RECURSIVE` or `WITH` depending on dialect) that differs from regular CTEs:
@@ -70,26 +70,26 @@ var query = Sql.From("category_tree")
 | SQL Server | `WITH` (no `RECURSIVE` keyword) |
 | MySQL 8+ | `WITH RECURSIVE` |
 | SQLite 3.8.3+ | `WITH RECURSIVE` |
-| Oracle | `WITH` + `CONNECT BY` (different semantics — deferred) |
+| Oracle | `WITH` + `CONNECT BY` (different semantics â€” deferred) |
 
 **Oracle:** Recursive CTEs via `WITH RECURSIVE` are partially supported (Oracle 11gR2+). The `CONNECT BY` hierarchical query is Oracle-specific and deferred to a future ADR.
 
 ## Consequences
 
 ### Positive
-- ✅ Type-safe hierarchical query composition
-- ✅ Correct `WITH RECURSIVE` / `WITH` emission per dialect
-- ✅ Composable with all other query features (WHERE, ORDER BY, pagination)
+- âœ… Type-safe hierarchical query composition
+- âœ… Correct `WITH RECURSIVE` / `WITH` emission per dialect
+- âœ… Composable with all other query features (WHERE, ORDER BY, pagination)
 
 ### Negative
-- ❌ Recursive CTE API is more verbose than non-recursive
-- ❌ Oracle's `CONNECT BY` is a separate implementation path
-- ❌ Cycle detection (preventing infinite recursion) is user's responsibility
+- âŒ Recursive CTE API is more verbose than non-recursive
+- âŒ Oracle's `CONNECT BY` is a separate implementation path
+- âŒ Cycle detection (preventing infinite recursion) is user's responsibility
 
 ## Reconsideration Criteria
 If Dapper adds native recursive CTE support in a future version, evaluate whether the builder layer adds sufficient value to maintain.
 
 ## References
-- [FEATURE_MATRIX.md §4 — Complete Feature Discovery](../../FEATURE_MATRIX.md)
+- [FEATURE_MATRIX.md Â§4 â€” Complete Feature Discovery](../master-feature-matrix.md)
 - `src/EricksonLopez.SqlBuilder.Abstractions/Nodes/CteNode.cs`
-- `src/EricksonLopez.SqlBuilder/SelectQuery.cs` — `.Cte()` and `.RecursiveCte()` methods
+- `src/EricksonLopez.SqlBuilder/SelectQuery.cs` â€” `.Cte()` and `.RecursiveCte()` methods

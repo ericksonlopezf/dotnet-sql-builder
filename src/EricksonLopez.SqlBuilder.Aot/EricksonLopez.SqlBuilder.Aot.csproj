@@ -8,7 +8,6 @@
     <IsAotCompatible>true</IsAotCompatible>
 
     <PackageId>EricksonLopez.SqlBuilder.Aot</PackageId>
-    <Version>2.0.0</Version>
     <Authors>Erickson Lopez</Authors>
     <Description>
       Reflection-free, NativeAOT-compatible query execution layer for EricksonLopez.SqlBuilder.
@@ -17,7 +16,7 @@
     </Description>
     <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>$(CommonPackageTags);native-aot;aot;ado-net;data-access;zero-allocation;streaming</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;native-aot;ado-net;data-access;streaming;zero-allocation</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

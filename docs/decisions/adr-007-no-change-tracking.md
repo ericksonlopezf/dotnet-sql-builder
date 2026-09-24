@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Date
+2026-09-04
+
 ## Context
 Change tracking is a core ORM feature that observes property mutations on live entity objects and automatically generates SQL UPDATE statements at flush time.
 

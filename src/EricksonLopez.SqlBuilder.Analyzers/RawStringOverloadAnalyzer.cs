@@ -16,7 +16,7 @@ namespace EricksonLopez.SqlBuilder.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class RawStringOverloadAnalyzer : DiagnosticAnalyzer
     {
-        /// <summary>The diagnostic identifier for ESQL011.</summary>
+        /// <summary>Represents the diagnostic identifier for ESQL011.</summary>
         public const string DiagnosticId = "ESQL011";
 
         private static readonly LocalizableString Title =

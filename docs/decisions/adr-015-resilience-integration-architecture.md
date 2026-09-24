@@ -1,7 +1,7 @@
 # ADR-015: Resilience Integration Architecture
 
 ## Status
-Proposed (implementation deferred to v1.1 — Phase 2.2)
+Proposed (implementation deferred to v1.1 â€” Phase 2.2)
 
 ## Date
 2026-08-12
@@ -13,7 +13,7 @@ The question is: where and how does resilience integrate with EricksonLopez.SqlB
 
 ## Problem
 - Resilience concerns (retry, timeout, circuit breaker) are cross-cutting but must not contaminate Core or Dapper packages
-- Transient error detection is provider-specific (SQL Server error codes ≠ PostgreSQL error codes)
+- Transient error detection is provider-specific (SQL Server error codes â‰  PostgreSQL error codes)
 - Retry inside a transaction is a data corruption hazard (see ADR-016)
 - Users who already use Polly via ASP.NET Core `AddResiliencePipeline` should be able to reuse their pipeline
 
@@ -61,14 +61,14 @@ var results = await connection.QueryWithResilienceAsync<User>(query, pipeline, c
 
 // Built-in pipeline factory (opinionated defaults)
 var pipeline = SqlResilienceDefaults.Standard(detector: SqlServerTransientErrorDetector.Default);
-// → 3 retries, exponential backoff (1s, 2s, 4s), 30s timeout
+// â†’ 3 retries, exponential backoff (1s, 2s, 4s), 30s timeout
 ```
 
 **Critical constraint (from ADR-016):**
-Resilience pipelines MUST wrap the entire transactional unit — not individual statements inside a transaction.
+Resilience pipelines MUST wrap the entire transactional unit â€” not individual statements inside a transaction.
 
 ```csharp
-// ✅ Correct — retry wraps the full unit of work
+// âœ… Correct â€” retry wraps the full unit of work
 await pipeline.ExecuteAsync(async ct =>
 {
     await using var uow = await connection.BeginUnitOfWorkAsync(ct: ct);
@@ -76,7 +76,7 @@ await pipeline.ExecuteAsync(async ct =>
     await uow.CommitAsync(ct);
 }, cancellationToken);
 
-// ❌ Wrong — retry inside a transaction (Roslyn ESQL005 warns on this)
+// âŒ Wrong â€” retry inside a transaction (Roslyn ESQL005 warns on this)
 await using var uow = await connection.BeginUnitOfWorkAsync();
 await pipeline.ExecuteAsync(async ct =>
 {
@@ -85,20 +85,20 @@ await pipeline.ExecuteAsync(async ct =>
 await uow.CommitAsync();
 ```
 
-**Roslyn Analyzer (ESQL005):** Warns when `ResiliencePipeline.ExecuteAsync` wraps a call that has a `IDbTransaction` / `IUnitOfWork` parameter — indicating retry inside a transaction.
+**Roslyn Analyzer (ESQL005):** Warns when `ResiliencePipeline.ExecuteAsync` wraps a call that has a `IDbTransaction` / `IUnitOfWork` parameter â€” indicating retry inside a transaction.
 
 ## Consequences
 
 ### Positive
-- ✅ Correct transient error detection per provider (hard to get right manually)
-- ✅ Polly v8 integration with minimal boilerplate
-- ✅ Analyzer (ESQL005) catches the retry-inside-transaction anti-pattern
-- ✅ `Microsoft.Extensions.Resilience` pipeline compatibility — users can inject their own
+- âœ… Correct transient error detection per provider (hard to get right manually)
+- âœ… Polly v8 integration with minimal boilerplate
+- âœ… Analyzer (ESQL005) catches the retry-inside-transaction anti-pattern
+- âœ… `Microsoft.Extensions.Resilience` pipeline compatibility â€” users can inject their own
 
 ### Negative
-- ❌ Adds Polly v8 as a direct dependency (acceptable — it's an opt-in package)
-- ❌ Integration testing requires real DB connections to test retry behavior
-- ❌ Circuit breaker state is per-pipeline instance — users must understand pipeline lifecycle
+- âŒ Adds Polly v8 as a direct dependency (acceptable â€” it's an opt-in package)
+- âŒ Integration testing requires real DB connections to test retry behavior
+- âŒ Circuit breaker state is per-pipeline instance â€” users must understand pipeline lifecycle
 
 ## Implementation Notes (v1.1)
 - Start with SQL Server + PostgreSQL transient detectors
@@ -111,5 +111,5 @@ If .NET ships a native resilience primitive that replaces Polly without the ~200
 ## References
 - [ADR-003: Polly Not a Core Dependency](./adr-003-polly-not-core-dependency.md)
 - [ADR-016: Transaction + Retry Semantics](./adr-016-transaction-retry-semantics.md)
-- [docs/Resilience.md](../Resilience.md)
-- [FEATURE_MATRIX.md §9 — Polly / Resilience Analysis](../../FEATURE_MATRIX.md)
+- [docs/resilience.md](../resilience.md)
+- [FEATURE_MATRIX.md Â§9 â€” Polly / Resilience Analysis](../master-feature-matrix.md)

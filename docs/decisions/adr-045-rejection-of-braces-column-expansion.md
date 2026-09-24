@@ -3,6 +3,9 @@
 ## Status
 Rejected (Anti-Feature) — August 2026
 
+## Date
+2026-09-04
+
 ## Context
 During the functional parity audit against SqlKata (GAP-05), the braces string expansion shorthand was evaluated:
 ```csharp

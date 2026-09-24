@@ -50,10 +50,14 @@ internal class SqlServerVisitor : SqlCompilerVisitor
     }
 
     /// <summary>
-    /// SQL Server does not natively support NULLS FIRST / NULLS LAST syntax.
-    /// Emulates NULLS FIRST as: CASE WHEN [col] IS NULL THEN 0 ELSE 1 END, [col] [ASC|DESC]
-    /// Emulates NULLS LAST  as: CASE WHEN [col] IS NULL THEN 1 ELSE 0 END, [col] [ASC|DESC]
+    /// Emulates NULLS FIRST and NULLS LAST ordering syntax for SQL Server.
     /// </summary>
+    /// <param name="node">The order-by AST node containing ordering criteria.</param>
+    /// <remarks>
+    /// SQL Server does not natively support NULLS FIRST or NULLS LAST syntax.
+    /// Emulates NULLS FIRST as: <c>CASE WHEN [col] IS NULL THEN 0 ELSE 1 END, [col] [ASC|DESC]</c>.
+    /// Emulates NULLS LAST as: <c>CASE WHEN [col] IS NULL THEN 1 ELSE 0 END, [col] [ASC|DESC]</c>.
+    /// </remarks>
     public override void Visit(OrderByNode node)
     {
         string? colName = null;

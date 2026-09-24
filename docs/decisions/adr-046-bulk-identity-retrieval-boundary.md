@@ -3,6 +3,9 @@
 ## Status
 Accepted — August 2026
 
+## Date
+2026-09-04
+
 ## Context
 During the functional parity audit (GAP-10 / TD-016), returning generated primary keys (`IReadOnlyList<TKey>`) from `BulkInsertAsync` / `IBulkStrategy<T>` was evaluated.
 

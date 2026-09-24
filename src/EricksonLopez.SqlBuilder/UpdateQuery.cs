@@ -142,7 +142,14 @@ public sealed record UpdateQuery<T> : IAstQuery, IUpdateSetBuilder<T>, IUpdateWh
     /// <param name="tableName">The name of the additional table.</param>
     /// <param name="alias">An optional alias for the additional table.</param>
     /// <returns>A new <see cref="IUpdateSetBuilder{T}"/> instance with the FROM clause applied.</returns>
-    public IUpdateSetBuilder<T> From(string tableName, string? alias = null) => AddNode(new FromNode(tableName, alias));
+    /// <exception cref="ArgumentException"><paramref name="tableName"/> is empty or whitespace, or <paramref name="alias"/> is whitespace</exception>
+    public IUpdateSetBuilder<T> From(string tableName, string? alias = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        if (alias != null && string.IsNullOrWhiteSpace(alias))
+            throw new ArgumentException("Alias cannot be whitespace.", nameof(alias));
+        return AddNode(new FromNode(tableName, alias));
+    }
 
     /// <summary>
     /// Appends an INNER JOIN clause to the query.
@@ -151,7 +158,13 @@ public sealed record UpdateQuery<T> : IAstQuery, IUpdateSetBuilder<T>, IUpdateWh
     /// <param name="alias">The alias for the joined table.</param>
     /// <param name="on">The join condition.</param>
     /// <returns>A new <see cref="IUpdateSetBuilder{T}"/> instance with the join clause applied.</returns>
-    public IUpdateSetBuilder<T> Join(string tableName, string alias, string on) => AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    public IUpdateSetBuilder<T> Join(string tableName, string alias, string on)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        ArgumentException.ThrowIfNullOrWhiteSpace(on);
+        return AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    }
 
     /// <summary>
     /// Appends a strongly-typed INNER JOIN clause to the query based on a predicate.
@@ -189,14 +202,22 @@ public sealed record UpdateQuery<T> : IAstQuery, IUpdateSetBuilder<T>, IUpdateWh
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside EXISTS.</param>
     /// <returns>A new <see cref="IUpdateWhereBuilder{T}"/> instance with the EXISTS filter applied.</returns>
-    public IUpdateWhereBuilder<T> WhereExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: false));
+    public IUpdateWhereBuilder<T> WhereExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: false));
+    }
 
     /// <summary>
     /// Appends a WHERE NOT EXISTS (subquery) condition to the UPDATE statement.
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside NOT EXISTS.</param>
     /// <returns>A new <see cref="IUpdateWhereBuilder{T}"/> instance with the NOT EXISTS filter applied.</returns>
-    public IUpdateWhereBuilder<T> WhereNotExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: false));
+    public IUpdateWhereBuilder<T> WhereNotExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: false));
+    }
 
     /// <summary>
     /// Appends an AND logical condition to the current WHERE clause using a predicate expression.
@@ -217,7 +238,15 @@ public sealed record UpdateQuery<T> : IAstQuery, IUpdateSetBuilder<T>, IUpdateWh
     /// </summary>
     /// <param name="columns">The names of the columns to return.</param>
     /// <returns>A new <see cref="IUpdateWhereBuilder{T}"/> instance with the returning clause applied.</returns>
-    public IUpdateWhereBuilder<T> Returning(params string[] columns) => AddNode(new ReturningNode(columns));
+    public IUpdateWhereBuilder<T> Returning(params string[] columns)
+    {
+        ArgumentNullException.ThrowIfNull(columns);
+        foreach (var col in columns)
+        {
+            SqlNamingHelper.ValidateIdentifier(col, nameof(columns));
+        }
+        return AddNode(new ReturningNode(columns));
+    }
 
     /// <summary>
     /// Specifies the columns to return from the updated rows using a predicate expression.

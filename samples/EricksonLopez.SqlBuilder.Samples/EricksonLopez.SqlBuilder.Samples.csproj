@@ -6,16 +6,25 @@
     <Nullable>enable</Nullable>
     <PublishAot>false</PublishAot>
     <!-- Samples project: not a library, suppress public API tracking warnings -->
-    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
+    <NoWarn>$(NoWarn);RS0016;RS0017;IL2026;IL3050;CA1707</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder\EricksonLopez.SqlBuilder.csproj" />
-    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.SqlServer\EricksonLopez.SqlBuilder.SqlServer.csproj" />
-    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.PostgreSql\EricksonLopez.SqlBuilder.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Abstractions\EricksonLopez.SqlBuilder.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Aot\EricksonLopez.SqlBuilder.Aot.csproj" />
     <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Dapper\EricksonLopez.SqlBuilder.Dapper.csproj" />
-    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.SourceGenerators\EricksonLopez.SqlBuilder.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Dapper.Aot\EricksonLopez.SqlBuilder.Dapper.Aot.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.MariaDb\EricksonLopez.SqlBuilder.MariaDb.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.MySql\EricksonLopez.SqlBuilder.MySql.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.OpenTelemetry\EricksonLopez.SqlBuilder.OpenTelemetry.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Oracle\EricksonLopez.SqlBuilder.Oracle.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Pagination\EricksonLopez.SqlBuilder.Pagination.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.PostgreSql\EricksonLopez.SqlBuilder.PostgreSql.csproj" />
     <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Sqlite\EricksonLopez.SqlBuilder.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.SqlServer\EricksonLopez.SqlBuilder.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.Testing\EricksonLopez.SqlBuilder.Testing.csproj" />
+    <ProjectReference Include="..\..\src\EricksonLopez.SqlBuilder.SourceGenerators\EricksonLopez.SqlBuilder.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +33,7 @@
     <PackageReference Include="OpenTelemetry" />
     <PackageReference Include="OpenTelemetry.Exporter.Console" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="EricksonLopez.Pagination" Aliases="PkgPagination" />
   </ItemGroup>
 
 </Project>

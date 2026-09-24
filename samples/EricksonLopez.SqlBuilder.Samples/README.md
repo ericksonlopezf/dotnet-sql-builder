@@ -13,7 +13,7 @@
 
 | Level | Directory | Description |
 |-------|-----------|-------------|
-| 0 | [`Level00_Conceptual`](Level00_Conceptual/README.md) | What is it? Why does it exist? Comparison with alternatives |
+| 0 | [`Level00_Conceptual`](Level00_Conceptual/README.md) | What is it? Why does it exist? Comparison with alternatives. Executable `ConceptualSample.cs`: immutability, multi-dialect, CRUD entry points |
 | 1 | [`Level01_QuickStart`](Level01_QuickStart/) | Installation, minimal configuration, first usage |
 | 2 | [`Level02_FullConfiguration`](Level02_FullConfiguration/) | Full options, ITypeHandler, serialization |
 | 3 | [`Level03_RealUseCases`](Level03_RealUseCases/) | CTE, Window Functions, Merge, Pagination |
@@ -24,6 +24,7 @@
 | 8 | [`Level08_Customization`](Level08_Customization/) | ITypeHandler, IParameterManager, ISqlFilter, ISqlCompiler |
 | 9 | [`Level09_Extensions`](Level09_Extensions/README.md) | SqlResult, GetFingerprint, ProjectTo, ToResultAsync, Sql.Raw |
 | 10 | [`Level10_EnterpriseArchitecture`](Level10_EnterpriseArchitecture/) | DI, Repository, CQRS, CTE, Multi-Compiler |
+| 11 | [`Level11_ComprehensiveApiCoverage`](Level11_ComprehensiveApiCoverage/README.md) | 100% Public API Coverage (212 methods, testing, seeders, AOT, dialects) |
 
 ---
 
@@ -235,6 +236,7 @@ The showcase executes all levels sequentially using SQLite in-memory. No databas
 | Level08 | [`docs/architecture.md`](../../docs/architecture.md) |
 | Level09 | [`docs/api-reference.md`](../../docs/api-reference.md) |
 | Level10 | [`docs/architecture.md`](../../docs/architecture.md) |
+| Level11 | [`docs/api-inventory.md`](../../docs/api-inventory.md) |
 
 ---
 

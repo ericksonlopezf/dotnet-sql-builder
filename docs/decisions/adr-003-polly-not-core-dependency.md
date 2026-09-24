@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Date
+2026-09-04
+
 ## Context
 Polly v8+ (`Microsoft.Extensions.Resilience`) is the standard resilience library for .NET. Database operations benefit from retry, timeout, and circuit breaker patterns.
 

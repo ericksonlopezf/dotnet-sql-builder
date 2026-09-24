@@ -4,12 +4,11 @@
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <PackageId>EricksonLopez.SqlBuilder.Abstractions</PackageId>
-    <Version>1.0.0</Version>
     <Authors>Erickson Lopez</Authors>
     <Description>Contracts, interfaces, and AST node definitions for EricksonLopez.SqlBuilder.</Description>
     <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>$(CommonPackageTags);abstractions;contracts;interfaces;ast</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;abstractions;contracts;ast;native-aot</PackageTags>
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 

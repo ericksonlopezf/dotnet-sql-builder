@@ -12,19 +12,19 @@ namespace EricksonLopez.SqlBuilder;
 public static class SqlBuilderDiagnostics
 {
     /// <summary>
-    /// The name of the diagnostic source.
+    /// Represents the name of the diagnostic source.
     /// </summary>
     public const string SourceName = "EricksonLopez.SqlBuilder";
 
     /// <summary>
-    /// Gets the primary <see cref="System.Diagnostics.ActivitySource"/> used to emit diagnostic traces.
+    /// Gets the primary <see cref="System.Diagnostics.ActivitySource"/> that emits diagnostic traces.
     /// </summary>
-    public static readonly ActivitySource ActivitySource = new ActivitySource(SourceName, "1.0.0.0");
+    public static readonly ActivitySource ActivitySource = new ActivitySource(SourceName, "2.0.0.0");
     
     /// <summary>
-    /// Gets the primary <see cref="System.Diagnostics.Metrics.Meter"/> used to emit diagnostic metrics.
+    /// Gets the primary <see cref="System.Diagnostics.Metrics.Meter"/> that emits diagnostic metrics.
     /// </summary>
-    public static Meter Meter { get; private set; } = new Meter(SourceName, "1.0.0");
+    public static Meter Meter { get; private set; } = new Meter(SourceName, "2.0.0");
 
     /// <summary>
     /// Gets the counter metric for the total number of SQL queries executed.
@@ -60,7 +60,7 @@ public static class SqlBuilderDiagnostics
 
     internal static void ReinitializeMetersForTesting()
     {
-        Meter = new Meter(SourceName, "1.0.0");
+        Meter = new Meter(SourceName, "2.0.0");
         QueryExecutionCounter = Meter.CreateCounter<long>("sql_builder.query.count", "queries", "Total number of SQL queries executed.");
         QueryDurationHistogram = Meter.CreateHistogram<double>("sql_builder.query.duration", "ms", "Duration of SQL queries in milliseconds.");
         SlowQueryCounter = Meter.CreateCounter<long>("sql_builder.query.slow.count", "queries", "Total number of slow SQL queries executed.");
@@ -76,7 +76,7 @@ public static class SqlBuilderDiagnostics
     public static bool LogParameters { get; set; } = false;
 
     /// <summary>
-    /// Gets or sets the optional logger factory used for slow queries and error logging.
+    /// Gets or sets the optional logger factory that captures slow queries and error logging.
     /// </summary>
     public static Microsoft.Extensions.Logging.ILoggerFactory? LoggerFactory { get; set; }
 

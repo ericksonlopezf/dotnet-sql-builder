@@ -26,5 +26,5 @@ Before asking a question, please review the comprehensive documentation in the [
 
 ## Enterprise Support
 
-Currently, there is no official SLA-backed Enterprise Support. The project is maintained as Open Source. If you require consulting or specific feature acceleration, please reach out to the maintainers directly via GitHub sponsors or email at **ericksonlopezf@gmail.com**.
+Currently, there is no official SLA-backed Enterprise Support. The project is maintained as Open Source. If you require consulting or specific feature acceleration, please reach out to the maintainers directly via GitHub sponsors or email at [ericksonlopezf@gmail.com](mailto:ericksonlopezf@gmail.com).
 

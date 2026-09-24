@@ -24,6 +24,9 @@ namespace EricksonLopez.SqlBuilder.Builders;
 /// var query = Sql.From&lt;User&gt;().SelectCase(caseExpr);
 /// </code>
 /// </para>
+/// <para>
+/// Evaluates conditional branches sequentially until a matching branch is found.
+/// </para>
 /// </remarks>
 public sealed class CaseExpressionBuilder
 {

@@ -18,8 +18,10 @@ A clear and concise description of what you expected to happen.
 
 ## Environment:
  - OS: [e.g. Windows 11, Ubuntu 22.04]
- - `EricksonLopez.SqlBuilder` Package Version: [e.g. 1.1.0]
- - Dialect/Engine used: [e.g. PostgreSQL, SQL Server, SQLite]
+ - .NET Version: [e.g. .NET 8, .NET 9, .NET 10]
+ - `EricksonLopez.SqlBuilder` Package & Version: [e.g. EricksonLopez.SqlBuilder 1.0.0, EricksonLopez.SqlBuilder.PostgreSql 1.0.0]
+ - Dialect/Engine used: [e.g. PostgreSQL 16, SQL Server 2022, SQLite 3, MySQL 8.3, MariaDB 11.3, Oracle 23c]
+ - Native AOT enabled: [Yes/No]
  - Using Dapper Integration: [Yes/No]
 
 ## Additional context

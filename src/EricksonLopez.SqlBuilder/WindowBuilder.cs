@@ -8,11 +8,12 @@ using EricksonLopez.SqlBuilder.Abstractions.Nodes;
 namespace EricksonLopez.SqlBuilder;
 
 /// <summary>
-/// Fluent builder for inline window function expressions.
+/// Provides a fluent builder for inline window function expressions.
 /// Use <see cref="Window"/> static factory methods to start a chain,
 /// then call <see cref="As"/> to produce a <see cref="WindowFunctionNode"/>
 /// that can be passed to <see cref="SelectQuery{T}.Select(WindowFunctionNode[])"/>.
 /// </summary>
+/// <typeparam name="TEntity">The type of the entity associated with the window function.</typeparam>
 /// <example>
 /// <code>
 /// // RANK() OVER (PARTITION BY dept ORDER BY salary DESC) AS rank

@@ -119,13 +119,16 @@ internal class SqlCompilerVisitor : SqlVisitorBase
             var memExpr = lambda.Body as System.Linq.Expressions.MemberExpression;
             if (newExpr != null)
             {
-                var cols = newExpr.Members?.Select(m => SqlNamingHelper.ToSnakeCase(m.Name)) ?? Array.Empty<string>();
+                var cols = newExpr.Members?.Select(m => {
+                    var s = SqlNamingHelper.ToSnakeCase(m.Name);
+                    return SqlNamingHelper.IsReservedKeyword(s) ? Escape(s) : s;
+                }) ?? Array.Empty<string>();
                 Context.Sql.Append(cols.Any() ? string.Join(", ", cols) : "*");
             }
             else if (memExpr != null)
             {
                 var snake = SqlNamingHelper.ToSnakeCase(memExpr.Member.Name);
-                Context.Sql.Append(snake);
+                Context.Sql.Append(SqlNamingHelper.IsReservedKeyword(snake) ? Escape(snake) : snake);
             }
             else
             {
@@ -257,6 +260,7 @@ internal class SqlCompilerVisitor : SqlVisitorBase
     /// Appends the NULLS FIRST / NULLS LAST clause to the current SQL output.
     /// Override in dialect-specific compilers that need different behavior (e.g., SQL Server emulation).
     /// </summary>
+    /// <param name="nulls">The position for null ordering in the sort clause.</param>
     protected virtual void AppendNullsPosition(EricksonLopez.SqlBuilder.Abstractions.Nodes.NullsPosition nulls)
     {
         if (nulls == EricksonLopez.SqlBuilder.Abstractions.Nodes.NullsPosition.First)
@@ -479,9 +483,12 @@ internal class SqlCompilerVisitor : SqlVisitorBase
     }
 
     /// <summary>
-    /// ConcurrencyTokenNode is handled directly by <see cref="SqlCompilerBase.CompileUpdate"/> 
-    /// and does not need visitor emission here. This override satisfies the interface contract.
+    /// Visits a concurrency token node.
     /// </summary>
+    /// <param name="node">The concurrency token node to process.</param>
+    /// <remarks>
+    /// This node is handled directly during update compilation and requires no SQL emission in the visitor.
+    /// </remarks>
     public override void Visit(ConcurrencyTokenNode node)
     {
         // Intentionally empty — processed by CompileUpdate in SqlCompilerBase
@@ -562,8 +569,9 @@ internal class SqlCompilerVisitor : SqlVisitorBase
     }
 
     /// <summary>
-    /// Emits: FUNC([column]) OVER (PARTITION BY col1, col2 ORDER BY col3 DESC) AS alias
+    /// Emits the SQL representation for a window function call.
     /// </summary>
+    /// <param name="node">The window function node to process.</param>
     public override void Visit(WindowFunctionNode node)
     {
         // Function call: e.g. RANK() or SUM(amount) or LAG(amount, 1)

@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace EricksonLopez.SqlBuilder.SourceGenerators;
 
 /// <summary>
-/// Generates strongly-typed filter extension methods for SQL entities.
+/// Generates strongly-typed filter extension methods and <c>ISqlFilter&lt;T&gt;</c> DTO classes for SQL entities.
 /// </summary>
 [Generator]
 public class FilterGenerator : IIncrementalGenerator

@@ -12,6 +12,7 @@ namespace EricksonLopez.SqlBuilder.PostgreSql
     /// <summary>
     /// Represents a PostgreSQL COPY FROM STDIN statement for high-performance bulk inserts.
     /// </summary>
+    /// <typeparam name="T">The entity type to copy into PostgreSQL.</typeparam>
     public sealed record CopyQuery<T> : IAstQuery where T : class, new()
     {
         /// <inheritdoc />

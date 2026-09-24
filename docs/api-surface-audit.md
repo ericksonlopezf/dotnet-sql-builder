@@ -24,9 +24,9 @@
 | `Sql.From<T>()` | `→ SelectQuery<T>` | STABLE |
 | `Sql.Insert<T>(entity)` | `→ InsertQuery<T>` | STABLE |
 | `Sql.Insert<T>(null!)` | `→ InsertQuery<T>` (builder mode) | STABLE |
-| `Sql.Update<T>()` | `→ UpdateQuery<T>` | STABLE |
-| `Sql.Delete<T>()` | `→ DeleteQuery<T>` | STABLE |
-| `Sql.Merge<T>()` | `→ MergeQuery<T>` | DEPRECATED |
+| `Sql.Update<T>()` | `→ IUpdateSetBuilder<T>` | STABLE |
+| `Sql.Delete<T>()` | `→ IDeleteFromBuilder<T>` | STABLE |
+| `Sql.Merge<T>()` | *(Removed in v1.0 per ADR-025)* | REMOVED (ESQL026 error) |
 | `Sql.Raw(FormattableString)` | `→ RawQuery` | STABLE |
 | `Sql.Raw(string)` *(unsafe)* | `→ RawQuery` | STABLE (ESQL011 warns) |
 | `Sql.RegisterTypeHandler<T>(handler)` | `void` | STABLE |
@@ -186,36 +186,40 @@
 | `connection.ExecuteScalarAsync<T>(...)` | STABLE |
 | `connection.QueryMultipleAsync(...)` | STABLE |
 | `connection.QueryAsAsyncEnumerable<T>(...)` | STABLE |
-| `MultiMapBuilder<...>.MapAsync(splitOn, mapper)` | STABLE |
+| `MultiMapBuilder<...>.MapAsync(splitOn, mapper)` | PROPOSED (ADR-005, v1.2+) |
 
 ---
 
-## 9. Resilience API
+## 9. Resilience API (Planned Specification — v1.2+, ADR-015)
+
+> Note: The package `EricksonLopez.SqlBuilder.Dapper.Resilience` is planned for future release. Until published, use Polly v8 pipelines directly.
 
 | Method | Stability |
 |--------|----------|
-| `connection.ExecuteWithResilienceAsync(query, pipeline, ...)` | STABLE |
-| `connection.QueryWithResilienceAsync<T>(...)` | STABLE |
-| `connection.QueryFirstWithResilienceAsync<T>(...)` | STABLE |
-| `SqlResilienceDefaults.Standard(detector)` | STABLE |
-| `SqlServerTransientErrorDetector.Default` | STABLE |
-| `PostgreSqlTransientErrorDetector.Default` | STABLE |
-| `MySqlTransientErrorDetector.Default` | STABLE |
+| `connection.ExecuteWithResilienceAsync(query, pipeline, ...)` | PLANNED |
+| `connection.QueryWithResilienceAsync<T>(...)` | PLANNED |
+| `connection.QueryFirstWithResilienceAsync<T>(...)` | PLANNED |
+| `SqlResilienceDefaults.Standard(detector)` | PLANNED |
+| `SqlServerTransientErrorDetector.Default` | PLANNED |
+| `PostgreSqlTransientErrorDetector.Default` | PLANNED |
+| `MySqlTransientErrorDetector.Default` | PLANNED |
 
 ---
 
-## 10. Unit of Work API
+## 10. Unit of Work API (Planned Specification — v1.2+, ADR-004)
+
+> Note: The package `EricksonLopez.SqlBuilder.Dapper.UnitOfWork` is under design for v1.2+. Current transactional workflows use direct `IDbTransaction` or `DapperConcurrencyExtensions`.
 
 | Method | Stability |
 |--------|----------|
-| `connection.BeginUnitOfWorkAsync(level, ct)` | STABLE |
-| `IUnitOfWork.CommitAsync(ct)` | STABLE |
-| `IUnitOfWork.RollbackAsync(ct)` | STABLE |
-| `IUnitOfWork.CreateSavepointAsync(name, ct)` | STABLE |
-| `IUnitOfWork.Transaction` | STABLE |
-| `IUnitOfWork.IsolationLevel` | STABLE |
-| `ISavepoint.RollbackAsync(ct)` | STABLE |
-| `ISavepoint.ReleaseAsync(ct)` | STABLE |
+| `connection.BeginUnitOfWorkAsync(level, ct)` | PLANNED |
+| `IUnitOfWork.CommitAsync(ct)` | PLANNED |
+| `IUnitOfWork.RollbackAsync(ct)` | PLANNED |
+| `IUnitOfWork.CreateSavepointAsync(name, ct)` | PLANNED |
+| `IUnitOfWork.Transaction` | PLANNED |
+| `IUnitOfWork.IsolationLevel` | PLANNED |
+| `ISavepoint.RollbackAsync(ct)` | PLANNED |
+| `ISavepoint.ReleaseAsync(ct)` | PLANNED |
 
 ---
 
@@ -240,11 +244,11 @@ All generated members are `public` and form part of the contract for AOT users:
 
 ## Deprecation Timeline
 
-| API | Deprecated Since | Remove In |
-|-----|-----------------|-----------|
-| `SelectQuery<T>.Fetch(int)` | v0.8 | v2.0 |
-| `MergeQuery<T>` + all methods | v1.0 | v2.0 |
-| `Sql.Merge<T>()` | v1.0 | v2.0 |
+| API | Deprecated Since | Status / Target |
+|-----|-----------------|-----------------|
+| `SelectQuery<T>.Fetch(int)` | v0.8 | `[Obsolete]` in v1.0; remove in v2.0 |
+| `MergeQuery<T>` + all methods | v1.0 | Removed (ADR-025); ESQL026 error |
+| `Sql.Merge<T>()` | v1.0 | Removed (ADR-025); ESQL026 error |
 
 ---
 

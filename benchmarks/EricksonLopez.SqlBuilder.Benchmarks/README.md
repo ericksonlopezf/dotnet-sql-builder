@@ -1,42 +1,53 @@
 # EricksonLopez.SqlBuilder.Benchmarks
 
-[![Build Status](https://github.com/ericksonlopezf/dotnet-sql-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/ericksonlopezf/dotnet-sql-builder/actions/workflows/ci.yml)
-[![NuGet Version](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Benchmarks.svg)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Benchmarks/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![NativeAOT Ready](https://img.shields.io/badge/NativeAOT-Supported-brightgreen.svg)](docs/Architecture.md)
-[![Target Frameworks](https://img.shields.io/badge/.NET-.NET%20Standard%202.0%20%7C%20.NET%2010.0-blue.svg)](https://dotnet.microsoft.com)
+BenchmarkDotNet performance and regression testing suite for **EricksonLopez.SqlBuilder**.
 
-BenchmarkDotNet performance suite benchmarking SqlBuilder against SqlKata, Dapper, RepoDb, and SqlSugar.
+[![CI](https://img.shields.io/github/actions/workflow/status/ericksonlopezf/dotnet-sql-builder/ci.yml?branch=main&label=CI)](https://github.com/ericksonlopezf/dotnet-sql-builder/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)
+[![Target Framework](https://img.shields.io/badge/.NET-net10.0-blue.svg)](https://dotnet.microsoft.com)
 
-## Installation
+This project evaluates the AST compilation latency, memory allocation invariants, and materialization throughput of `EricksonLopez.SqlBuilder` against raw string formatting, Dapper, SqlKata, RepoDb, and EF Core.
+
+---
+
+## Running Benchmarks Locally
+
+Execute benchmarks in `Release` configuration from the repository root:
 
 ```bash
-dotnet add package EricksonLopez.SqlBuilder.Benchmarks
+# Run all benchmarks with short job for rapid developer feedback
+dotnet run \
+  --project benchmarks/EricksonLopez.SqlBuilder.Benchmarks/EricksonLopez.SqlBuilder.Benchmarks.csproj \
+  --configuration Release \
+  --framework net10.0 \
+  -- --job short --filter "*" --memory
+
+# Run a specific benchmark category (e.g., AST compilation)
+dotnet run \
+  --project benchmarks/EricksonLopez.SqlBuilder.Benchmarks/EricksonLopez.SqlBuilder.Benchmarks.csproj \
+  --configuration Release \
+  --framework net10.0 \
+  -- --job short --filter "*SelectBenchmark*"
 ```
 
-## Features
+---
 
-- 🚀 **Zero Reflection**: Engineered for maximum throughput without runtime reflection overhead.
-- ⚡ **NativeAOT Compliant**: 100% compatible with ahead-of-time compilation and trimming.
-- 🛡️ **Secure by Default**: SQL injection immunity via strict parameterization.
+## Automated Quality Gates
 
-## Documentation & Resources
+In pull requests, GitHub Actions executes [`benchmark-regression-gate.yml`](../../.github/workflows/benchmark-regression-gate.yml) and evaluates results with [`scripts/verify-benchmark-gate.ps1`](../../scripts/verify-benchmark-gate.ps1) against `benchmarks/results/baseline.json`:
 
-- [Quick Start Guide](docs/QuickStart.md)
-- [Architecture Guide](docs/Architecture.md)
-- [Best Practices](docs/BestPractices.md)
-- [Performance Guide](docs/PerformanceGuide.md)
+1. **Zero Heap Allocation Invariant**: Core AST compilation and query combinators must allocate **0 B** on hot paths.
+2. **Latency Regression Limit**: Mean execution time must not regress by more than **5%** compared to baseline.
 
-## Governance & Contributing
+---
 
-- [Security Policy](SECURITY.md)
-- [Contributing Guide](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Release Process](RELEASE_PROCESS.md)
-- [Dependency Policy](DEPENDENCY_POLICY.md)
-- [Project Governance](GOVERNANCE.md)
-- [Support & FAQ](FAQ.md)
+## Documentation & References
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+- [Performance Guide & Benchmark Specs](../../docs/performance.md)
+- [Architecture & Design Invariants](../../docs/architecture.md)
+- [Best Practices](../../docs/best-practices.md)
+- [Getting Started](../../docs/getting-started.md)
+- [Contributing Guide](../../CONTRIBUTING.md)
+- [Security Policy](../../SECURITY.md)
+- [Support Guidelines](../../SUPPORT.md)
+- [MIT License](../../LICENSE)

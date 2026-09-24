@@ -34,5 +34,5 @@ The `Sql.Raw(FormattableString)` overload automatically converts all interpolate
 
 ## See Also
 
-- [ADR-002: Security Model](../../SECURITY.md)
-- [ESQL002 — Unsafe string concatenation in lambda SQL](./ESQL002.md)
+- [Security Policy](../../SECURITY.md)
+- [ESQL002 — Unsafe String Concatenation](../analyzers.md#esql002--raw-sql-string-concatenation)

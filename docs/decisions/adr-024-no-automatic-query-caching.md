@@ -1,4 +1,4 @@
-# ADR-024: No Automatic Query Caching
+﻿# ADR-024: No Automatic Query Caching
 
 ## Status
 Accepted
@@ -15,11 +15,11 @@ Some libraries (RepoDB, certain Dapper extensions) automatically cache compiled 
 
 2. **Memory leaks:** A query cache that grows unboundedly (e.g., keyed by query text including parameter values) is a slow memory leak.
 
-3. **Hidden state:** An invisible static cache creates non-deterministic behavior — the first call builds the query, subsequent calls return the cached version. Hard to debug when something changes.
+3. **Hidden state:** An invisible static cache creates non-deterministic behavior â€” the first call builds the query, subsequent calls return the cached version. Hard to debug when something changes.
 
 4. **Thread safety complexity:** ConcurrentDictionary add-if-absent races can result in double compilation unless carefully implemented.
 
-5. **NativeAOT incompatibility:** `Expression.Compile()` in a static constructor runs at startup under NativeAOT — unpredictable timing.
+5. **NativeAOT incompatibility:** `Expression.Compile()` in a static constructor runs at startup under NativeAOT â€” unpredictable timing.
 
 6. **Wrong layer:** Query caching is an application concern. The application knows its query patterns; the library does not.
 
@@ -31,11 +31,11 @@ Some libraries (RepoDB, certain Dapper extensions) automatically cache compiled 
 ### Option B: Explicit cache API (`QueryCache.GetOrAdd(key, () => query)`)
 - Rejected: the library should not define caching primitives; `IMemoryCache` or `ConcurrentDictionary` already serve this purpose
 
-### Option C: No caching — document the correct pattern
+### Option C: No caching â€” document the correct pattern
 - **Chosen**: Correct, explicit, user-controlled
 
 ### Option D: Compiled query via Source Generator (zero runtime cost)
-- **Complementary**: The AOT render path generates SQL at compile time — no runtime caching needed
+- **Complementary**: The AOT render path generates SQL at compile time â€” no runtime caching needed
 
 ## Decision
 
@@ -44,7 +44,7 @@ Some libraries (RepoDB, certain Dapper extensions) automatically cache compiled 
 **Correct caching patterns (user responsibility):**
 
 ```csharp
-// Pattern 1: Static pre-built query (immutable — safe to cache)
+// Pattern 1: Static pre-built query (immutable â€” safe to cache)
 private static readonly SelectQuery<User> _activeUsersQuery = Sql.From<User>()
     .Where(u => u.Active)
     .OrderBy(u => u.Name);
@@ -61,24 +61,24 @@ var compiled = _cache.GetOrAdd(
     _ => compiler.Compile(Sql.From<User>().Where(u => u.Active))
 );
 
-// Pattern 3: AOT path — compile-time generated SQL string (zero runtime cost)
-// Source Generator produces GetSql() method — no runtime compilation at all
+// Pattern 3: AOT path â€” compile-time generated SQL string (zero runtime cost)
+// Source Generator produces GetSql() method â€” no runtime compilation at all
 ```
 
 **Why the static query pattern works:**
-Because `SelectQuery<T>` is immutable (see ADR-017), a static base query is safe to share across threads and requests. Adding `.Page()` / `.Where()` creates a new instance — the static instance is never mutated.
+Because `SelectQuery<T>` is immutable (see ADR-017), a static base query is safe to share across threads and requests. Adding `.Page()` / `.Where()` creates a new instance â€” the static instance is never mutated.
 
 ## Consequences
 
 ### Positive
-- ✅ No hidden state — predictable, debuggable behavior
-- ✅ No memory leaks from unbounded query caches
-- ✅ Thread-safe by construction (immutability, not caching)
-- ✅ User controls caching strategy at the appropriate layer
+- âœ… No hidden state â€” predictable, debuggable behavior
+- âœ… No memory leaks from unbounded query caches
+- âœ… Thread-safe by construction (immutability, not caching)
+- âœ… User controls caching strategy at the appropriate layer
 
 ### Negative
-- ❌ Expression compilation (`Expression.Compile()`) runs on first use — one-time cost
-- ❌ Users must implement their own caching if they want to amortize compilation cost
+- âŒ Expression compilation (`Expression.Compile()`) runs on first use â€” one-time cost
+- âŒ Users must implement their own caching if they want to amortize compilation cost
 
 ## Performance Guidance
 For applications that need to minimize compilation overhead:
@@ -90,7 +90,7 @@ For applications that need to minimize compilation overhead:
 If benchmarks show that expression compilation is the dominant cost and static fields are insufficient (unlikely for typical query patterns), evaluate an optional explicit cache extension.
 
 ## References
-- [FEATURE_MATRIX.md §18 — Anti-Feature Matrix](../../FEATURE_MATRIX.md)
+- [FEATURE_MATRIX.md Â§18 â€” Anti-Feature Matrix](../master-feature-matrix.md)
 - [ADR-017: Immutable AST](./adr-017-immutable-ast-record-semantics.md)
 - [ADR-014: Zero-Allocation Benchmark Proof](./adr-014-zero-allocation-benchmark-proof.md)
 - [ADR-006: Source Generator Strategy](./adr-006-source-generator-strategy.md)
