@@ -2,9 +2,9 @@
 namespace EricksonLopez.SqlBuilder.Abstractions.Nodes;
 
 /// <summary>
-/// Represents a DISTINCT ON clause (typically used in PostgreSQL).
+/// Represents a DISTINCT ON clause supported in PostgreSQL.
 /// </summary>
-/// <param name="Columns">The columns used for the DISTINCT ON expression.</param>
+/// <param name="Columns">The columns evaluated in the DISTINCT ON expression.</param>
 public sealed record DistinctOnNode(string[] Columns) : ISqlNode
 {
     /// <inheritdoc />

@@ -112,8 +112,8 @@ public class SqlBuilderPaginationExtensionsTests
         var act1 = () => query.Paginate(pageNumber: 0, pageSize: 10);
         var act2 = () => query.Paginate(pageNumber: 1, pageSize: 0);
 
-        act1.Should().Throw<ArgumentOutOfRangeException>();
-        act2.Should().Throw<ArgumentOutOfRangeException>();
+        act1.Should().Throw<ArgumentOutOfRangeException>().WithParameterName("pageNumber");
+        act2.Should().Throw<ArgumentOutOfRangeException>().WithParameterName("pageSize");
     }
 
     #endregion
@@ -142,7 +142,7 @@ public class SqlBuilderPaginationExtensionsTests
         var cursorQuery = query.ApplyCursor(parameters, x => x.Id, ascending: true);
         var sqlResult = cursorQuery.Build(_compiler);
 
-        sqlResult.Sql.Should().Contain("ORDER BY");
+        sqlResult.Sql.Should().Contain("ORDER BY \"id\"");
         sqlResult.Sql.Should().NotContain("DESC");
         sqlResult.Sql.Should().Contain("LIMIT 16");
     }

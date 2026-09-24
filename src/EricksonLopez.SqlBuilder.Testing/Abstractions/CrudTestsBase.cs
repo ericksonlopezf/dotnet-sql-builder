@@ -15,26 +15,23 @@ using Xunit;
 namespace EricksonLopez.SqlBuilder.Testing.Abstractions;
 
 /// <summary>
-/// Abstract CRUD integration test base class.
-/// Provides 30+ engine-agnostic tests that exercise the full SQL builder pipeline
-/// against a real database (via Testcontainers or SQLite in-memory).
-///
-/// Pattern: each test calls Build(compiler) to get SQL+params, then uses raw Dapper.
-/// This keeps tests decoupled from compiler-registry requirements.
-///
-/// Test categories:
-///   - SELECT: basic, filtered, ordered, paginated, joined, aggregated, CTE
-///   - INSERT: single, multiple
-///   - UPDATE: single field, boolean flag
-///   - DELETE: hard-delete, soft-delete
-///   - TRANSACTIONS: commit, rollback
-///   - EDGE CASES: empty result, null values, distinct, group-by, aggregate
-///   - PERFORMANCE: large result set within timeout
+/// Provides an abstract suite of database-agnostic CRUD integration tests.
 /// </summary>
+/// <remarks>
+/// Exercises query compilation and execution against real database fixtures across SELECT, INSERT, UPDATE, DELETE, transactions, and aggregates.
+/// </remarks>
+/// <typeparam name="TFixture">The database fixture type used to obtain connections and compilers.</typeparam>
 public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 {
+    /// <summary>
+    /// Gets the database fixture providing connections and compiler for these tests.
+    /// </summary>
     protected readonly TFixture Fixture;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CrudTestsBase{TFixture}"/> class with the specified fixture.
+    /// </summary>
+    /// <param name="fixture">The database fixture providing database connections and compilers.</param>
     protected CrudTestsBase(TFixture fixture)
     {
         Fixture = fixture;
@@ -96,6 +93,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 
     // ─── SELECT tests ─────────────────────────────────────────────────────────
 
+    /// <summary>Verifies that selecting all customers returns all seeded customer records.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_AllCustomers_ShouldReturn100Records()
     {
@@ -108,6 +107,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(100, customers.Count());
     }
 
+    /// <summary>Verifies that filtering customers by active status returns only active records.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_ActiveCustomers_ShouldReturnSubset()
     {
@@ -121,6 +122,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.All(customers, c => Assert.True(c.IsActive));
     }
 
+    /// <summary>Verifies that querying a customer by primary key returns exactly one matching record.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_CustomerById_ShouldReturnExactlyOne()
     {
@@ -135,6 +138,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(expectedId, customer!.Id);
     }
 
+    /// <summary>Verifies that querying a non-existent customer by identifier returns <see langword="null"/>.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_NonExistentCustomer_ShouldReturnNull()
     {
@@ -147,6 +152,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Null(customer);
     }
 
+    /// <summary>Verifies that paginating customer queries with limit and offset returns the expected page size.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_Paginated_ShouldReturnCorrectPage()
     {
@@ -166,6 +173,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(pageSize, customers.Count);
     }
 
+    /// <summary>Verifies that ordering customers by name descending produces sorted results.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_OrderedByNameDescending_ShouldReturnSortedResults()
     {
@@ -187,6 +196,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         }
     }
 
+    /// <summary>Verifies that selecting all products returns all seeded product records.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_AllProducts_ShouldReturn500Records()
     {
@@ -199,6 +210,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(500, products.Count());
     }
 
+    /// <summary>Verifies that filtering products above a minimum price returns only matching products.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_ProductsAboveMinPrice_ShouldFilterCorrectly()
     {
@@ -213,6 +226,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.All(products, p => Assert.True(p.Price >= minPrice));
     }
 
+    /// <summary>Verifies that querying non-deleted orders excludes soft-deleted records.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_NonDeletedOrders_ShouldReturnMostOrders()
     {
@@ -226,6 +241,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
             $"Expected ~1000 non-deleted orders, got {orders.Count()}");
     }
 
+    /// <summary>Verifies that filtering orders by customer identifier returns the exact count of customer orders.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_OrdersByCustomer_ShouldReturnExactCount()
     {
@@ -244,6 +261,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(expectedCount, orders.Count());
     }
 
+    /// <summary>Verifies that selecting order items returns at least one thousand seeded records.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_OrderItems_ShouldHaveAtLeast1000Records()
     {
@@ -257,6 +276,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
             $"Expected 1000+ order items, got {items.Count()}");
     }
 
+    /// <summary>Verifies that selecting specific columns returns partial entity projections.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_SpecificColumns_ShouldReturnPartialData()
     {
@@ -269,6 +290,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(5, result.Count());
     }
 
+    /// <summary>Verifies that selecting distinct column values returns deduplicated results.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_Distinct_ShouldReturnUniqueStatuses()
     {
@@ -282,6 +305,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(statuses.Count, statuses.Distinct(StringComparer.OrdinalIgnoreCase).Count());
     }
 
+    /// <summary>Verifies that calculating a COUNT aggregate returns at least one hundred customer rows.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_CountAggregate_ShouldReturnAtLeast100()
     {
@@ -303,6 +328,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.True(count >= 100, $"Expected >= 100 customers, got {count}");
     }
 
+    /// <summary>Verifies that inner joining orders with customers produces joined result rows.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_InnerJoin_OrdersWithCustomers_ShouldReturnJoinedRows()
     {
@@ -322,6 +349,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 
     // ─── INSERT tests ─────────────────────────────────────────────────────────
 
+    /// <summary>Verifies that inserting a new customer persists the record into the database.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Insert_NewCustomer_ShouldPersistToDatabase()
     {
@@ -343,6 +372,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(uniqueEmail, inserted!.Email);
     }
 
+    /// <summary>Verifies that batch inserting multiple customers persists all inserted records.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Insert_MultipleCustomers_ShouldAllPersist()
     {
@@ -370,6 +401,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 
     // ─── UPDATE tests ─────────────────────────────────────────────────────────
 
+    /// <summary>Verifies that updating a customer name persists the modified value in the database.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Update_CustomerName_ShouldPersistChange()
     {
@@ -393,6 +426,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Equal(newName, updated.Name);
     }
 
+    /// <summary>Verifies that deactivating a customer updates the active flag to false.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Update_DeactivateCustomer_ShouldSetIsActiveFalse()
     {
@@ -417,6 +452,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 
     // ─── DELETE tests ─────────────────────────────────────────────────────────
 
+    /// <summary>Verifies that deleting a customer removes the record from the database.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Delete_Customer_ShouldRemoveFromDatabase()
     {
@@ -439,6 +476,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Null(afterDelete);
     }
 
+    /// <summary>Verifies that soft deleting an order sets the deletion flag.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task SoftDelete_Order_ShouldSetIsDeletedFlag()
     {
@@ -463,6 +502,9 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 
     // ─── TRANSACTION tests ────────────────────────────────────────────────────
 
+    /// <summary>Verifies that committed database transactions persist inserted changes.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
+    /// <exception cref="InvalidOperationException">The connection provided by the fixture is not a <see cref="System.Data.Common.DbConnection"/></exception>
     [Fact]
     public async Task Transaction_Commit_ShouldPersistChanges()
     {
@@ -494,6 +536,9 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.NotNull(found);
     }
 
+    /// <summary>Verifies that rolled back database transactions discard pending changes.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
+    /// <exception cref="InvalidOperationException">The connection provided by the fixture is not a <see cref="System.Data.Common.DbConnection"/></exception>
     [Fact]
     public async Task Transaction_Rollback_ShouldDiscardChanges()
     {
@@ -527,6 +572,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 
     // ─── EDGE CASES ───────────────────────────────────────────────────────────
 
+    /// <summary>Verifies that querying with a non-matching predicate returns an empty collection.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_EmptyResult_ShouldReturnEmptyList()
     {
@@ -539,6 +586,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.Empty(result);
     }
 
+    /// <summary>Verifies that querying nullable columns handles null values without errors.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_NullablePhone_ShouldHandleNullsWithoutException()
     {
@@ -554,6 +603,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.All(customers, c => Assert.Null(c.Phone));
     }
 
+    /// <summary>Verifies that grouping rows by status computes correct aggregate counts per group.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_GroupByStatus_ShouldReturnGroupCounts()
     {
@@ -583,6 +634,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         }
     }
 
+    /// <summary>Verifies that calculating the MAX price aggregate produces a positive value.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_MaxProductPrice_ShouldBePositive()
     {
@@ -603,6 +656,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.True(maxPrice > 0, $"MAX(price) = {maxPrice}");
     }
 
+    /// <summary>Verifies that calculating the SUM of order total amounts produces a positive total.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_SumOrderRevenue_ShouldBePositive()
     {
@@ -626,6 +681,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
         Assert.True(revenue > 0, $"SUM(total_amount) = {revenue}");
     }
 
+    /// <summary>Verifies that queries using common table expressions execute successfully.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_WithCTE_ActiveProducts_ShouldWork()
     {
@@ -652,6 +709,8 @@ public abstract class CrudTestsBase<TFixture> where TFixture : DatabaseFixture
 
     // ─── PERFORMANCE ─────────────────────────────────────────────────────────
 
+    /// <summary>Verifies that retrieving one thousand order records completes within acceptable time limits.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_1000OrdersWithinTimeout_ShouldComplete()
     {

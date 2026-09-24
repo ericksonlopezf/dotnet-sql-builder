@@ -1,6 +1,7 @@
 // Copyright © Erickson Lopez. MIT License.
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Collections.Immutable;
 using System.Data;
 using System.Linq.Expressions;
@@ -514,6 +515,51 @@ public class PostgreSqlMissingCoverageTests
         var partitionNonCopy = new SqlNodePartition(new ISqlNode[] { new DistinctOnNode(new[] { "col" }) });
         var resNonCopy = _compiler.CompileBeforeSelect(partitionNonCopy, visitor, ctx);
         resNonCopy.Should().BeFalse();
+    }
+
+    [Fact]
+    public void PostgreSqlCompiler_EscapeIdentifier_HandlesEmbeddedQuotes()
+    {
+        var escaped = _compiler.EscapeIdentifier("col\"name");
+        escaped.Should().Be("\"col\"\"name\"");
+
+        var sb = new StringBuilder();
+        _compiler.EscapeIdentifier(sb, "col\"name".AsSpan());
+        sb.ToString().Should().Be("\"col\"\"name\"");
+    }
+
+    [Fact]
+    public void PostgreSqlCompiler_CopyNode_InvalidFormat_ThrowsArgumentException()
+    {
+        var copyNode = new CopyNode("users", new[] { "id" }, "STDIN", "csv; DROP TABLE");
+        var partition = new SqlNodePartition(new ISqlNode[] { copyNode });
+        var ctx = new CompilationContext(new ParameterManager());
+        var visitor = _compiler.CreateVisitor(ctx);
+
+        var ex = Assert.Throws<ArgumentException>(() => _compiler.CompileBeforeSelect(partition, visitor, ctx));
+        ex.ParamName.Should().Be("Format");
+    }
+
+    [Fact]
+    public async Task PostgreSqlDapperExtensions_BulkCopyAsync_CancelledToken_ThrowsOperationCanceledException()
+    {
+        var conn = Substitute.For<IDbConnection>();
+        using var cts = new System.Threading.CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+            await conn.BulkCopyAsync(new[] { new MismatchedMetadataEntity() }, cts.Token));
+    }
+
+    [Fact]
+    public async Task PostgreSqlDapperExtensions_BulkInsertUnnestAsync_CancelledToken_ThrowsOperationCanceledException()
+    {
+        var conn = Substitute.For<IDbConnection>();
+        using var cts = new System.Threading.CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+            await conn.BulkInsertUnnestAsync(new[] { new MismatchedMetadataEntity() }, null, cts.Token));
     }
 }
 

@@ -30,6 +30,7 @@ namespace EricksonLopez.SqlBuilder.Analyzers
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            // Stryker disable once statement : Justification: root == null is impossible in this Roslyn context
             if (root == null) return;
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;

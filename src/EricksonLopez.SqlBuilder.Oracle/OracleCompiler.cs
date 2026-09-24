@@ -20,7 +20,7 @@ public class OracleCompiler : SqlCompilerBase
     /// <inheritdoc />
     public override IParameterManager CreateParameterManager() => new OracleParameterManager();
     /// <inheritdoc />
-    public override string EscapeIdentifier(string identifier) => $"\"{identifier.ToUpperInvariant()}\"";
+    public override string EscapeIdentifier(string identifier) => $"\"{identifier.ToUpperInvariant().Replace("\"", "\"\"")}\"";
     
     /// <inheritdoc />
     public override void EscapeIdentifier(StringBuilder sb, ReadOnlySpan<char> identifier)
@@ -28,7 +28,9 @@ public class OracleCompiler : SqlCompilerBase
         sb.Append('"');
         foreach (char c in identifier)
         {
-            sb.Append(char.ToUpperInvariant(c));
+            char up = char.ToUpperInvariant(c);
+            if (up == '"') sb.Append('"');
+            sb.Append(up);
         }
         sb.Append('"');
     }

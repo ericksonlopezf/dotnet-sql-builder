@@ -27,16 +27,18 @@ public static class PostgreSqlDapperExtensions
     /// <typeparam name="T">The entity type.</typeparam>
     /// <param name="connection">The PostgreSQL connection.</param>
     /// <param name="entities">The entities to copy.</param>
+    /// <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="InvalidOperationException">Entity metadata column count does not match value count</exception>
     [ExcludeFromCodeCoverage]
-    public static async Task BulkCopyAsync<T>(this NpgsqlConnection connection, IEnumerable<T> entities) where T : class, ISqlEntity, new()
+    public static async Task BulkCopyAsync<T>(this NpgsqlConnection connection, IEnumerable<T> entities, CancellationToken cancellationToken = default) where T : class, ISqlEntity, new()
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var query = new CopyQuery<T>();
         var compiler = new PostgreSqlCompiler();
         var sqlResult = query.Build(compiler);
         
-        using var writer = await connection.BeginBinaryImportAsync(sqlResult.Sql);
+        using var writer = await connection.BeginBinaryImportAsync(sqlResult.Sql, cancellationToken);
         
         var firstEntity = entities.FirstOrDefault();
         if (firstEntity != null)
@@ -52,20 +54,20 @@ public static class PostgreSqlDapperExtensions
         foreach (var entity in entities)
         {
             var values = entity.GetValues();
-            await writer.StartRowAsync();
+            await writer.StartRowAsync(cancellationToken);
             foreach (var val in values)
             {
                 if (val == null)
                 {
-                    await writer.WriteNullAsync();
+                    await writer.WriteNullAsync(cancellationToken);
                 }
                 else
                 {
-                    await writer.WriteAsync(val);
+                    await writer.WriteAsync(val, cancellationToken);
                 }
             }
         }
-        await writer.CompleteAsync();
+        await writer.CompleteAsync(cancellationToken);
     }
 
     /// <summary>
@@ -74,14 +76,16 @@ public static class PostgreSqlDapperExtensions
     /// <typeparam name="T">The entity type.</typeparam>
     /// <param name="connection">The database connection (must be an <see cref="NpgsqlConnection"/>).</param>
     /// <param name="entities">The entities to copy.</param>
+    /// <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="InvalidOperationException"><paramref name="connection"/> is not an active <see cref="NpgsqlConnection"/></exception>
-    public static Task BulkCopyAsync<T>(this System.Data.IDbConnection connection, IEnumerable<T> entities) where T : class, ISqlEntity, new()
+    public static Task BulkCopyAsync<T>(this System.Data.IDbConnection connection, IEnumerable<T> entities, CancellationToken cancellationToken = default) where T : class, ISqlEntity, new()
     {
+        cancellationToken.ThrowIfCancellationRequested();
         // Stryker disable once Block : Justification: Underlying type verification to invoke strongly-typed overload
         if (connection is NpgsqlConnection npgConn)
         {
-            return BulkCopyAsync(npgConn, entities);
+            return BulkCopyAsync(npgConn, entities, cancellationToken);
         }
         throw new InvalidOperationException("BulkCopyAsync requires an active NpgsqlConnection.");
     }
@@ -94,7 +98,10 @@ public static class PostgreSqlDapperExtensions
     /// <param name="connection">The database connection.</param>
     /// <param name="entities">The entities to insert.</param>
     /// <param name="transaction">An optional database transaction.</param>
-    /// <returns>The number of rows affected.</returns>
+    /// <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the number of rows affected.
+    /// </returns>
     /// <exception cref="InvalidOperationException">Entity metadata column count does not match value count</exception>
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Npgsql UNNEST bulk insert constructs dynamic typed arrays.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("csharpsquid", "S2077:Formatting queries is susceptible to SQL injection", Justification = "Table and columns are validated identifiers, values are parameterized")]
@@ -102,8 +109,10 @@ public static class PostgreSqlDapperExtensions
     public static async Task<int> BulkInsertUnnestAsync<T>(
         this IDbConnection connection, 
         IEnumerable<T> entities, 
-        DbTransaction? transaction = null) where T : ISqlEntity, new()
+        DbTransaction? transaction = null,
+        CancellationToken cancellationToken = default) where T : ISqlEntity, new()
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var list = entities switch
         {
             IReadOnlyList<T> roList => roList,
@@ -163,7 +172,7 @@ public static class PostgreSqlDapperExtensions
 
         if (cmd is DbCommand dbCmd)
         {
-            return await dbCmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+            return await dbCmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
         }
 
         return cmd.ExecuteNonQuery();
@@ -188,17 +197,21 @@ public static class PostgreSqlDapperExtensions
     ///
     /// Performance vs. alternatives:
     /// <list type="bullet">
-    ///   <item>Row-by-row INSERT: O(n) round-trips</item>
-    ///   <item>Multi-value INSERT (...),(...): limited to ~65,535 parameters</item>
-    ///   <item>UNNEST: 1 round-trip, no parameter limit</item>
+    ///   <item>Row-by-row INSERT: O(n) round-trips.</item>
+    ///   <item>Multi-value INSERT (...),(...): limited to ~65,535 parameters.</item>
+    ///   <item>UNNEST: 1 round-trip, no parameter limit.</item>
     /// </list>
+    /// Operates atomically within an optional transaction.
     /// </remarks>
     /// <param name="connection">Must be (or wrap) an <see cref="NpgsqlConnection"/>.</param>
     /// <param name="sql">The <c>INSERT … SELECT * FROM UNNEST(…)</c> statement.</param>
     /// <param name="parameters">Array parameters produced by <see cref="BulkParameters{T}.Build"/>.</param>
     /// <param name="transaction">Optional transaction.</param>
     /// <param name="commandTimeout">Optional command timeout in seconds (default 30).</param>
-    /// <returns>Number of rows affected.</returns>
+    /// <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the number of rows affected.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="parameters"/> is <see langword="null"/></exception>
     /// <exception cref="ArgumentException"><paramref name="sql"/> is null or whitespace, or <paramref name="connection"/> is not an <see cref="NpgsqlConnection"/></exception>
     [ExcludeFromCodeCoverage(Justification = "Requires live PostgreSQL; covered by integration tests.")]
@@ -207,8 +220,10 @@ public static class PostgreSqlDapperExtensions
         string sql,
         NpgsqlParameter[] parameters,
         IDbTransaction? transaction = null,
-        int? commandTimeout = null)
+        int? commandTimeout = null,
+        CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         ArgumentNullException.ThrowIfNull(connection);
         ArgumentException.ThrowIfNullOrWhiteSpace(sql);
         ArgumentNullException.ThrowIfNull(parameters);
@@ -236,10 +251,10 @@ public static class PostgreSqlDapperExtensions
 
         if (npgsqlConnection.State != ConnectionState.Open)
         {
-            await npgsqlConnection.OpenAsync().ConfigureAwait(false);
+            await npgsqlConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        return await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        return await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -253,7 +268,10 @@ public static class PostgreSqlDapperExtensions
     /// <param name="parameters">Array parameters produced by <see cref="BulkParameters{T}.Build"/>.</param>
     /// <param name="transaction">Optional transaction.</param>
     /// <param name="commandTimeout">Optional command timeout in seconds (default 30).</param>
-    /// <returns>Number of rows affected.</returns>
+    /// <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the number of rows affected.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="parameters"/> is <see langword="null"/></exception>
     /// <exception cref="ArgumentException"><paramref name="sql"/> is null or whitespace, or <paramref name="connection"/> is not an <see cref="NpgsqlConnection"/></exception>
     [ExcludeFromCodeCoverage(Justification = "Requires live PostgreSQL; covered by integration tests.")]
@@ -262,8 +280,12 @@ public static class PostgreSqlDapperExtensions
         string sql,
         NpgsqlParameter[] parameters,
         IDbTransaction? transaction = null,
-        int? commandTimeout = null)
-        => connection.BulkInsertAsync(sql, parameters, transaction, commandTimeout);
+        int? commandTimeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return connection.BulkInsertAsync(sql, parameters, transaction, commandTimeout, cancellationToken);
+    }
 }
 
 

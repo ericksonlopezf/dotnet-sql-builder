@@ -6,15 +6,15 @@ The `EricksonLopez.SqlBuilder.Dapper` package provides extension methods that si
 
 ```csharp
 using EricksonLopez.SqlBuilder.Dapper;
+using EricksonLopez.SqlBuilder.SqlServer;
+using Microsoft.Data.SqlClient;
 
-// You no longer need .Build(compiler). You simply pass the connection and the compiler:
-var result = await conn.QueryAsync(
-    Sql.From<Customer>().Where(c => c.IsActive),
-    compiler
-);
+// Register the compiler once at application startup (accepts a factory delegate):
+DapperExtensions.RegisterCompiler<SqlConnection>(() => new SqlServerCompiler());
 
-// Or, if you use dependency injection for the compiler:
-var result = await conn.QueryAsync(query);
+// Execute directly on the IDbConnection — compiler is resolved automatically from the registry:
+var query = Sql.From<Customer>().Where(c => c.IsActive);
+var customers = await conn.QueryAsync<Customer>(query);
 ```
 
-The Dapper extension internally maps the parameter `Dictionary` to Dapper's `DynamicParameters` without additional allocation cost.
+The Dapper extension internally maps the query parameters to Dapper's `DynamicParameters` without additional allocation overhead.

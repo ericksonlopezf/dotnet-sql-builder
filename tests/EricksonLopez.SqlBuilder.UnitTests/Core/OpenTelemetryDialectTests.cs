@@ -41,7 +41,8 @@ public class OpenTelemetryDialectTests
         using var activity1 = SqlBuilderInstrumentation.StartQueryActivity(queryTagged, "ProductionDb", new PostgreSqlCompiler());
 
         activity1.Should().NotBeNull();
-        activity1!.GetTagItem("db.system").Should().Be("postgresql");
+        activity1!.OperationName.Should().Be("SQL Query");
+        activity1.GetTagItem("db.system").Should().Be("postgresql");
         activity1.GetTagItem("db.name").Should().Be("ProductionDb");
         activity1.GetTagItem("db.query.tag").Should().Be("GetUsers");
 

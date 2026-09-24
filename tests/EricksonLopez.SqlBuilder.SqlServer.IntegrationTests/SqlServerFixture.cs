@@ -18,8 +18,7 @@ public class SqlServerFixture : IAsyncLifetime
     public SqlServerFixture()
     {
         DapperExtensions.RegisterCompiler<SqlConnection>(() => new SqlServerCompiler());
-        _MsSqlContainer = new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+        _MsSqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
             .Build();
     }
 

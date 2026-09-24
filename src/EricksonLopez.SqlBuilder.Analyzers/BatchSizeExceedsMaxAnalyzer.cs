@@ -33,7 +33,7 @@ namespace EricksonLopez.SqlBuilder.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class BatchSizeExceedsMaxAnalyzer : DiagnosticAnalyzer
     {
-        /// <summary>The diagnostic identifier for ELSB006.</summary>
+        /// <summary>Represents the diagnostic identifier for ELSB006.</summary>
         public const string DiagnosticId = "ELSB006";
 
         // SQL Server's hard limit of 2100 parameters per statement.
@@ -89,7 +89,7 @@ namespace EricksonLopez.SqlBuilder.Analyzers
             // Confirm the method belongs to our BulkBuilder<T>
             if (context.SemanticModel.GetSymbolInfo(invocation, context.CancellationToken).Symbol is not IMethodSymbol symbol) return;
 
-            // Stryker disable once string : Justification: Fallback string.Empty asegurado para Contains posterior
+            // Stryker disable once string : Justification: Fallback string.Empty ensures subsequent Contains check
             var containingTypeName = symbol.ContainingType?.ToDisplayString() ?? string.Empty;
             // Stryker disable once logical, equality : Justification: Strongly-coupled namespace and class validation
             if (!containingTypeName.Contains("BulkBuilder") ||

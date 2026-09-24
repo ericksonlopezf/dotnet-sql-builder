@@ -23,10 +23,11 @@ public readonly struct BoundSelectQuery<T> : IAstQuery where T : class, new()
     public IDbConnection Connection { get; }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="BoundSelectQuery{T}"/>.
+    /// Initializes a new instance of the <see cref="BoundSelectQuery{T}"/> class.
     /// </summary>
     /// <param name="query">The underlying select query.</param>
     /// <param name="connection">The bound database connection.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="query"/> or <paramref name="connection"/> is <see langword="null"/></exception>
     public BoundSelectQuery(SelectQuery<T> query, IDbConnection connection)
     {
         Query = query ?? throw new ArgumentNullException(nameof(query));
@@ -98,7 +99,9 @@ public readonly struct BoundSelectQuery<T> : IAstQuery where T : class, new()
     /// Executes the query and returns a <see cref="Result{T}"/> containing a read-only list of items, or an error.
     /// </summary>
     /// <param name="transaction">An optional database transaction.</param>
-    /// <returns>A <see cref="Result{T}"/> containing the query results.</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="Result{T}"/> with the query results.
+    /// </returns>
     public Task<Result<IReadOnlyList<T>>> ToResultAsync(IDbTransaction? transaction = null) => Query.ToResultAsync(Connection, transaction);
 
     /// <summary>
@@ -107,14 +110,16 @@ public readonly struct BoundSelectQuery<T> : IAstQuery where T : class, new()
     /// <param name="pageNumber">The 1-based page number.</param>
     /// <param name="pageSize">The number of items per page.</param>
     /// <param name="transaction">An optional database transaction.</param>
-    /// <returns>A <see cref="Result{T}"/> containing the paginated list.</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="Result{T}"/> with the paginated list.
+    /// </returns>
     public Task<Result<IPagedList<T>>> ToPagedListAsync(int pageNumber, int pageSize, IDbTransaction? transaction = null) => Query.ToPagedListAsync(Connection, pageNumber, pageSize, transaction);
 
     /// <summary>
     /// Executes the query and returns an unbuffered asynchronous stream of items.
     /// </summary>
     /// <param name="transaction">An optional database transaction.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
     /// <returns>An asynchronous stream of items.</returns>
     public IAsyncEnumerable<T> ToStreamAsync(IDbTransaction? transaction = null, CancellationToken cancellationToken = default) => Query.ToStreamAsync(Connection, transaction, cancellationToken);
 }

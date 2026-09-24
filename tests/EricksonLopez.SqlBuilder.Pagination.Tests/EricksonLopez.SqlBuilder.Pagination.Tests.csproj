@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-    <NoWarn>$(NoWarn);CA1806;CA1822;CA2012;CA2263;CA1873;CA1510;CA1859;CA1707;IDE1006;CA1305;CS1591</NoWarn>
+    <NoWarn>$(NoWarn);CA1806;CA1822;CA2012;CA2263;CA1873;CA1510;CA1859;CA1707;IDE1006;CA1305</NoWarn>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 

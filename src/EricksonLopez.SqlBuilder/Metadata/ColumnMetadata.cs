@@ -2,7 +2,7 @@
 namespace EricksonLopez.SqlBuilder.Metadata;
 
 /// <summary>
-/// Contains metadata information for a single entity property mapped to a database column.
+/// Represents metadata for a single entity property mapped to a database column.
 /// </summary>
 public sealed class ColumnMetadata
 {

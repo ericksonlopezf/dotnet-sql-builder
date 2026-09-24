@@ -35,10 +35,15 @@ public class SqlServerCompilerMissingCoverageTests
     public void EscapeIdentifier_FormatsSquareBrackets()
     {
         _compiler.EscapeIdentifier("users").Should().Be("[users]");
+        _compiler.EscapeIdentifier("col]name").Should().Be("[col]]name]");
 
         var sb = new StringBuilder();
         _compiler.EscapeIdentifier(sb, "orders".AsSpan());
         sb.ToString().Should().Be("[orders]");
+
+        var sbBracket = new StringBuilder();
+        _compiler.EscapeIdentifier(sbBracket, "col]name".AsSpan());
+        sbBracket.ToString().Should().Be("[col]]name]");
     }
 
     [Fact]
@@ -101,7 +106,7 @@ public class SqlServerCompilerMissingCoverageTests
         }.ToImmutableList());
 
         var result = _compiler.Compile((ISqlQuery)query);
-        result.Sql.Trim().Should().Be("SUM([salary]) OVER (PARTITION BY [dept] ORDER BY [salary] DESC) AS [total]");
+        result.Sql.Trim().Should().Be("SELECT SUM([salary]) OVER (PARTITION BY [dept] ORDER BY [salary] DESC) AS [total]");
     }
 
     [Fact]

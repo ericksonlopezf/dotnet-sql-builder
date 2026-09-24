@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using EricksonLopez.SqlBuilder;
+using EricksonLopez.SqlBuilder.Abstractions.Nodes;
 using EricksonLopez.SqlBuilder.Annotations;
 using EricksonLopez.SqlBuilder.Dapper;
 using EricksonLopez.SqlBuilder.Sqlite;
+using EricksonLopez.SqlBuilder.SqlServer;
 using Microsoft.Data.Sqlite;
 
 namespace EricksonLopez.SqlBuilder.Samples.Level05_Processing;
@@ -35,7 +37,7 @@ public static class ProcessingSample
 {
     public static async Task RunAsync()
     {
-        Console.WriteLine("\n=== NIVEL 5: PROCESAMIENTO, BATCHING Y STREAMING ===");
+        Console.WriteLine("\n=== LEVEL 5: PROCESSING, BATCHING, AND STREAMING ===");
 
         using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync();
@@ -47,7 +49,7 @@ public static class ProcessingSample
         ");
 
         // ────────────────────────────────────────────────────────────────────
-        // 1. BulkInsertAsync — Fallback INSERT masivo via DapperExtensions
+        // 1. BulkInsertAsync — Fallback bulk INSERT via DapperExtensions
         // ────────────────────────────────────────────────────────────────────
         Console.WriteLine("\n[+] 1. BulkInsertAsync — Bulk entity insertion");
 
@@ -62,9 +64,9 @@ public static class ProcessingSample
         Console.WriteLine($"    Inserted {logsToInsert.Count} records in bulk.");
 
         // ────────────────────────────────────────────────────────────────────
-        // 2. Sql.BulkInsert<T> — INSERT masivo directo via InsertQuery
+        // 2. Sql.BulkInsert<T> — Direct bulk INSERT via InsertQuery
         // ────────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 2. Sql.BulkInsert<T> — INSERT masivo via InsertQuery");
+        Console.WriteLine("\n[+] 2. Sql.BulkInsert<T> — Bulk INSERT via InsertQuery");
 
         var eventBatch = new List<EventRecord>();
         for (int i = 0; i < 50; i++)
@@ -160,7 +162,7 @@ public static class ProcessingSample
         // ────────────────────────────────────────────────────────────────────
         // 7. QueryStreamAsync — Streaming IAsyncEnumerable<T>
         // ────────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 7. QueryStreamAsync — Streaming sin buffering en memoria");
+        Console.WriteLine("\n[+] 7. QueryStreamAsync — Streaming without in-memory buffering");
 
         var streamQuery = Sql.From<LogEntry>()
             .OrderBy(l => l.Id)
@@ -172,7 +174,7 @@ public static class ProcessingSample
         {
             streamCount++;
         }
-        Console.WriteLine($"    Streaming completado: {streamCount} entradas procesadas sin buffer.");
+        Console.WriteLine($"    Streaming completed: {streamCount} entries processed without buffering.");
 
         // ────────────────────────────────────────────────────────────────────
         // 8. BulkDeleteAsync — Bulk delete with base query
@@ -187,8 +189,95 @@ public static class ProcessingSample
         // Execute via standard ExecuteAsync
         var deletedCount = await connection.ExecuteAsync(deleteQuery);
         Console.WriteLine($"    Deleted records: {deletedCount}");
+
+        // ────────────────────────────────────────────────────────────────────
+        // 9. SeekAfter / SeekBefore — Composite keyset (cursor) pagination
+        // ────────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 9. SeekAfter / SeekBefore — Composite keyset cursor pagination");
+
+        // CursorKey(column, value) defines an anchor key from the last retrieved row.
+        // SeekAfter generates: WHERE (col1 > @p0 OR (col1 = @p0 AND col2 > @p1))
+        var seekAfterSql = Sql.From<EventRecord>()
+            .OrderBy(e => e.Priority)
+            .ThenBy(e => e.Id)
+            .SeekAfter(
+                new CursorKey("priority", 2),  // last seen priority
+                new CursorKey("id", 50))        // last seen id
+            .Limit(10)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    SeekAfter SQL:\n    {seekAfterSql.Sql}");
+
+        // SeekBefore — backward cursor: WHERE (col1 < @p0 OR (col1 = @p0 AND col2 < @p1))
+        var seekBeforeSql = Sql.From<EventRecord>()
+            .OrderBy(e => e.Priority)
+            .ThenBy(e => e.Id)
+            .SeekBefore(
+                new CursorKey("priority", 2),
+                new CursorKey("id", 50))
+            .Limit(10)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    SeekBefore SQL:\n    {seekBeforeSql.Sql}");
+
+        // Single-column cursor (most common case)
+        var singleKeyCursorSql = Sql.From<LogEntry>()
+            .OrderBy(l => l.Id)
+            .SeekAfter(new CursorKey("id", 100))
+            .Limit(20)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    Single-key SeekAfter SQL: {singleKeyCursorSql.Sql}");
+
+        // ────────────────────────────────────────────────────────────────────
+        // 10. WindowPage — ROW_NUMBER-based pagination (deep-page performance)
+        // ────────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 10. WindowPage — ROW_NUMBER window-based pagination");
+
+        // WindowPage wraps the query in a ROW_NUMBER() OVER (ORDER BY col) CTE
+        // and filters to the requested page — avoids OFFSET performance issues on large tables.
+        var windowPageSql = Sql.From<LogEntry>()
+            .WindowPage(pageNumber: 3, pageSize: 10, orderByColumn: "id", descending: false)
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    WindowPage SQL (SQL Server):\n    {windowPageSql.Sql}");
+
+        // Descending order window page
+        var windowPageDescSql = Sql.From<EventRecord>()
+            .WindowPage(pageNumber: 2, pageSize: 5, orderByColumn: "occurred_at", descending: true)
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    WindowPage DESC SQL (first 120):\n    {windowPageDescSql.Sql.Substring(0, Math.Min(120, windowPageDescSql.Sql.Length))}...");
+
+        // ────────────────────────────────────────────────────────────────────
+        // 11. CursorPaginationExtensions.Seek<T> — Single-key cursor pagination
+        // ────────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 11. Seek<T>() — Single-key cursor pagination via CursorPaginationExtensions");
+
+        // Seek generates: WHERE id > @lastValue ORDER BY id LIMIT @limit
+        var seekAscSql = Sql.From<LogEntry>()
+            .Seek(l => l.Id, lastValue: 50, ascending: true, limit: 20)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    Seek (ASC) SQL: {seekAscSql.Sql}");
+
+        // Descending seek (WHERE id < @lastValue ORDER BY id DESC LIMIT @limit)
+        var seekDescSql = Sql.From<LogEntry>()
+            .Seek(l => l.Id, lastValue: 100, ascending: false, limit: 10)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    Seek (DESC) SQL: {seekDescSql.Sql}");
+
+        // ────────────────────────────────────────────────────────────────────
+        // 12. OrderByDynamic — Dynamic sort by user-supplied column name string
+        // ────────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 12. OrderByDynamic — String-based dynamic sorting");
+
+        // OrderByDynamic safely resolves property names to DB column names
+        // using the entity metadata cache — prevents SQL injection
+        var dynAscSql = Sql.From<EventRecord>()
+            .OrderByDynamic("Priority", descending: false)
+            .Limit(5)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    OrderByDynamic (ASC) SQL: {dynAscSql.Sql}");
+
+        var dynDescSql = Sql.From<EventRecord>()
+            .OrderByDynamic("OccurredAt", descending: true)
+            .Limit(5)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    OrderByDynamic (DESC) SQL: {dynDescSql.Sql}");
     }
 }
-
-
-

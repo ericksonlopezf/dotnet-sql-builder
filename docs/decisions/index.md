@@ -1,6 +1,6 @@
 # Architecture Decision Records — Index
 
-> This directory contains all **46 accepted + 2 proposed** Architecture Decision Records (ADRs) for EricksonLopez.SqlBuilder.
+> This directory contains all **48 accepted + 2 proposed + 1 rejected** Architecture Decision Records (ADRs) for EricksonLopez.SqlBuilder.
 > ADRs document **why** decisions were made, including decisions to **NOT** implement certain features.
 > Every significant architectural decision requires an ADR before implementation begins.
 
@@ -27,7 +27,8 @@
 | [ADR-017](./adr-017-immutable-ast-record-semantics.md) | Immutable AST via C# record semantics | ✅ Accepted | v1.0 |
 | [ADR-024](./adr-024-no-automatic-query-caching.md) | No automatic query caching | ✅ Accepted | v1.0 |
 | [ADR-041](./adr-041-test-naming-osherove-ide1006.md) | Osherove test naming pattern and IDE1006 suppression | ✅ Accepted | v1.3 |
-| [ADR-044](./adr-044-contractual-result-pattern-dependency.md) | Contractual `Result<T>` pattern dependency in Abstractions | ✅ Accepted | v2.0 |
+| [ADR-044](./adr-044-contractual-result-pattern-dependency.md) | Contractual `Result<T>` pattern dependency in Abstractions | ✅ Accepted | v1.0 / v2.0 |
+| [ADR-051](./adr-051-native-aot-trimming-boundaries.md) | Native AOT trimming boundaries and dynamic expression path | ✅ Accepted | v1.0 |
 
 ---
 
@@ -49,10 +50,11 @@
 |-----|-------|--------|---------|
 | [ADR-002](./adr-002-dapper-integration-optional.md) | Dapper integration is optional | ✅ Accepted | v1.0 |
 | [ADR-003](./adr-003-polly-not-core-dependency.md) | Polly is never a Core dependency | ✅ Accepted | v1.0 |
-| [ADR-004](./adr-004-unitofwork-outside-core.md) | UnitOfWork outside Core (separate package) | ✅ Accepted | v1.0 |
-| [ADR-005](./adr-005-multi-mapping-beyond-7-entities.md) | Multi-mapping >7 entities via fluent builder | ✅ Accepted | v1.0 |
-| [ADR-015](./adr-015-resilience-integration-architecture.md) | Resilience integration architecture | ✅ Accepted | v1.0 |
+| [ADR-004](./adr-004-unitofwork-outside-core.md) | UnitOfWork outside Core (separate package) | ⏳ Deferred | v1.2+ |
+| [ADR-005](./adr-005-multi-mapping-beyond-7-entities.md) | Multi-mapping >7 entities via fluent builder | ⏳ Deferred | v1.2+ |
+| [ADR-015](./adr-015-resilience-integration-architecture.md) | Resilience integration architecture | ⏳ Deferred | v1.2+ |
 | [ADR-016](./adr-016-transaction-retry-semantics.md) | Transaction + retry semantic correctness | ✅ Accepted | v1.0 |
+| [ADR-052](./adr-052-testing-package-mutation-boundary.md) | Testing package mutation boundary and test harness architecture | ✅ Accepted | v1.0 / v2.0 |
 
 ---
 
@@ -81,6 +83,9 @@
 | [ADR-042](./adr-042-scalar-subquery-in-select.md) | Scalar Subquery in SELECT clause | ✅ Accepted | v2.0 |
 | [ADR-043](./adr-043-dapper-aot-integration.md) | Dapper.AOT integration package strategy | ✅ Accepted | v2.0 |
 | [ADR-046](./adr-046-bulk-identity-retrieval-boundary.md) | Bulk identity retrieval boundary and client-generated keys strategy | ✅ Accepted | v2.0 |
+| [ADR-047](./adr-047-publicapi-versioning-release-process.md) | PublicAPI.txt versioning and formal release promotion process | ✅ Accepted | v1.0 |
+| [ADR-049](./adr-049-boundary-and-coexistence-with-dapper-extensions.md) | Architectural boundary and coexistence with EricksonLopez.DapperExtensions | ✅ Accepted | v2.0 |
+| [ADR-050](./adr-050-oracle-bulk-copy-deferral.md) | Native Oracle Bulk Copy Strategy Implementation | ✅ Accepted | v1.0 |
 
 ---
 
@@ -100,6 +105,7 @@
 | [ADR-026](./adr-026-no-specification-pattern-in-core.md) | Specification pattern in Core | App-layer pattern; adapter package may be added separately |
 | [ADR-027](./adr-027-no-repository-pattern.md) | Repository pattern implementation | App-layer architecture; users build repositories on top of SqlBuilder |
 | [ADR-045](./adr-045-rejection-of-braces-column-expansion.md) | Braces column expansion shorthand `{col1, col2}` | Zero functional gain; violates AOT-first and type safety principles |
+| [REJECT-006](./adr-reject-006-reflection-based-sql-dialect-inference.md) | Runtime reflection for SQL dialect inference | Violates Native AOT trimming guarantees; runtime performance overhead |
 
 ---
 
@@ -115,8 +121,8 @@
 | ESQL006 | Missing ON condition in JOIN → Warning | ✅ Implemented |
 | ESQL007 | Potential missing index hint → Info | ✅ Implemented |
 | ESQL008 | Large OFFSET value → Warning | ✅ Implemented |
-| ESQL009 | LIKE leading wildcard → Warning | ✅ Implemented |
-| ESQL010 | LIKE wildcard usage concern → Warning | ✅ Implemented |
+| ESQL009 | LIKE without wildcards → Info | ✅ Implemented |
+| ESQL010 | LIKE leading wildcard → Warning | ✅ Implemented |
 | ESQL011 | `Sql.Raw(string)` unsafe overload → Warning | ✅ Implemented |
 | ESQL012 | Retry pipeline inside transaction → Warning | ✅ Implemented |
 | ESQL020 | Dialect-specific API + incompatible compiler → Warning | ✅ Implemented |
@@ -126,6 +132,8 @@
 | ESQL024 | Cartesian product (missing join condition) → Warning | ✅ Implemented |
 | ESQL025 | SqlKata API detected (migration code fix) → Info | ✅ Implemented |
 | ESQL026 | Deprecated generic `Sql.Merge<T>()` detected → **Error** (v2.0) | ✅ Implemented |
+| ELSB004 | Dynamic SQL identifier without allowlist → Warning | ✅ Implemented |
+| ELSB006 | Batch size exceeds provider parameter limit → Warning | ✅ Implemented |
 | SQL003 | `SELECT *` usage → Warning | ✅ Implemented (legacy prefix) |
 | SQL004 | Redundant WHERE condition → Warning | ✅ Implemented (legacy prefix) |
 | SQL009 | Missing column reference → Warning | ✅ Implemented (legacy prefix) |
@@ -136,5 +144,4 @@
 
 | ADR | Title | Status | Version |
 |-----|-------|--------|---------|
-| [ADR-047](./adr-047-publicapi-versioning-release-process.md) | PublicAPI.txt versioning and formal release promotion process | 📋 Proposed | — |
 | [ADR-048](./adr-048-api-deprecation-removal-policy.md) | API Deprecation vs Removal lifecycle policy | 📋 Proposed | — |

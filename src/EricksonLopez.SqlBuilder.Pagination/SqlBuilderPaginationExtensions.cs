@@ -121,7 +121,7 @@ public static class SqlBuilderPaginationExtensions
     /// <typeparam name="T">The entity type.</typeparam>
     /// <typeparam name="TKey">The cursor key type.</typeparam>
     /// <param name="items">The items fetched from the database (query limit should have been pageSize + 1).</param>
-    /// <param name="parameters">The cursor pagination parameters used for the query.</param>
+    /// <param name="parameters">The cursor pagination parameters that configure the query.</param>
     /// <param name="keySelector">The delegate for extracting the cursor key from an item.</param>
     /// <param name="encoder">The optional cursor encoder.</param>
     /// <returns>A new <see cref="CursorPagedList{T}"/> instance.</returns>

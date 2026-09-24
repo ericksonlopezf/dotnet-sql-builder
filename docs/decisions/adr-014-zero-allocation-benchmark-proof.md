@@ -65,7 +65,7 @@ All claims must reference a benchmark in `tests/EricksonLopez.SqlBuilder.Benchma
 If BenchmarkDotNet adds automatic regression detection with configurable thresholds, integrate it into the CI pipeline directly.
 
 ## References
-- [FEATURE_MATRIX.md §22 — Benchmark Matrix](../../FEATURE_MATRIX.md)
+- [FEATURE_MATRIX.md §22 — Benchmark Matrix](../master-feature-matrix.md)
 - `tests/EricksonLopez.SqlBuilder.Benchmarks/`
-- [docs/Performance.md](../Performance.md)
+- [docs/performance.md](../performance.md)
 - [ADR-006: Source Generator Strategy](./adr-006-source-generator-strategy.md)

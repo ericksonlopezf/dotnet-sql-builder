@@ -211,6 +211,45 @@ public class PostgreSqlDapperExtensionsTests
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Entity metadata mismatch: GetColumnNames() returned 2 items, but GetValues() returned 1. They must match.");
     }
+
+    [Fact]
+    public async Task BulkInsertUnnestAsync_WithPreCancelledToken_CancelsPromptly()
+    {
+        var connection = new MockDbConnection();
+        var data = new[] { new TestEntity { Id = 1, Name = "Test" } };
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        Func<Task> act = async () => await connection.BulkInsertUnnestAsync(data, cancellationToken: cts.Token);
+
+        await act.Should().ThrowAsync<OperationCanceledException>();
+    }
+
+    [Fact]
+    public async Task BulkInsertAsync_WithPreCancelledToken_CancelsPromptly()
+    {
+        var npgConn = new NpgsqlConnection();
+        var parameters = new[] { new NpgsqlParameter("p0", 1) };
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        Func<Task> act = async () => await npgConn.BulkInsertAsync("INSERT INTO test VALUES (@p0)", parameters, cancellationToken: cts.Token);
+
+        await act.Should().ThrowAsync<OperationCanceledException>();
+    }
+
+    [Fact]
+    public async Task BulkCopyAsync_WithPreCancelledToken_CancelsPromptly()
+    {
+        var npgConn = new NpgsqlConnection();
+        var data = new[] { new TestEntity { Id = 1, Name = "Test" } };
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        Func<Task> act = async () => await npgConn.BulkCopyAsync(data, cts.Token);
+
+        await act.Should().ThrowAsync<OperationCanceledException>();
+    }
 }
 
 

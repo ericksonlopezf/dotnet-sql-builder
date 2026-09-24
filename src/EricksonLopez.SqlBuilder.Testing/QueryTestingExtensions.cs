@@ -19,6 +19,7 @@ public static class QueryTestingExtensions
     /// <param name="compiler">The SQL compiler used to build the query.</param>
     /// <param name="expectedSql">The expected SQL string (whitespace is normalized before comparison).</param>
     /// <param name="expectedParameters">The expected parameter values in the order they were bound.</param>
+    /// <exception cref="Exception">The compiled SQL does not match the expected SQL, or the parameter count or values do not match</exception>
     public static void ShouldGenerate(this IAstQuery query, ISqlCompiler compiler, string expectedSql, params object?[] expectedParameters)
     {
         var result = query.Build(compiler);

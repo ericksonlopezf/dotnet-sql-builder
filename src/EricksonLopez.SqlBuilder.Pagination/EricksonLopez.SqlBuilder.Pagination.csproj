@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageId>EricksonLopez.SqlBuilder.Pagination</PackageId>
     <Description>Pagination integration for EricksonLopez.SqlBuilder. Provides offset and keyset cursor pagination extension methods for SelectQuery AST.</Description>
-    <PackageTags>$(CommonPackageTags);pagination;keyset-pagination;cursor-pagination;offset-pagination;paging</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;pagination;keyset-pagination;cursor-pagination;offset-pagination;native-aot</PackageTags>
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>

@@ -25,7 +25,7 @@ namespace EricksonLopez.SqlBuilder.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class RetryInsideTransactionAnalyzer : DiagnosticAnalyzer
     {
-        /// <summary>The diagnostic identifier for ESQL012.</summary>
+        /// <summary>Represents the diagnostic identifier for ESQL012.</summary>
         public const string DiagnosticId = "ESQL012";
 
         private static readonly LocalizableString Title =

@@ -61,7 +61,11 @@ public sealed record InsertQuery<T> : IAstQuery where T : class, new()
     /// </summary>
     /// <param name="tableName">The name of the target table.</param>
     /// <returns>A new <see cref="InsertQuery{T}"/> instance with the target table applied.</returns>
-    public InsertQuery<T> Into(string tableName) => AddNode(new InsertNode(tableName, Array.Empty<string>()));
+    public InsertQuery<T> Into(string tableName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        return AddNode(new InsertNode(tableName, Array.Empty<string>()));
+    }
     
     /// <summary>
     /// Appends the values to insert based on the properties of the provided entity.
@@ -69,10 +73,14 @@ public sealed record InsertQuery<T> : IAstQuery where T : class, new()
     /// <param name="entity">The entity instance containing the data to insert.</param>
     /// <param name="ignoreNulls">If <see langword="true"/>, properties with null values will be excluded from the insertion.</param>
     /// <returns>A new <see cref="InsertQuery{T}"/> instance with the values applied.</returns>
-    /// <exception cref="InvalidOperationException"><typeparamref name="T"/> does not implement <see cref="EricksonLopez.SqlBuilder.Annotations.ISqlEntity"/> or metadata column count does not match value count</exception>
+    /// <exception cref="InvalidOperationException"><typeparamref name="T"/> does not implement <see cref="EricksonLopez.SqlBuilder.Annotations.ISqlEntity"/> (entity must be decorated with [SqlEntity]) or metadata column count does not match value count.</exception>
     public InsertQuery<T> Values(T entity, bool ignoreNulls = true) 
     {
-        var sqlEntity = (EricksonLopez.SqlBuilder.Annotations.ISqlEntity)entity!;
+        var sqlEntity = entity as EricksonLopez.SqlBuilder.Annotations.ISqlEntity;
+        if (sqlEntity is null)
+        {
+            throw new InvalidOperationException($"Entity type '{typeof(T).Name}' does not implement ISqlEntity. Ensure the entity class is decorated with [SqlEntity] and the EricksonLopez.SqlBuilder.SourceGenerators package is configured.");
+        }
         var columns = sqlEntity.GetColumnNames();
         var values = sqlEntity.GetValues();
         
@@ -190,7 +198,15 @@ public sealed record InsertQuery<T> : IAstQuery where T : class, new()
     /// </summary>
     /// <param name="columns">The names of the columns to return.</param>
     /// <returns>A new <see cref="InsertQuery{T}"/> instance with the returning clause applied.</returns>
-    public InsertQuery<T> Returning(params string[] columns) => AddNode(new ReturningNode(columns));
+    public InsertQuery<T> Returning(params string[] columns)
+    {
+        ArgumentNullException.ThrowIfNull(columns);
+        foreach (var col in columns)
+        {
+            SqlNamingHelper.ValidateIdentifier(col, nameof(columns));
+        }
+        return AddNode(new ReturningNode(columns));
+    }
     
     /// <summary>
     /// Specifies the columns to return from the inserted row using a predicate expression.
@@ -222,7 +238,17 @@ public sealed record InsertQuery<T> : IAstQuery where T : class, new()
     /// </summary>
     /// <param name="columns">The names of the columns defining the conflict target.</param>
     /// <returns>A new <see cref="InsertQuery{T}"/> instance with the conflict target applied.</returns>
-    public InsertQuery<T> OnConflict(params string[] columns) => AddNode(new OnConflictNode(columns));
+    public InsertQuery<T> OnConflict(params string[]? columns)
+    {
+        if (columns != null)
+        {
+            foreach (var col in columns)
+            {
+                SqlNamingHelper.ValidateIdentifier(col, nameof(columns));
+            }
+        }
+        return AddNode(new OnConflictNode(columns!));
+    }
     
     /// <summary>
     /// Specifies the columns that define a conflict target for UPSERT operations using a predicate expression.
@@ -303,7 +329,7 @@ public sealed record InsertQuery<T> : IAstQuery where T : class, new()
 
     /// <summary>
     /// Configures this INSERT query to use the results of a SELECT query as the source data.
-    /// Generates: <c>INSERT INTO table [(columns)] SELECT ...</c>
+    /// Generates: <c>INSERT INTO table [(columns)] SELECT ...</c>.
     /// </summary>
     /// <param name="selectQuery">The SELECT query whose results will be inserted.</param>
     /// <param name="columns">

@@ -59,6 +59,7 @@ public static class QueryAssert
     /// <param name="actual">The query being tested.</param>
     /// <param name="compiler">The SQL compiler used to compile both queries.</param>
     /// <param name="normalizeWhitespace">If <see langword="true"/>, collapses all whitespace before comparing SQL strings.</param>
+    /// <exception cref="Xunit.Sdk.XunitException">The generated SQL or parameters of the two queries do not match</exception>
     public static void QueriesMatch(ISqlQuery expected, ISqlQuery actual, ISqlCompiler compiler, bool normalizeWhitespace = true)
     {
         var comparison = QueryComparer.Compare(expected, actual, compiler, normalizeWhitespace);

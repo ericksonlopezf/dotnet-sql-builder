@@ -22,6 +22,14 @@ public static class Sql
     public static SelectQuery<T> From<T>() where T : class, new() => new SelectQuery<T>().AddNode(new FromNode(SqlEntityCache<T>.TableName));
 
     /// <summary>
+    /// Creates a new SELECT query for the specified entity type with an explicitly specified table name.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity to query.</typeparam>
+    /// <param name="tableName">The explicit table name.</param>
+    /// <returns>A new <see cref="SelectQuery{T}"/> instance.</returns>
+    public static SelectQuery<T> From<T>(string tableName) where T : class, new() => new SelectQuery<T>().AddNode(new FromNode(tableName));
+
+    /// <summary>
     /// Creates a new INSERT query for the specified entity.
     /// </summary>
     /// <typeparam name="T">The type of the entity to insert.</typeparam>
@@ -130,7 +138,8 @@ public static class Sql
     /// </summary>
     /// <param name="value">The source string to evaluate.</param>
     /// <param name="pattern">The pattern string to compare against.</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns><see langword="true"/> if the string matches the pattern; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool ILike(this string value, string pattern)
@@ -144,7 +153,8 @@ public static class Sql
     /// <typeparam name="TItem">The type of items to evaluate.</typeparam>
     /// <param name="value">The value to test.</param>
     /// <param name="collection">The candidate collection.</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns><see langword="true"/> if the value equals any element in the collection; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool Any<TItem>(this TItem value, IEnumerable<TItem> collection)
@@ -158,7 +168,8 @@ public static class Sql
     /// <typeparam name="TItem">The type of items to evaluate.</typeparam>
     /// <param name="value">The value to test.</param>
     /// <param name="collection">The candidate collection.</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns><see langword="true"/> if the value equals all elements in the collection; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool All<TItem>(this TItem value, IEnumerable<TItem> collection)
@@ -174,7 +185,8 @@ public static class Sql
     /// <param name="value">The column value (the left-hand side of BETWEEN).</param>
     /// <param name="from">The lower bound (inclusive).</param>
     /// <param name="to">The upper bound (inclusive).</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns><see langword="true"/> if the value is inclusively between the bounds; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     /// <example>
     /// <code>
@@ -196,7 +208,8 @@ public static class Sql
     /// <typeparam name="TItem">The type of the value and fallback.</typeparam>
     /// <param name="value">The column value (the left-hand side of COALESCE).</param>
     /// <param name="fallback">The fallback value returned when <paramref name="value"/> is null.</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns>The first non-null value among the operands.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     /// <example>
     /// <code>
@@ -218,7 +231,8 @@ public static class Sql
     /// <param name="val1">The first candidate value.</param>
     /// <param name="val2">The second candidate value.</param>
     /// <param name="fallback">The fallback value.</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns>The first non-null value among the arguments.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static TItem Coalesce<TItem>(TItem? val1, TItem? val2, TItem fallback)
@@ -233,7 +247,8 @@ public static class Sql
     /// <typeparam name="TItem">The type of the values to compare.</typeparam>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns><see langword="true"/> if the values are distinct; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool IsDistinctFrom<TItem>(TItem left, TItem right)
@@ -248,7 +263,8 @@ public static class Sql
     /// <typeparam name="TItem">The type of the values to compare.</typeparam>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
-    /// <returns>This exists only for SQL expression building and always throws at runtime.</returns>
+    /// <returns><see langword="true"/> if the values are not distinct; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>This method serves as an expression marker for SQL translation and throws if called directly.</remarks>
     /// <exception cref="InvalidOperationException">The method is invoked directly at runtime rather than inside a query expression</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool IsNotDistinctFrom<TItem>(TItem left, TItem right)

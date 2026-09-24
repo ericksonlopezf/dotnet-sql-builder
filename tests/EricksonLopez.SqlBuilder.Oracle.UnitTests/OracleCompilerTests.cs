@@ -173,6 +173,25 @@ public class OracleCompilerTests
         act.Should().Throw<System.NotSupportedException>()
            .WithMessage("*Oracle RETURNING clause requires explicit column names*");
     }
+
+    [Fact]
+    public void EscapeIdentifier_WithStringAndQuotes_EscapesCorrectly()
+    {
+        var compiler = new OracleCompiler();
+        var escaped = compiler.EscapeIdentifier("col\"name");
+        escaped.Should().Be("\"COL\"\"NAME\"");
+
+        var sb = new System.Text.StringBuilder();
+        compiler.EscapeIdentifier(sb, "col\"name".AsSpan());
+        sb.ToString().Should().Be("\"COL\"\"NAME\"");
+
+        var escapedNormal = compiler.EscapeIdentifier("normal_col");
+        escapedNormal.Should().Be("\"NORMAL_COL\"");
+
+        var sbNormal = new System.Text.StringBuilder();
+        compiler.EscapeIdentifier(sbNormal, "normal_col".AsSpan());
+        sbNormal.ToString().Should().Be("\"NORMAL_COL\"");
+    }
 }
 
 

@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Date
+2026-09-04
+
 ## Context
 The `EricksonLopez.SqlBuilder` project is a high-performance SQL Builder library featuring a custom Roslyn Source Generator (`EricksonLopez.SqlBuilder.SourceGenerators`) that serves as the core engine for generating SQL code at compile-time. We rely on Stryker.NET for mutation testing to ensure code quality, targeting strict metrics (Line Coverage ≥ 100%, Branch Coverage ≥ 100%, Mutation Score ≥ 100%, Method Coverage ≥ 100%).
 

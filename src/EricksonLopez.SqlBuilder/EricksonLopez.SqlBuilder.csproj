@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <PackageId>EricksonLopez.SqlBuilder</PackageId>
     <Description>Immutable NativeAOT-friendly SQL Builder core — AST, query builders, expression visitors, and dialect compilation contracts.</Description>
-    <PackageTags>$(CommonPackageTags);query-builder;fluent-api;ast;expression-tree;native-aot</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;query-builder;fluent-api;ast;expression-trees;native-aot</PackageTags>
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
@@ -31,6 +31,7 @@
     <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Tests" />
     <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Testing" />
     <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.UnitTests" />
+    <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Testing.UnitTests" />
     <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Benchmarks" />
     <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.Dapper.UnitTests" />
     <InternalsVisibleTo Include="EricksonLopez.SqlBuilder.MySql.UnitTests" />

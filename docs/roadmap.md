@@ -12,16 +12,13 @@
 
 | Version | Focus | Status |
 |---------|-------|--------|
-| **v0.6.0–v1.0.0** | Foundation, dialects, AOT, analyzers, UoW, resilience, bulk | ✅ Complete |
-| **v1.1.0** | Phase 0 + Phase 3: Stabilization + AOT declaration (STAB-001–008) | ✅ Complete |
-| **v1.2.0** | Phase 1 + Phase 2: SQL engine completion + advanced SQL (CORE-001–004, ADV-001–003) | ✅ Complete |
-| **v1.3.0** | Phase 5 + Phase 6: Integration layer & safety analyzers (INT-001–003, SAFE-001–002) | ✅ Complete |
-| **v1.4.0** | Phase 4: Performance benchmarks + allocation gates (PERF-001–007) | ✅ Complete |
-| **v2.0.0** | Source-generated `IDataReader` mapper & inferred parser execution (AOT-001–007) | ✅ Complete |
+| **v1.0.0** | Foundation, 6 dialects, NativeAOT, Roslyn analyzers (`ESQL`/`ELSB`), pagination, OpenTelemetry, Dapper integration, and architectural stabilization (Phases 0–6) | ✅ Released |
+| **v2.0.0** (Current Release) | Production hardening, API security & input validation enforcement, zero-allocation compiler optimizations, 100% showcase API coverage, and SemVer 2.0 alignment | ✅ Released & Active |
+| **v2.1.x** (Planned Minor) | Incremental performance tuning, additional dialect optimizations, extended Roslyn code fixes, and documentation recipes | 📋 Planned |
 
 ---
 
-## Phase 0 — Architectural Stabilization ✅ Complete
+## Phase 0 — Architectural Stabilization (Consolidated in v1.0.0)
 ### Fix broken abstractions, packaging issues, and silent wrong behavior (ADR-031 to ADR-034)
 
 ---
@@ -266,7 +263,7 @@ Acceptance Criteria:
 
 ---
 
-## Phase 1 — Core SQL Engine Completion
+## Phase 1 — Core SQL Engine Completion (Consolidated in v1.0.0)
 ### Ensure all declared dialect support actually works correctly
 
 ---
@@ -380,7 +377,7 @@ Acceptance Criteria:
 
 ---
 
-## Phase 2 — Advanced SQL Features
+## Phase 2 — Advanced SQL Features (Consolidated in v1.0.0)
 
 ---
 
@@ -469,7 +466,7 @@ Acceptance Criteria:
 
 ---
 
-## Phase 3 — Native AOT Full Path
+## Phase 3 — Native AOT Full Path (Consolidated in v1.0.0)
 
 ---
 
@@ -491,7 +488,7 @@ Acceptance Criteria:
 
 ---
 
-## Phase 4 — Performance
+## Phase 4 — Performance Benchmarks & Allocation Gates (Consolidated in v1.0.0)
 
 ---
 
@@ -512,7 +509,7 @@ Acceptance Criteria:
 
 ---
 
-## Phase 5 — Integration Layer ✅ Complete
+## Phase 5 — Integration Layer (Consolidated in v1.0.0)
 ### OpenTelemetry multi-targeting, OTel semantic conventions, and abstract bulk renderers (ADR-038, ADR-039)
 
 ---
@@ -521,48 +518,32 @@ Acceptance Criteria:
 
 ```
 ID: INT-001
-Title: Add net9.0 and net10.0 to OpenTelemetry package TFMs
-Problem: EricksonLopez.SqlBuilder.OpenTelemetry only targets net8.0.
-         Consumers on net9.0 or net10.0 cannot reference it without downgrading.
-Current State: <TargetFramework>net8.0</TargetFramework>
-Desired State: <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-Dependencies: Verify OTel SDK compatibility with net9/net10
+Title: Add net9.0 and net10.0 to OpenTelemetry package TargetFrameworks
+Problem: EricksonLopez.SqlBuilder.OpenTelemetry currently targets only net8.0;net9.0.
+Current State: Net8.0 and net9.0.
+Desired State: TargetFrameworks = net8.0;net9.0;net10.0.
+Dependencies: None
 Affected Packages: EricksonLopez.SqlBuilder.OpenTelemetry
 Affected APIs: None
-Affected Tests: CI multi-TFM build
+Affected Tests: None
 Performance Impact: None
-AOT Impact: None
+AOT Impact: Preserves AOT compatibility on .NET 9 and .NET 10
 Dialect Impact: None
-Breaking Change: No (additive)
+Breaking Change: No
 Migration Required: No
-Priority: P2
-Estimated Complexity: Trivial (< 1 day)
+Priority: P1
+Estimated Complexity: Trivial (1 hour)
 Acceptance Criteria:
-  - Package builds and tests pass on net8.0, net9.0, net10.0
+  - EricksonLopez.SqlBuilder.OpenTelemetry.csproj targets net8.0;net9.0;net10.0
+  - dotnet build passes
+  - dotnet test passes
 ```
 
 ---
 
-### INT-002 — OTel db.system Semantic Attribute Per Dialect
-
+### INT-002 — Add OpenTelemetry db.system Semantic Convention Tag
 ```
 ID: INT-002
-Title: Set OTel db.system tag to dialect-correct value per connection type
-Problem: SqlBuilderInstrumentation.StartQueryActivity() sets db.system = "sql" generically.
-         OTel semantic conventions require values like "mssql", "postgresql", "mysql", "sqlite".
-Current State: db.system = "sql" (generic) in all cases.
-Desired State: Dialect-aware db.system resolved from compiler type.
-Dependencies: None
-Affected Packages: EricksonLopez.SqlBuilder.OpenTelemetry
-Affected APIs: SqlBuilderInstrumentation.StartQueryActivity()
-Affected Tests: Unit tests for tag correctness
-Performance Impact: Negligible (one type check per query)
-AOT Impact: None
-Dialect Impact: All dialects
-Breaking Change: No (tag value changes; existing consumers may need filter updates)
-Migration Required: Optional — update OTel dashboards if filtering on db.system
-Priority: P2
-Estimated Complexity: Small (1-2 days)
 Acceptance Criteria:
   - Activity started for SQL Server query has db.system = "mssql"
   - Activity started for PostgreSQL query has db.system = "postgresql"
@@ -606,7 +587,7 @@ Acceptance Criteria:
 
 ---
 
-## Phase 6 — Developer Safety & Analyzers ✅ Complete
+## Phase 6 — Developer Safety & Analyzers (Consolidated in v1.0.0)
 ### Roslyn analyzers and compile-time diagnostics (ADR-040)
 
 ---

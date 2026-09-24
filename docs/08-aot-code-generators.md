@@ -19,15 +19,20 @@ public partial class Order {
 }
 ```
 
-The analyzer produces static filtering (`OrderFilter`) and projection classes that expose methods like `IdEq`, `TotalAmountGt`, eliminating the need for the engine to read `Expression<Func<T, bool>>` expression trees.
+The generator produces static filtering extension methods (`OrderFilters`) and strongly typed DTO filter classes (`OrderFilter : ISqlFilter<Order>`) that expose methods like `WhereIdEq` and `WhereTotalAmountGt`, eliminating the need for the engine to parse `Expression<Func<T, bool>>` expression trees at runtime.
 
 ```csharp
-// Auto-generated AOT Code (IL emitted at compile time)
-public static class OrderFilter 
+// Auto-generated AOT Code (emitted at compile time by FilterGenerator)
+public static class OrderFilters 
 {
-    public static SelectQuery<Order> IdEq(this SelectQuery<Order> query, int value)
+    public static SelectQuery<Order> WhereIdEq(this SelectQuery<Order> query, int value)
     {
-        return query.Where("Id = @Id").WithParam("Id", value);
+        return query.Where((FormattableString)$"id = {value}");
+    }
+
+    public static SelectQuery<Order> WhereTotalAmountGt(this SelectQuery<Order> query, decimal value)
+    {
+        return query.Where((FormattableString)$"total_amount > {value}");
     }
 }
 ```
@@ -37,8 +42,8 @@ public static class OrderFilter
 
 ## Strongly Typed Filters vs Expression Trees
 
-The Source Generator also creates auxiliary filtering classes, for example, `OrderFilter`. This allows you to build Queries where the condition is tied AOT to the database fields **without going through expression trees**. 
+The Source Generator creates auxiliary filtering extensions (`OrderFilters`) and DTO classes (`OrderFilter`). This allows you to build Queries where the condition is tied AOT to the database fields **without going through expression trees**. 
 
-Although `Sql.From<Order>().Where(o => o.Id == 1)` is supported, using AOT filters (`Sql.From<Order>().IdEq(1)`) prevents additional memory allocations caused by the C# compiler when creating `Expression` nodes.
+Although `Sql.From<Order>().Where(o => o.Id == 1)` is supported, using AOT filters (`Sql.From<Order>().WhereIdEq(1)` or `.ApplyFilter(new OrderFilter { IdEq = 1 })`) prevents additional memory allocations caused by the C# compiler when creating `Expression` nodes and avoids trimming warnings.
 
 *(See the [performance guide](13-performance-and-benchmarks.md) for more details)*.

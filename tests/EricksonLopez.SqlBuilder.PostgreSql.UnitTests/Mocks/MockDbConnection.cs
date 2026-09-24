@@ -67,6 +67,7 @@ namespace EricksonLopez.SqlBuilder.PostgreSql.UnitTests.Mocks
         
         public override Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(1);
         }
     }

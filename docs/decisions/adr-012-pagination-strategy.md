@@ -13,10 +13,10 @@ Pagination is a universal requirement. Three fundamentally different strategies 
 
 | Strategy | SQL Pattern | Correctness | Performance at depth | Random access | Stable? |
 |----------|-------------|-------------|----------------------|---------------|---------|
-| **Offset** | `LIMIT n OFFSET m` | ❌ Phantom rows on insert | O(n) — full scan to offset | ✅ | ❌ |
-| **Window (ROW_NUMBER)** | `ROW_NUMBER() OVER (ORDER BY ...)` | ✅ | O(n) — index on ORDER BY column | ✅ | ✅ |
-| **Keyset (Seek)** | `WHERE id > @lastId ORDER BY id LIMIT n` | ✅ | O(1) — index seek | ❌ | ✅ |
-| **Composite Cursor** | `WHERE (c1 > @k1) OR (c1 = @k1 AND c2 > @k2) ... LIMIT n` | ✅ | O(1) — composite index seek | ❌ | ✅ |
+| **Offset** | `LIMIT n OFFSET m` | âŒ Phantom rows on insert | O(n) â€” full scan to offset | âœ… | âŒ |
+| **Window (ROW_NUMBER)** | `ROW_NUMBER() OVER (ORDER BY ...)` | âœ… | O(n) â€” index on ORDER BY column | âœ… | âœ… |
+| **Keyset (Seek)** | `WHERE id > @lastId ORDER BY id LIMIT n` | âœ… | O(1) â€” index seek | âŒ | âœ… |
+| **Composite Cursor** | `WHERE (c1 > @k1) OR (c1 = @k1 AND c2 > @k2) ... LIMIT n` | âœ… | O(1) â€” composite index seek | âŒ | âœ… |
 
 ## Problem
 Most libraries implement only offset pagination, leaving users to discover its O(n) degradation at large offsets and phantom row bugs when data changes between pages.
@@ -36,34 +36,34 @@ Most libraries implement only offset pagination, leaving users to discover its O
 Provide four distinct pagination methods in `SelectQuery<T>`:
 
 ```csharp
-// 1. Offset — simple, O(n) at depth
+// 1. Offset â€” simple, O(n) at depth
 query.Limit(20).Offset(40);
 
-// 2. Window — ROW_NUMBER, O(n) but stable
+// 2. Window â€” ROW_NUMBER, O(n) but stable
 query.WindowPage(pageNumber: 3, pageSize: 20, orderBy: x => x.CreatedAt);
 
-// 3. Keyset / Seek — O(1), stable single column
+// 3. Keyset / Seek â€” O(1), stable single column
 query.Seek(after: lastId, pageSize: 20, keySelector: x => x.Id);
 
-// 4. Composite Cursor — O(1), multi-column keyset for deterministic order
+// 4. Composite Cursor â€” O(1), multi-column keyset for deterministic order
 query.OrderBy(x => x.CreatedAt)
      .ThenBy(x => x.Id)
      .SeekAfter(new CursorKey("CreatedAt", lastDate), new CursorKey("Id", lastId))
      .Limit(20);
 ```
 
-**No default pagination strategy.** If pagination methods are not called, the query returns all rows. This is intentional — the library does not make assumptions about desired pagination behavior.
+**No default pagination strategy.** If pagination methods are not called, the query returns all rows. This is intentional â€” the library does not make assumptions about desired pagination behavior.
 
 ## Consequences
 
 ### Positive
-- ✅ Users choose the right strategy for their use case
-- ✅ All three are compile-time typed (no string column references)
-- ✅ Documentation clearly explains trade-offs
+- âœ… Users choose the right strategy for their use case
+- âœ… All three are compile-time typed (no string column references)
+- âœ… Documentation clearly explains trade-offs
 
 ### Negative
-- ❌ More API surface to learn vs. a single `.Paginate()` method
-- ❌ Composite cursor requires additional types (`CursorToken<T>`)
+- âŒ More API surface to learn vs. a single `.Paginate()` method
+- âŒ Composite cursor requires additional types (`CursorToken<T>`)
 
 ## Documentation Requirement
 All pagination documentation MUST include the trade-off table above. Users must be able to make an informed choice.
@@ -72,6 +72,6 @@ All pagination documentation MUST include the trade-off table above. Users must 
 If a single "smart" pagination strategy emerges that handles all cases (unlikely), consolidate. Otherwise, keep all three.
 
 ## References
-- [FEATURE_MATRIX.md §11 — Pagination Analysis](../../FEATURE_MATRIX.md)
-- `src/EricksonLopez.SqlBuilder/SelectQuery.cs` — `.Page()`, `.WindowPage()`, `.Seek()`
-- [docs/Pagination.md](../Pagination.md)
+- [FEATURE_MATRIX.md Â§11 â€” Pagination Analysis](../master-feature-matrix.md)
+- `src/EricksonLopez.SqlBuilder/SelectQuery.cs` â€” `.Page()`, `.WindowPage()`, `.Seek()`
+- [docs/pagination.md](../pagination.md)

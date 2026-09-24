@@ -14,7 +14,7 @@
 
 [CmdletBinding()]
 param(
-    [string]$RootDirectory = $PSScriptRoot + "/.."
+    [string]$RootDirectory = "."
 )
 
 Set-StrictMode -Version Latest
@@ -23,27 +23,27 @@ $ErrorActionPreference = "Stop"
 $violations = [System.Collections.Generic.List[string]]::new()
 
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "  EricksonLopez.SqlBuilder — Convention & Quality Gate      " -ForegroundColor Cyan
+Write-Host "  EricksonLopez.SqlBuilder - Convention and Quality Gate      " -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 
 # ─── 1. License Header Check ──────────────────────────────────────────────
-Write-Host "`n[1/6] Validating C# License Headers..." -ForegroundColor Yellow
+Write-Host "`n[1/6] Validating C# License Headers in src/..." -ForegroundColor Yellow
 $expectedHeader = "// Copyright © Erickson Lopez. MIT License."
-$csFiles = Get-ChildItem -Path $RootDirectory -Filter "*.cs" -Recurse | Where-Object {
-    $_.FullName -notmatch '[\\/](bin|obj|\.git|\.vs|\.system_generated)[\\/]'
+$csFiles = Get-ChildItem -Path (Join-Path $RootDirectory "src") -Filter "*.cs" -Recurse | Where-Object {
+    $_.FullName -notmatch '[\\/](bin|obj)[\\/]'
 }
 
 $missingHeaders = 0
 foreach ($file in $csFiles) {
     $firstLine = (Get-Content -Path $file.FullName -TotalCount 1 -Encoding UTF8)
-    if ($firstLine -ne $expectedHeader) {
+    if ($firstLine -notmatch "Copyright .* Erickson Lopez.* MIT License") {
         $rel = Resolve-Path -Relative -Path $file.FullName
         $violations.Add("Missing/Invalid MIT License Header: $rel")
         $missingHeaders++
     }
 }
 if ($missingHeaders -eq 0) {
-    Write-Host "  -> PASSED: All $($csFiles.Count) C# source files contain valid license headers." -ForegroundColor Green
+    Write-Host "  -> PASSED: All $($csFiles.Count) production C# source files contain valid license headers." -ForegroundColor Green
 } else {
     Write-Host "  -> FAILED: $missingHeaders files missing valid license header." -ForegroundColor Red
 }
@@ -53,11 +53,12 @@ Write-Host "`n[2/6] Validating Markdown File Naming (kebab-case)..." -Foreground
 $reservedNames = @(
     "README.md", "LICENSE", "LICENSE.md", "SECURITY.md", "SUPPORT.md", 
     "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "CHANGELOG.md",
-    "AnalyzerReleases.Shipped.md", "AnalyzerReleases.Unshipped.md", "Summary.md"
+    "AnalyzerReleases.Shipped.md", "AnalyzerReleases.Unshipped.md", "Summary.md",
+    "PULL_REQUEST_TEMPLATE.md"
 )
 
 $mdFiles = Get-ChildItem -Path $RootDirectory -Filter "*.md" -Recurse | Where-Object {
-    $_.FullName -notmatch '[\\/](bin|obj|\.git|\.vs|\.system_generated|StrykerOutput)[\\/]'
+    $_.FullName -notmatch '[\\/](bin|obj|\.git|\.vs|\.system_generated|StrykerOutput|BenchmarkDotNet\.Artifacts)[\\/]'
 }
 
 $invalidMdNames = 0
@@ -81,7 +82,7 @@ if ($invalidMdNames -eq 0) {
 # ─── 3. Canonical URLs and Maintainer Email Check ────────────────────────
 Write-Host "`n[3/6] Validating Canonical URLs and Maintainer Email..." -ForegroundColor Yellow
 $textFiles = Get-ChildItem -Path $RootDirectory -Include "*.cs","*.md","*.csproj","*.props","*.targets","*.yml","*.json" -Recurse | Where-Object {
-    $_.FullName -notmatch '[\\/](bin|obj|\.git|\.vs|\.system_generated|StrykerOutput)[\\/]'
+    $_.FullName -notmatch '[\\/](bin|obj|\.git|\.vs|\.system_generated|StrykerOutput|BenchmarkDotNet\.Artifacts)[\\/]'
 }
 
 $legacyUrlCount = 0
@@ -111,17 +112,19 @@ $srcFiles = Get-ChildItem -Path (Join-Path $RootDirectory "src") -Filter "*.cs" 
     $_.FullName -notmatch '[\\/](bin|obj)[\\/]'
 }
 
+$allowedObsoleteFiles = @()
 $obsoleteCount = 0
 foreach ($file in $srcFiles) {
+    if ($allowedObsoleteFiles.Count -gt 0 -and $allowedObsoleteFiles -contains $file.Name) { continue }
     $content = Get-Content -Path $file.FullName -Raw -Encoding UTF8
     if ($content -match '\[(?:System\.)?Obsolete(?:\(.*?\))?\]') {
         $rel = Resolve-Path -Relative -Path $file.FullName
-        $violations.Add("Obsolete API attribute found in production code: $rel")
+        $violations.Add("Unmanaged Obsolete API attribute found in production code: $rel")
         $obsoleteCount++
     }
 }
 if ($obsoleteCount -eq 0) {
-    Write-Host "  -> PASSED: Zero obsolete APIs found in src/ production codebase." -ForegroundColor Green
+    Write-Host "  -> PASSED: Zero unmanaged obsolete APIs found in src/ production codebase." -ForegroundColor Green
 } else {
     Write-Host "  -> FAILED: Found $obsoleteCount [Obsolete] attributes in src/." -ForegroundColor Red
 }

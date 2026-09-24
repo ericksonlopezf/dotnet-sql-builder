@@ -17,12 +17,11 @@
     <Nullable>enable</Nullable>
 
     <PackageId>EricksonLopez.SqlBuilder.Dapper</PackageId>
-    <Version>1.0.0</Version>
     <Authors>Erickson Lopez</Authors>
     <Description>Seamless integration with Dapper and OpenTelemetry for EricksonLopez.SqlBuilder.</Description>
     <RepositoryUrl>https://github.com/ericksonlopezf/dotnet-sql-builder</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>$(CommonPackageTags);dapper;micro-orm;data-access;unit-of-work;multi-mapping</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;dapper;micro-orm;data-access;multi-mapping</PackageTags>
     <!-- QueryAsync<T> relies on Dapper's reflection-based IL-emitted mapper — not NativeAOT compatible -->
     <!-- For NativeAOT scenarios, use QueryAotAsync<T> in EricksonLopez.SqlBuilder.Aot -->
     <IsAotCompatible>false</IsAotCompatible>

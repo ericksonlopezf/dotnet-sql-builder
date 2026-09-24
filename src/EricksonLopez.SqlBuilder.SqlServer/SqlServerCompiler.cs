@@ -18,7 +18,7 @@ namespace EricksonLopez.SqlBuilder.SqlServer;
 public class SqlServerCompiler : SqlCompilerBase
 {
     /// <inheritdoc />
-    public override string EscapeIdentifier(string identifier) => $"[{identifier}]";
+    public override string EscapeIdentifier(string identifier) => $"[{identifier.Replace("]", "]]")}]";
 
     /// <inheritdoc />
     public override bool SupportsCapability(ProviderCapability capability)
@@ -33,7 +33,11 @@ public class SqlServerCompiler : SqlCompilerBase
     public override void EscapeIdentifier(StringBuilder sb, ReadOnlySpan<char> identifier)
     {
         sb.Append('[');
-        sb.Append(identifier);
+        foreach (var c in identifier)
+        {
+            if (c == ']') sb.Append(']');
+            sb.Append(c);
+        }
         sb.Append(']');
     }
 

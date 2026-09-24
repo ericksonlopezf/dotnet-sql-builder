@@ -9,7 +9,7 @@
   <PropertyGroup>
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>
-    <Exclude>[xunit.*]*,[EricksonLopez.SqlBuilder.Abstractions]*,[EricksonLopez.SqlBuilder.Testing]*,[EricksonLopez.SqlBuilder.Tests]*</Exclude>
+    <Exclude>[xunit.*]*,[EricksonLopez.SqlBuilder.Abstractions]*,[EricksonLopez.SqlBuilder.Tests]*</Exclude>
   </PropertyGroup>
 
 

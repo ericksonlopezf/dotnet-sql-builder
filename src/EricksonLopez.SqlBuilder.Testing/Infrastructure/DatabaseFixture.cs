@@ -12,53 +12,47 @@ using Xunit;
 namespace EricksonLopez.SqlBuilder.Testing.Infrastructure;
 
 /// <summary>
-/// Abstract base class for all database test fixtures.
-/// Implements IAsyncLifetime for proper xUnit async setup/teardown.
-///
-/// Each engine-specific fixture inherits this class and provides:
-///   1. Container lifecycle (start/stop)
-///   2. Connection factory
-///   3. Compiler factory
-///   4. Schema initialization (DDL)
-///   5. Data seeding
+/// Provides an abstract base class for database test fixtures.
 /// </summary>
+/// <remarks>
+/// Implements <see cref="IAsyncLifetime"/> for xUnit setup and teardown, managing container lifecycle, connection factories, and data seeding.
+/// </remarks>
 public abstract class DatabaseFixture : IAsyncLifetime
 {
     private static readonly StandardDataset _sharedDataset = TestDataSeeder.Generate();
 
     /// <summary>
-    /// The standard dataset shared across all tests in the fixture.
-    /// Generated once, used by all tests for read operations.
+    /// Gets the standard dataset shared across all tests in the fixture.
     /// </summary>
     public StandardDataset Data => _sharedDataset;
 
     /// <summary>
     /// Creates a new open database connection for a test.
-    /// Callers are responsible for disposing the connection.
     /// </summary>
+    /// <returns>A new <see cref="IDbConnection"/> instance.</returns>
     public abstract IDbConnection CreateConnection();
 
     /// <summary>
     /// Returns the SQL compiler for this database engine.
-    /// Compilers are typically stateless and can be reused.
     /// </summary>
+    /// <returns>An <see cref="ISqlCompiler"/> instance configured for the database dialect.</returns>
     public abstract ISqlCompiler CreateCompiler();
 
     /// <summary>
-    /// Returns the connection string for this fixture.
-    /// Used by Dapper RegisterCompiler and diagnostic tools.
+    /// Gets the connection string for this fixture.
     /// </summary>
     public abstract string ConnectionString { get; }
 
     /// <summary>
-    /// Engine identifier for diagnostics (e.g. "PostgreSQL", "SQLite").
+    /// Gets the engine identifier for diagnostics and compiler registration.
     /// </summary>
     public abstract string EngineName { get; }
 
     /// <summary>
-    /// Called by xUnit before any test in the fixture runs.
-    /// Starts the container (if applicable), creates the schema, and seeds data.
+    /// Starts the container if applicable, initializes the schema, and seeds test data.
     /// </summary>
+    /// <returns>A task representing the asynchronous initialization operation.</returns>
+    /// <exception cref="InvalidOperationException">The connection created by <see cref="CreateConnection"/> is not a <see cref="System.Data.Common.DbConnection"/></exception>
     public async Task InitializeAsync()
     {
         await StartContainerAsync();
@@ -75,9 +69,9 @@ public abstract class DatabaseFixture : IAsyncLifetime
     }
 
     /// <summary>
-    /// Called by xUnit after all tests in the fixture have run.
     /// Stops and disposes the container.
     /// </summary>
+    /// <returns>A task representing the asynchronous disposal operation.</returns>
     public async Task DisposeAsync()
     {
         await StopContainerAsync();
@@ -86,39 +80,47 @@ public abstract class DatabaseFixture : IAsyncLifetime
     // ─── Override Points ──────────────────────────────────────────────────────
 
     /// <summary>
-    /// Starts the Docker container. Override for Testcontainers-based fixtures.
-    /// Base implementation is a no-op (for SQLite in-memory).
+    /// Starts the database container asynchronously.
     /// </summary>
+    /// <returns>A task representing the asynchronous start operation.</returns>
     protected virtual Task StartContainerAsync() => Task.CompletedTask;
 
     /// <summary>
-    /// Stops the Docker container. Override for Testcontainers-based fixtures.
+    /// Stops the database container asynchronously.
     /// </summary>
+    /// <returns>A task representing the asynchronous stop operation.</returns>
     protected virtual Task StopContainerAsync() => Task.CompletedTask;
 
     /// <summary>
     /// Executes the DDL script to create the schema.
-    /// Each engine has its own DDL dialect.
     /// </summary>
+    /// <param name="connection">The database connection on which DDL commands are executed.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     protected abstract Task InitializeSchemaAsync(System.Data.Common.DbConnection connection);
 
     /// <summary>
-    /// Seeds reference data: roles and categories.
-    /// These are required for FK constraints before seeding transactional data.
+    /// Seeds reference data including roles and categories.
     /// </summary>
+    /// <param name="connection">The database connection used to seed reference data.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     protected abstract Task SeedCoreDataAsync(System.Data.Common.DbConnection connection);
 
     /// <summary>
-    /// Seeds the full test dataset: customers, products, orders, order items, etc.
-    /// Uses the TestDataSeeder-generated StandardDataset.
+    /// Seeds the full test dataset using the standard dataset.
     /// </summary>
+    /// <param name="connection">The database connection used to seed test data.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     protected abstract Task SeedTestDataAsync(System.Data.Common.DbConnection connection);
 
     // ─── Helper: Batch Insert ─────────────────────────────────────────────────
 
     /// <summary>
-    /// Executes a command with retry for transient failures (e.g. container startup).
+    /// Executes an asynchronous operation with retry logic for transient failures.
     /// </summary>
+    /// <param name="action">The asynchronous operation to execute.</param>
+    /// <param name="maxRetries">The maximum number of retry attempts.</param>
+    /// <param name="delay">The optional delay between retry attempts; defaults to two seconds when <see langword="null"/>.</param>
+    /// <returns>A task representing the asynchronous retry operation.</returns>
     protected static async Task ExecuteWithRetryAsync(
         Func<Task> action,
         int maxRetries = 3,
@@ -140,8 +142,11 @@ public abstract class DatabaseFixture : IAsyncLifetime
     }
 
     /// <summary>
-    /// Reads a DDL file from the embedded resources or disk.
+    /// Reads a DDL script file from embedded resources or disk.
     /// </summary>
+    /// <param name="filename">The filename of the DDL script to read.</param>
+    /// <returns>The content of the DDL script file.</returns>
+    /// <exception cref="FileNotFoundException">The specified DDL script file could not be found</exception>
     protected static string ReadDdlFile(string filename)
     {
         // Try to read from the DDL directory relative to test assembly

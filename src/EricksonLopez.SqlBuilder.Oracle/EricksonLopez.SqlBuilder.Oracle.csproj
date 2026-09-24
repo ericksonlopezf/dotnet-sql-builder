@@ -11,7 +11,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
-    <PackageTags>$(CommonPackageTags);oracle;oracle-db;plsql;dialect;query-compiler</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;oracle;odp-net;plsql;dialect;query-compiler</PackageTags>
     <!-- Non-AOT: Oracle.ManagedDataAccess.Core depends on dynamic reflection and runtime Emit, which are incompatible with Native AOT and trimming. -->
     <IsAotCompatible>false</IsAotCompatible>
   </PropertyGroup>

@@ -1,8 +1,15 @@
-# Migration Guide: `dapper-extensions-pg` to `dotnet-sql-builder`
+# Historical Note: `dapper-extensions-pg` and Ecosystem Boundaries
 
-The standalone `dapper-extensions-pg` repository has been deprecated as 100% of its capabilities and responsibilities are now natively supported in `dotnet-sql-builder`.
-
-This guide details how to migrate existing code.
+> [!WARNING]
+> **SUPERSEDED BY [ADR-049: Architectural Boundary and Coexistence with EricksonLopez.DapperExtensions](decisions/adr-049-boundary-and-coexistence-with-dapper-extensions.md)**
+>
+> The legacy standalone `dapper-extensions-pg` repository evolved into the comprehensive multi-dialect platform package `EricksonLopez.DapperExtensions` and `EricksonLopez.DapperExtensions.PostgreSql`.
+>
+> **Canonical Responsibilities:**
+> - **`EricksonLopez.DapperExtensions`** is the **official runtime owner** of `IUnitOfWork`, `ISavepoint`, PostgreSQL typed array `UNNEST`, SQL Server `SqlBulkCopy`, Native AOT `MultiMapBuilder`, and reactive `IAsyncEnumerable<T>` streaming. Both flagship consumers (`OpusHydra` and `JeiyelFE26`) standardize on `EricksonLopez.DapperExtensions`.
+> - **`EricksonLopez.SqlBuilder`** is the **official owner** of SQL AST Compilation, immutable query models, and dialect SQL generation.
+>
+> This document remains for historical context regarding legacy migration patterns.
 
 ## 1. Pagination
 

@@ -26,7 +26,9 @@ public static class DapperConcurrencyExtensions
     /// <param name="compiler">The SQL compiler for the target dialect.</param>
     /// <param name="transaction">Optional transaction.</param>
     /// <param name="commandTimeout">Optional command timeout in seconds.</param>
-    /// <returns>The number of rows affected (always &gt;= 1 on success).</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the number of rows affected (always &gt;= 1 on success).
+    /// </returns>
     /// <exception cref="EricksonLopez.SqlBuilder.Abstractions.DbConcurrencyException">Zero rows are affected, indicating a concurrency conflict</exception>
     /// <example>
     /// <code>
@@ -71,7 +73,9 @@ public static class DapperConcurrencyExtensions
     /// <param name="query">The UPDATE query including a <c>WithConcurrencyToken</c> node.</param>
     /// <param name="transaction">Optional transaction.</param>
     /// <param name="commandTimeout">Optional command timeout in seconds.</param>
-    /// <returns>The number of rows affected (always &gt;= 1 on success).</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the number of rows affected (always &gt;= 1 on success).
+    /// </returns>
     /// <exception cref="EricksonLopez.SqlBuilder.Abstractions.DbConcurrencyException">Zero rows are affected, indicating a concurrency conflict</exception>
     public static Task<int> ExecuteWithConcurrencyCheckAsync<T>(
         this IDbConnection connection,

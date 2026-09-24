@@ -5,7 +5,7 @@ using EricksonLopez.SqlBuilder.Abstractions.Metadata;
 namespace EricksonLopez.SqlBuilder.ColumnSelection.Rules;
 
 /// <summary>
-/// A column selection rule that acts as a whitelist, excluding any columns not explicitly specified.
+/// Represents a column selection rule that acts as a whitelist, excluding any columns not explicitly specified.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity being processed.</typeparam>
 public readonly struct OnlyColumnsRule<TEntity> : IColumnSelectionRule<TEntity> 

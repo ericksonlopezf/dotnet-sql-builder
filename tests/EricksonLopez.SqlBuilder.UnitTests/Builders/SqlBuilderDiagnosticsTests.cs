@@ -42,7 +42,7 @@ public class SqlBuilderDiagnosticsTests
     public void ActivitySource_HasCorrectVersionAndName()
     {
         SqlBuilderDiagnostics.ActivitySource.Name.Should().Be("EricksonLopez.SqlBuilder");
-        SqlBuilderDiagnostics.ActivitySource.Version.Should().Be("1.0.0.0");
+        SqlBuilderDiagnostics.ActivitySource.Version.Should().Be("2.0.0.0");
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class SqlBuilderDiagnosticsTests
             SqlBuilderDiagnostics.LoggerFactory.Should().BeSameAs(mockFactory);
 
             SqlBuilderDiagnostics.Meter.Name.Should().Be("EricksonLopez.SqlBuilder");
-            SqlBuilderDiagnostics.Meter.Version.Should().Be("1.0.0");
+            SqlBuilderDiagnostics.Meter.Version.Should().Be("2.0.0");
             SqlBuilderDiagnostics.QueryExecutionCounter.Name.Should().Be("sql_builder.query.count");
             SqlBuilderDiagnostics.QueryExecutionCounter.Unit.Should().Be("queries");
             SqlBuilderDiagnostics.QueryExecutionCounter.Description.Should().Be("Total number of SQL queries executed.");
@@ -85,7 +85,7 @@ public class SqlBuilderDiagnosticsTests
             SqlBuilderDiagnostics.ReinitializeMetersForTesting();
             SqlBuilderDiagnostics.Meter.Should().NotBeNull();
             SqlBuilderDiagnostics.Meter.Name.Should().Be("EricksonLopez.SqlBuilder");
-            SqlBuilderDiagnostics.Meter.Version.Should().Be("1.0.0");
+            SqlBuilderDiagnostics.Meter.Version.Should().Be("2.0.0");
             SqlBuilderDiagnostics.QueryExecutionCounter.Name.Should().Be("sql_builder.query.count");
             SqlBuilderDiagnostics.QueryExecutionCounter.Unit.Should().Be("queries");
             SqlBuilderDiagnostics.QueryExecutionCounter.Description.Should().Be("Total number of SQL queries executed.");

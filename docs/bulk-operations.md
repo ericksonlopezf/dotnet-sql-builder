@@ -206,7 +206,7 @@ BenchmarkDotNet must confirm `Allocated: 0 B` on this path.
 ## Related Documents
 
 - [ADR-010: Bulk API Architecture](decisions/adr-010-bulk-api-architecture.md)
-- [ADR-014: Zero-Allocation Claims](decisions/ADR-014-zero-allocation-claims.md)
+- [ADR-014: Zero-Allocation Claims](decisions/adr-014-zero-allocation-benchmark-proof.md)
 - [ADR-046: Bulk Identity Retrieval Boundary & Keys Strategy](decisions/adr-046-bulk-identity-retrieval-boundary.md)
-- [Performance.md](Performance.md)
+- [Performance Guide](performance.md)
 

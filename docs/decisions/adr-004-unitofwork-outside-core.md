@@ -1,7 +1,10 @@
 # ADR-004: UnitOfWork Belongs Outside Core
 
 ## Status
-Accepted
+Deferred (Planned for v1.2+) — In v1.0, transaction management is performed directly via `IDbTransaction` overloads in `EricksonLopez.SqlBuilder.Dapper` and `DapperConcurrencyExtensions`.
+
+## Date
+2026-09-04
 
 ## Context
 The Unit of Work (UoW) pattern provides transactional boundaries for grouping multiple database operations atomically. Many Dapper users implement it inconsistently, leading to connection leaks, missing rollbacks, and incorrect async disposal.

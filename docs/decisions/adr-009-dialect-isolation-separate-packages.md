@@ -1,4 +1,4 @@
-# ADR-009: Dialect Isolation in Separate Packages
+﻿# ADR-009: Dialect Isolation in Separate Packages
 
 ## Status
 Accepted
@@ -32,14 +32,14 @@ SQL dialects differ significantly in syntax, identifier quoting, LIMIT/OFFSET se
 Each database dialect ships as its own NuGet package with a single compiler class:
 
 ```
-EricksonLopez.SqlBuilder.SqlServer   → SqlServerCompiler
-EricksonLopez.SqlBuilder.PostgreSql  → PostgreSqlCompiler
-EricksonLopez.SqlBuilder.MySql       → MySqlCompiler
-EricksonLopez.SqlBuilder.Sqlite      → SqliteCompiler
-EricksonLopez.SqlBuilder.Oracle      → OracleCompiler
+EricksonLopez.SqlBuilder.SqlServer   â†’ SqlServerCompiler
+EricksonLopez.SqlBuilder.PostgreSql  â†’ PostgreSqlCompiler
+EricksonLopez.SqlBuilder.MySql       â†’ MySqlCompiler
+EricksonLopez.SqlBuilder.Sqlite      â†’ SqliteCompiler
+EricksonLopez.SqlBuilder.Oracle      â†’ OracleCompiler
 ```
 
-**Invariant:** All dialect packages depend only on `EricksonLopez.SqlBuilder` (Core) — never on each other.
+**Invariant:** All dialect packages depend only on `EricksonLopez.SqlBuilder` (Core) â€” never on each other.
 
 **Dialect-specific features** (e.g., `UNNEST`, `RETURNING`, `OUTPUT INSERTED`) are implemented as overrides in the respective compiler, not as shared abstractions.
 
@@ -51,19 +51,19 @@ EricksonLopez.SqlBuilder.Oracle      → OracleCompiler
 ## Consequences
 
 ### Positive
-- ✅ Minimal footprint — users only add the package for their database
-- ✅ Independent release cycles per dialect
-- ✅ Adding a new dialect (e.g., DuckDB) doesn't affect existing packages
-- ✅ Dialect features can be dialect-specific without API leakage
+- âœ… Minimal footprint â€” users only add the package for their database
+- âœ… Independent release cycles per dialect
+- âœ… Adding a new dialect (e.g., DuckDB) doesn't affect existing packages
+- âœ… Dialect features can be dialect-specific without API leakage
 
 ### Negative
-- ❌ Multi-dialect testing requires all packages (integration test matrix)
-- ❌ Cross-dialect features (e.g., a unified upsert API) require more careful abstraction
+- âŒ Multi-dialect testing requires all packages (integration test matrix)
+- âŒ Cross-dialect features (e.g., a unified upsert API) require more careful abstraction
 
 ## Reconsideration Criteria
 If a user commonly deploys to 3+ dialects in the same application, evaluate a meta-package `EricksonLopez.SqlBuilder.All` that depends on all dialect packages.
 
 ## References
-- [FEATURE_MATRIX.md §23 — Final Package Architecture](../../FEATURE_MATRIX.md)
+- [FEATURE_MATRIX.md Â§23 â€” Final Package Architecture](../master-feature-matrix.md)
 - `src/EricksonLopez.SqlBuilder.SqlServer/`
 - `src/EricksonLopez.SqlBuilder.PostgreSql/`

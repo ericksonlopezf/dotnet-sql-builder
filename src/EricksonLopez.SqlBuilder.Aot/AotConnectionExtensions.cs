@@ -46,8 +46,10 @@ public static class AotConnectionExtensions
     /// <param name="compiler">The <see cref="ISqlCompiler"/> for the target provider.</param>
     /// <param name="transaction">An optional <see cref="IDbTransaction"/>.</param>
     /// <param name="commandTimeout">Command timeout in seconds (default: 30).</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>All matched entities mapped via source-generated parser.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains all matched entities mapped via the source-generated parser.
+    /// </returns>
     public static Task<IReadOnlyList<T>> AotQueryAsync<T>(
         this IDbConnection connection,
         ISqlQuery query,
@@ -74,8 +76,10 @@ public static class AotConnectionExtensions
     /// </param>
     /// <param name="transaction">An optional <see cref="IDbTransaction"/>.</param>
     /// <param name="commandTimeout">Command timeout in seconds (default: 30).</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>All matched entities.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains all matched entities.
+    /// </returns>
     public static Task<IReadOnlyList<T>> AotQueryAsync<T>(
         this IDbConnection connection,
         ISqlQuery query,
@@ -102,8 +106,10 @@ public static class AotConnectionExtensions
     /// <param name="compiler">The SQL compiler for the target provider.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The first matched entity, or <see langword="null"/> if empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the first matched entity, or <see langword="null"/> if empty.
+    /// </returns>
     public static Task<T?> AotQueryFirstOrDefaultAsync<T>(
         this IDbConnection connection,
         ISqlQuery query,
@@ -126,8 +132,8 @@ public static class AotConnectionExtensions
     /// <param name="mapper">The row mapper function.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The first matched entity, or <see langword="null"/> if empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the first matched entity, or <see langword="null"/> if empty.</returns>
     public static Task<T?> AotQueryFirstOrDefaultAsync<T>(
         this IDbConnection connection,
         ISqlQuery query,
@@ -155,8 +161,8 @@ public static class AotConnectionExtensions
     /// <param name="compiler">The SQL compiler for the target provider.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The single matched entity.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the single matched entity.</returns>
     public static Task<T> AotQuerySingleAsync<T>(
         this IDbConnection connection,
         ISqlQuery query,
@@ -179,8 +185,8 @@ public static class AotConnectionExtensions
     /// <param name="mapper">The row mapper function.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The single matched entity.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the single matched entity.</returns>
     public static Task<T> AotQuerySingleAsync<T>(
         this IDbConnection connection,
         ISqlQuery query,
@@ -207,8 +213,8 @@ public static class AotConnectionExtensions
     /// <param name="compiler">The SQL compiler for the target provider.</param>
     /// <param name="transaction">An optional <see cref="IDbTransaction"/>.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The number of rows affected.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the number of rows affected.</returns>
     public static Task<int> AotExecuteAsync(
         this IDbConnection connection,
         ISqlQuery query,
@@ -235,8 +241,8 @@ public static class AotConnectionExtensions
     /// <param name="compiler">The SQL compiler for the target provider.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The scalar result value, or <see langword="default"/> if empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the scalar result value, or <see langword="default"/> if empty.</returns>
     public static Task<TScalar?> AotQueryScalarAsync<TScalar>(
         this IDbConnection connection,
         ISqlQuery query,
@@ -262,8 +268,8 @@ public static class AotConnectionExtensions
     /// <param name="result">The pre-compiled SQL result.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>All matched entities.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains all matched entities.</returns>
     public static Task<IReadOnlyList<T>> AotQueryAsync<T>(
         this IDbConnection connection,
         SqlResult result,
@@ -282,8 +288,8 @@ public static class AotConnectionExtensions
     /// <param name="result">The pre-compiled SQL result.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The first matched entity, or <see langword="null"/> if empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the first matched entity, or <see langword="null"/> if empty.</returns>
     public static Task<T?> AotQueryFirstOrDefaultAsync<T>(
         this IDbConnection connection,
         SqlResult result,
@@ -302,8 +308,8 @@ public static class AotConnectionExtensions
     /// <param name="result">The pre-compiled SQL result.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The single matched entity.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the single matched entity.</returns>
     public static Task<T> AotQuerySingleAsync<T>(
         this IDbConnection connection,
         SqlResult result,
@@ -323,8 +329,8 @@ public static class AotConnectionExtensions
     /// <param name="mapper">The row mapper function.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>All matched entities.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains all matched entities.</returns>
     public static Task<IReadOnlyList<T>> AotQueryAsync<T>(
         this IDbConnection connection,
         SqlResult result,
@@ -342,8 +348,8 @@ public static class AotConnectionExtensions
     /// <param name="result">The pre-compiled SQL result.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">Command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The number of rows affected.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the number of rows affected.</returns>
     public static Task<int> AotExecuteAsync(
         this IDbConnection connection,
         SqlResult result,

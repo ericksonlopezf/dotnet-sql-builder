@@ -767,17 +767,15 @@ public static class AdvancedIntegrationSample
         Console.WriteLine($"    Offset SQL: {offsetOnlySql.Sql}");
 
         // ──────────────────────────────────────────────────────────────────
-        // 29. Fetch(int) — [Obsolete] Alias for Limit; prefer Limit()
+        // 29. Limit(int) — Restrict result count
         // ──────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 29. Fetch(int) — [Obsolete] alias for Limit()");
+        Console.WriteLine("\n[+] 29. Limit(int) — Row limit configuration");
 
-        #pragma warning disable CS0618 // Fetch is [Obsolete] — documented for API completeness
-        var fetchSql = Sql.From<Order>()
+        var limitSql = Sql.From<Order>()
             .OrderBy(o => o.Id)
-            .Fetch(5)    // equivalent to .Limit(5) — prefer Limit()
+            .Limit(5)
             .Build(new SqliteCompiler());
-        #pragma warning restore CS0618
-        Console.WriteLine($"    Fetch (obsolete) SQL: {fetchSql.Sql}");
+        Console.WriteLine($"    Limit SQL: {limitSql.Sql}");
 
         // ──────────────────────────────────────────────────────────────────
         // 30. And / Or — AND / OR conditions in WHERE (typed predicate)
@@ -790,8 +788,93 @@ public static class AdvancedIntegrationSample
             .Or(o => o.AccountId == 1)             // OR account_id = 1
             .Build(new SqliteCompiler());
         Console.WriteLine($"    And/Or SQL: {andOrSql.Sql}");
+
+        // ──────────────────────────────────────────────────────────────────
+        // 31. ApplyDiff<T> — UPDATE only changed columns (diff-based update)
+        // ──────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 31. ApplyDiff<T> — UPDATE only changed properties");
+
+        // ApplyDiff compares two entity snapshots and only generates SET clauses
+        // for properties that differ — reflection-free via ISqlEntity interface.
+        // NOTE: ApplyDiff() returns IUpdateWhereBuilder<T>; use .And() to add conditions.
+        var original = new Account { Id = 1, Balance = 1000m, IsActive = true };
+        var modified = new Account { Id = 1, Balance = 1500m, IsActive = true }; // only Balance changed
+
+        int originalId = original.Id;
+        var diffSql = Sql.Update<Account>()
+            .ApplyDiff(original, modified)     // returns IUpdateWhereBuilder<T>
+            .And(a => a.Id == originalId)      // use .And() — not .Where()
+            .Build(new SqliteCompiler());
+
+        Console.WriteLine($"    ApplyDiff SQL (only Balance changed):\n    {diffSql.Sql}");
+
+        // ──────────────────────────────────────────────────────────────────
+        // 32. LateralJoin<TSub> with typed ON expression
+        // ──────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 32. LateralJoin<TSub>(subquery, alias, onExpression) — typed ON predicate");
+
+        var lateralSubq = Sql.From<Order>()
+            .Where(o => o.Status == "completed")
+            .OrderByDescending(o => o.Amount)
+            .Limit(1);
+
+        var lateralTypedSql = Sql.From<Account>()
+            .Select("accounts.id", "accounts.balance")
+            .LateralJoin<Order>(lateralSubq, "top_order", (account, order) => account.Id == order.AccountId)
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    LateralJoin (typed ON) SQL: {lateralTypedSql.Sql}");
+
+        // ──────────────────────────────────────────────────────────────────
+        // 33. LateralLeftJoin<TSub> with typed ON expression + factory overload
+        // ──────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 33. LateralLeftJoin<TSub> — typed ON + fluent factory");
+
+        var latLeftTypedSql = Sql.From<Account>()
+            .Select("accounts.id")
+            .LateralLeftJoin<Order>(lateralSubq, "top_order", (account, order) => account.Id == order.AccountId)
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    LateralLeftJoin (typed ON) SQL: {latLeftTypedSql.Sql}");
+
+        var latLeftFactoryTypedSql = Sql.From<Account>()
+            .LateralLeftJoin<Order>(
+                q => q.Where(o => o.Status == "completed").Limit(1),
+                "clt",
+                (account, order) => account.Id == order.AccountId)
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    LateralLeftJoin factory (typed ON) SQL: {latLeftFactoryTypedSql.Sql}");
+
+        // ──────────────────────────────────────────────────────────────────
+        // 34. JoinSubquery<TSub> with typed ON expression
+        // ──────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 34. JoinSubquery<TSub>(subquery, alias, onExpression) — typed ON predicate");
+
+        var totalsSubq = Sql.From<Order>()
+            .Select("account_id", "SUM(amount) as total")
+            .GroupBy("account_id");
+
+        var joinSubTypedSql = Sql.From<Account>()
+            .Select("accounts.id")
+            .JoinSubquery<Order>(totalsSubq, "ot", (account, order) => account.Id == order.AccountId)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    JoinSubquery (typed ON) SQL: {joinSubTypedSql.Sql}");
+
+        var leftJoinSubTypedSql = Sql.From<Account>()
+            .Select("accounts.id")
+            .LeftJoinSubquery<Order>(totalsSubq, "ot", (account, order) => account.Id == order.AccountId)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    LeftJoinSubquery (typed ON) SQL: {leftJoinSubTypedSql.Sql}");
+
+        // ──────────────────────────────────────────────────────────────────
+        // 35. RecursiveCTE with MaterializationHint
+        // ──────────────────────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 35. RecursiveCTE with MaterializationHint");
+
+        var seriesBody = Sql.Raw("SELECT 1 AS n UNION ALL SELECT n + 1 FROM series WHERE n < 5");
+        var recursiveHintSql = Sql.From<Order>()
+            .RecursiveCTE("series", seriesBody,
+                EricksonLopez.SqlBuilder.Abstractions.Nodes.MaterializationHint.NotMaterialized)
+            .Select("id")
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    RecursiveCTE (NOT MATERIALIZED) SQL (first 150):\n    {recursiveHintSql.Sql.Substring(0, Math.Min(150, recursiveHintSql.Sql.Length))}...");
     }
 }
-
-
-

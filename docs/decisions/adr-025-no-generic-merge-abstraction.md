@@ -85,7 +85,8 @@ SQL Server MERGE with concurrent inserts can produce duplicates, even inside a t
 
 ## Migration / Future Reconsideration
 
-`MergeQuery<T>` will be removed in v2.0. Users should migrate to:
+> **Implementation Note (v1.0):** `MergeQuery<T>` was directly eliminated in v1.0 without an intermediate `[Obsolete]` state. This deviates from the plan described in Option B (which stated "deprecated"). The ESQL026 analyzer enforces removal at compile time — any consumer code using `MergeQuery<T>` will receive a compile-time Error. Users should migrate to:
+
 - PG/SQLite: `InsertQuery<T>.OnConflict(...).DoUpdate(...)`
 - MySQL: `InsertQuery<T>.OnConflict(...).DoUpdate(...)` → `ON DUPLICATE KEY UPDATE`
 - SS/Oracle: `Sql.Raw(FormattableString)` with native MERGE syntax

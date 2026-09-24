@@ -273,6 +273,32 @@ public class NodeCoverageTests
         limitOffset.ContributeToFingerprint(_fingerprinter);
         limitOffset.Accept(_visitor);
         _visitor.Received(1).Visit(limitOffset);
+
+        // Deconstruct test
+        var (deconLimit, deconOffset) = limitOffset;
+        deconLimit.Should().Be(20);
+        deconOffset.Should().Be(40);
+
+        // Boundary zero (should not throw)
+        var zeroNode = new LimitOffsetNode(0, 0);
+        zeroNode.Limit.Should().Be(0);
+        zeroNode.Offset.Should().Be(0);
+
+        // Null components
+        var nullNode = new LimitOffsetNode(null, null);
+        nullNode.Limit.Should().BeNull();
+        nullNode.Offset.Should().BeNull();
+        nullNode.ContributeToFingerprint(_fingerprinter);
+
+        // Negative limit
+        Action actNegLimit = () => new LimitOffsetNode(-1, 10);
+        actNegLimit.Should().Throw<ArgumentOutOfRangeException>()
+            .WithMessage("*Limit cannot be negative.*");
+
+        // Negative offset
+        Action actNegOffset = () => new LimitOffsetNode(10, -1);
+        actNegOffset.Should().Throw<ArgumentOutOfRangeException>()
+            .WithMessage("*Offset cannot be negative.*");
     }
 
     private sealed class DummySqlQuery(string sql) : ISqlQuery

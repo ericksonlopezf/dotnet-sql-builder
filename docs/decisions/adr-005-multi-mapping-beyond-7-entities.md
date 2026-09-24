@@ -3,6 +3,9 @@
 ## Status
 Proposed
 
+## Date
+2026-09-04
+
 ## Context
 Dapper provides typed `Query<T1, T2, ..., T7, TReturn>` overloads for multi-mapping (splitting a flat JOIN result into multiple objects). Beyond 7 type parameters, Dapper requires the untyped `Query<TReturn>(sql, types: Type[], map: Func<object[], TReturn>)` overload — losing compile-time type safety and AOT compatibility.
 

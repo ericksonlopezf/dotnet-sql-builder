@@ -116,6 +116,9 @@
   <Folder Name="/EricksonLopez.SqlBuilder.Testing/src/">
     <Project Path="src/EricksonLopez.SqlBuilder.Testing/EricksonLopez.SqlBuilder.Testing.csproj" />
   </Folder>
+  <Folder Name="/EricksonLopez.SqlBuilder.Testing/tests/">
+    <Project Path="tests/EricksonLopez.SqlBuilder.Testing.UnitTests/EricksonLopez.SqlBuilder.Testing.UnitTests.csproj" />
+  </Folder>
 
   <Folder Name="/EricksonLopez.SqlBuilder/" />
   <Folder Name="/EricksonLopez.SqlBuilder/src/">

@@ -26,6 +26,6 @@
       "ConfigureAwait",
       "Dispose"
     ],
-    "concurrency": 4
+    "concurrency": 2
   }
 }

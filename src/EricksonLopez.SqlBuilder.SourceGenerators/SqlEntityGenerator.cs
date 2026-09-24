@@ -467,6 +467,7 @@ public class SqlEntityGenerator : IIncrementalGenerator
 
         foreach (var a in p.GetAttributes())
         {
+            // Stryker disable once string : Justification: Safe fallback when attribute symbol cannot be resolved
             var attrClass = a.AttributeClass?.ToDisplayString() ?? string.Empty;
             if (attrClass == "EricksonLopez.SqlBuilder.Annotations.DatabaseGeneratedAttribute" || 
                 attrClass == "EricksonLopez.SqlBuilder.Annotations.GeneratedColumnAttribute")

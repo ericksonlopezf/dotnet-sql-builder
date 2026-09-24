@@ -25,8 +25,8 @@ public static class AotDapperExtensions
     /// <param name="mapper">The reader parser delegate.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A read-only list of mapped <typeparamref name="T"/> instances.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a read-only list of mapped <typeparamref name="T"/> instances.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/>, <paramref name="result"/>, or <paramref name="mapper"/> is <see langword="null"/></exception>
     public static Task<IReadOnlyList<T>> AotQueryAsync<T>(
         this IDbConnection connection,
@@ -52,8 +52,8 @@ public static class AotDapperExtensions
     /// <param name="mapper">The reader parser delegate.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The first mapped <typeparamref name="T"/> instance, or default if empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the first mapped <typeparamref name="T"/> instance, or <see langword="default"/> if empty.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/>, <paramref name="result"/>, or <paramref name="mapper"/> is <see langword="null"/></exception>
     public static async Task<T?> AotQueryFirstOrDefaultAsync<T>(
         this IDbConnection connection,
@@ -74,8 +74,8 @@ public static class AotDapperExtensions
     /// <param name="result">The pre-compiled SQL result.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The number of rows affected.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the number of rows affected.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="result"/> is <see langword="null"/></exception>
     public static Task<int> AotExecuteAsync(
         this IDbConnection connection,
@@ -98,8 +98,8 @@ public static class AotDapperExtensions
     /// <param name="result">The pre-compiled SQL result.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The scalar result converted to <typeparamref name="T"/>, or default.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the scalar result converted to <typeparamref name="T"/>, or <see langword="default"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="result"/> is <see langword="null"/></exception>
     public static Task<T?> AotExecuteScalarAsync<T>(
         this IDbConnection connection,
@@ -124,8 +124,8 @@ public static class AotDapperExtensions
     /// <param name="mapper">The reader parser delegate.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A read-only list of mapped <typeparamref name="T"/> instances.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a read-only list of mapped <typeparamref name="T"/> instances.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/>, <paramref name="query"/>, <paramref name="compiler"/>, or <paramref name="mapper"/> is <see langword="null"/></exception>
     [RequiresDynamicCode("Compiling ISqlQuery uses dynamic code generation when evaluating typed LINQ expressions. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]
     [RequiresUnreferencedCode("Compiling ISqlQuery accesses member metadata that may be trimmed. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]
@@ -157,8 +157,8 @@ public static class AotDapperExtensions
     /// <param name="mapper">The reader parser delegate.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The first mapped <typeparamref name="T"/> instance, or default if empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the first mapped <typeparamref name="T"/> instance, or <see langword="default"/> if empty.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/>, <paramref name="query"/>, <paramref name="compiler"/>, or <paramref name="mapper"/> is <see langword="null"/></exception>
     [RequiresDynamicCode("Compiling ISqlQuery uses dynamic code generation when evaluating typed LINQ expressions. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]
     [RequiresUnreferencedCode("Compiling ISqlQuery accesses member metadata that may be trimmed. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]
@@ -183,8 +183,8 @@ public static class AotDapperExtensions
     /// <param name="compiler">The dialect compiler.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The number of rows affected.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the number of rows affected.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/>, <paramref name="query"/>, or <paramref name="compiler"/> is <see langword="null"/></exception>
     [RequiresDynamicCode("Compiling ISqlQuery uses dynamic code generation when evaluating typed LINQ expressions. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]
     [RequiresUnreferencedCode("Compiling ISqlQuery accesses member metadata that may be trimmed. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]
@@ -213,8 +213,8 @@ public static class AotDapperExtensions
     /// <param name="compiler">The dialect compiler.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The scalar result converted to <typeparamref name="T"/>, or default.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains the scalar result converted to <typeparamref name="T"/>, or <see langword="default"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/>, <paramref name="query"/>, or <paramref name="compiler"/> is <see langword="null"/></exception>
     [RequiresDynamicCode("Compiling ISqlQuery uses dynamic code generation when evaluating typed LINQ expressions. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]
     [RequiresUnreferencedCode("Compiling ISqlQuery accesses member metadata that may be trimmed. Use pre-compiled SqlResult overloads for strict NativeAOT paths.")]

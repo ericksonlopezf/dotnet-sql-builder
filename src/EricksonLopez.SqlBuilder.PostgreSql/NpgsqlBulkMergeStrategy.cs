@@ -38,8 +38,10 @@ public static class NpgsqlBulkMergeStrategy
     /// <param name="entities">The entities to merge.</param>
     /// <param name="options">Optional bulk options.</param>
     /// <param name="transaction">An optional <see cref="NpgsqlTransaction"/>.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A <see cref="BulkInsertResult{T}"/> with total rows affected.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="BulkInsertResult{T}"/> with total rows affected.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="entities"/> is <see langword="null"/></exception>
     [ExcludeFromCodeCoverage(Justification = "Requires live PostgreSQL; covered by integration tests.")]
     public static async Task<BulkInsertResult<T>> BulkMergeAsync<T>(
@@ -87,8 +89,10 @@ public static class NpgsqlBulkMergeStrategy
     /// <param name="entities">The entities to merge.</param>
     /// <param name="options">Optional bulk options.</param>
     /// <param name="transaction">An optional database transaction.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>A <see cref="BulkInsertResult{T}"/> with total rows affected.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="BulkInsertResult{T}"/> with total rows affected.
+    /// </returns>
     /// <exception cref="InvalidOperationException"><paramref name="connection"/> is not an instance of <see cref="NpgsqlConnection"/></exception>
     [ExcludeFromCodeCoverage(Justification = "Requires live PostgreSQL; covered by integration tests.")]
     public static Task<BulkInsertResult<T>> BulkMergeAsync<T>(

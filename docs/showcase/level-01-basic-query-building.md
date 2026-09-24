@@ -1,42 +1,56 @@
 # Level 01: Basic Query Building & Dialect Compilation
 
-## 1. Declarative Query Construction
-`EricksonLopez.SqlBuilder` provides a fluent, immutable builder interface to construct SQL statements with compile-time safety and automatic parameter bindings.
+## 1. Declarative Strongly-Typed Query Construction
+`EricksonLopez.SqlBuilder` provides a fluent, immutable query builder to construct SQL AST statements with compile-time safety and automatic parameterized bindings.
 
 ```csharp
+using System;
 using EricksonLopez.SqlBuilder;
 using EricksonLopez.SqlBuilder.PostgreSql;
 
-var query = SqlQuery.Select("id", "email", "created_at")
-    .From("users")
-    .Where("is_active", Op.Equals, true)
-    .Where("created_at", Op.GreaterThanOrEqual, DateTime.UtcNow.AddDays(-30))
-    .OrderByDesc("created_at")
-    .Limit(25)
-    .Build(PostgreSqlDialect.Instance);
+public class User
+{
+    public int Id { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
 
-Console.WriteLine(query.Sql);
-// SELECT id, email, created_at FROM users WHERE is_active = @p0 AND created_at >= @p1 ORDER BY created_at DESC LIMIT 25
+// Construct strongly-typed immutable query AST
+var query = Sql.From<User>()
+    .Select("id", "email", "created_at")  // params string[] overload
+    .Where(u => u.IsActive && u.CreatedAt >= DateTime.UtcNow.AddDays(-30))
+    .OrderByDescending(u => u.CreatedAt)
+    .Limit(25);  // Limit() is the correct API; Take() does not exist
+
+var compiler = new PostgreSqlCompiler();
+SqlResult result = query.Build(compiler);
+
+Console.WriteLine(result.Sql);
+// SELECT "Id", "Email", "CreatedAt" FROM "Users" WHERE "IsActive" = @p0 AND "CreatedAt" >= @p1 ORDER BY "CreatedAt" DESC LIMIT 25
 ```
 
 ---
 
 ## 2. Cross-Dialect Portability
-The same AST representation compiles natively into target SQL dialects without changing query construction logic:
+The exact same immutable AST representation compiles natively into target SQL dialects without altering query construction logic:
 
 ```csharp
-// Compile to SQL Server
-var sqlServerQuery = query.Compile(SqlServerDialect.Instance);
-// Output uses OFFSET ... FETCH NEXT:
-// SELECT id, email, created_at FROM users WHERE is_active = @p0 AND created_at >= @p1 ORDER BY created_at DESC OFFSET 0 ROWS FETCH NEXT 25 ROWS ONLY
+using EricksonLopez.SqlBuilder.SqlServer;
+using EricksonLopez.SqlBuilder.Oracle;
 
-// Compile to Oracle
-var oracleQuery = query.Compile(OracleDialect.Instance);
-// Output uses Oracle FETCH FIRST:
-// SELECT id, email, created_at FROM users WHERE is_active = :p0 AND created_at >= :p1 ORDER BY created_at DESC FETCH FIRST 25 ROWS ONLY
+// Compile to SQL Server (uses bracket escaping and TOP / OFFSET-FETCH)
+var sqlServerCompiler = new SqlServerCompiler();
+SqlResult sqlServerResult = query.Build(sqlServerCompiler);
+Console.WriteLine(sqlServerResult.Sql);
+
+// Compile to Oracle (uses Oracle identifier quoting and FETCH FIRST 25 ROWS ONLY)
+var oracleCompiler = new OracleCompiler();
+SqlResult oracleResult = query.Build(oracleCompiler);
+Console.WriteLine(oracleResult.Sql);
 ```
 
 ---
 
 ## 3. Parameter Safety & Sanitization
-Parameters are automatically encapsulated in strongly typed parameter maps with exact type mappings, mitigating SQL injection risks and enabling deterministic execution plan caching across database query engines.
+Parameters are automatically extracted and encapsulated into an immutable parameter dictionary (`IReadOnlyDictionary<string, object?>`), eliminating SQL injection risks and enabling deterministic execution plan caching across database query engines.

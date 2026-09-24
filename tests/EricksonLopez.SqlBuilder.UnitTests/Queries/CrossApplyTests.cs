@@ -7,10 +7,11 @@ using Xunit;
 namespace EricksonLopez.SqlBuilder.UnitTests.Queries;
 
 /// <summary>
-/// Tests for CROSS APPLY / OUTER APPLY / LATERAL JOIN.
-/// SQL Server: CROSS APPLY / OUTER APPLY
-/// PostgreSQL: CROSS JOIN LATERAL / LEFT JOIN LATERAL
+/// Verifies CROSS APPLY, OUTER APPLY, and LATERAL JOIN query compilation.
 /// </summary>
+/// <remarks>
+/// Validates SQL Server CROSS APPLY and OUTER APPLY, as well as PostgreSQL CROSS JOIN LATERAL and LEFT JOIN LATERAL.
+/// </remarks>
 public class CrossApplyTests
 {
     private readonly SqlServerCompiler _sqlServer = new();

@@ -18,7 +18,7 @@ public class OracleFixture : IAsyncLifetime
     public OracleFixture()
     {
         DapperExtensions.RegisterCompiler<OracleConnection>(() => new OracleCompiler());
-        _OracleContainer = new OracleBuilder()
+        _OracleContainer = new OracleBuilder("gvenzl/oracle-free:23-slim-faststart")
             .Build();
     }
 

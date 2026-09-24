@@ -30,6 +30,7 @@ namespace EricksonLopez.SqlBuilder.PostgreSql;
 ///
 /// await connection.BulkInsertAsync(sql, parameters);
 /// </code>
+/// Parameters must contain arrays of identical length matching the input collection size.
 /// </remarks>
 /// <typeparam name="T">The entity type being bulk-inserted.</typeparam>
 public sealed class BulkParameters<T>

@@ -61,7 +61,15 @@ public sealed record DeleteQuery<T> : IDeleteFromBuilder<T>, IDeleteWhereBuilder
     /// </summary>
     /// <param name="tableName">An optional table name to override the default entity table.</param>
     /// <returns>A new <see cref="IDeleteFromBuilder{T}"/> instance with the target table applied.</returns>
-    public IDeleteFromBuilder<T> Delete(string? tableName = null) => AddNode(new DeleteNode(tableName ?? SqlEntityCache<T>.TableName));
+    public IDeleteFromBuilder<T> Delete(string? tableName = null)
+    {
+        if (tableName != null)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+            return AddNode(new DeleteNode(tableName));
+        }
+        return AddNode(new DeleteNode(SqlEntityCache<T>.TableName));
+    }
     
     /// <summary>
     /// Specifies an additional source table for the DELETE operation (USING clause).
@@ -69,7 +77,14 @@ public sealed record DeleteQuery<T> : IDeleteFromBuilder<T>, IDeleteWhereBuilder
     /// <param name="tableName">The name of the additional table.</param>
     /// <param name="alias">An optional alias for the additional table.</param>
     /// <returns>A new <see cref="IDeleteFromBuilder{T}"/> instance with the USING clause applied.</returns>
-    public IDeleteFromBuilder<T> Using(string tableName, string? alias = null) => AddNode(new FromNode(tableName, alias));
+    /// <exception cref="ArgumentException"><paramref name="tableName"/> is empty or whitespace, or <paramref name="alias"/> is whitespace</exception>
+    public IDeleteFromBuilder<T> Using(string tableName, string? alias = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        if (alias != null && string.IsNullOrWhiteSpace(alias))
+            throw new ArgumentException("Alias cannot be whitespace.", nameof(alias));
+        return AddNode(new FromNode(tableName, alias));
+    }
 
     /// <summary>
     /// Specifies an additional strongly-typed source table for the DELETE operation (USING clause).
@@ -86,7 +101,13 @@ public sealed record DeleteQuery<T> : IDeleteFromBuilder<T>, IDeleteWhereBuilder
     /// <param name="alias">The alias for the joined table.</param>
     /// <param name="on">The join condition.</param>
     /// <returns>A new <see cref="IDeleteFromBuilder{T}"/> instance with the join clause applied.</returns>
-    public IDeleteFromBuilder<T> Join(string tableName, string alias, string on) => AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    public IDeleteFromBuilder<T> Join(string tableName, string alias, string on)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tableName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+        ArgumentException.ThrowIfNullOrWhiteSpace(on);
+        return AddNode(new JoinNode(JoinType.Inner, tableName, alias, on));
+    }
 
     /// <summary>
     /// Appends a strongly-typed INNER JOIN clause to the query based on a predicate.
@@ -124,14 +145,22 @@ public sealed record DeleteQuery<T> : IDeleteFromBuilder<T>, IDeleteWhereBuilder
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside EXISTS.</param>
     /// <returns>A new <see cref="IDeleteWhereBuilder{T}"/> instance with the EXISTS filter applied.</returns>
-    public IDeleteWhereBuilder<T> WhereExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: false));
+    public IDeleteWhereBuilder<T> WhereExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: false, IsOr: false));
+    }
 
     /// <summary>
     /// Appends a WHERE NOT EXISTS (subquery) condition to the DELETE statement.
     /// </summary>
     /// <param name="subquery">The subquery to evaluate inside NOT EXISTS.</param>
     /// <returns>A new <see cref="IDeleteWhereBuilder{T}"/> instance with the NOT EXISTS filter applied.</returns>
-    public IDeleteWhereBuilder<T> WhereNotExists(ISqlQuery subquery) => AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: false));
+    public IDeleteWhereBuilder<T> WhereNotExists(ISqlQuery subquery)
+    {
+        ArgumentNullException.ThrowIfNull(subquery);
+        return AddNode(new ExistsWhereNode(subquery, IsNot: true, IsOr: false));
+    }
 
     /// <summary>
     /// Appends an AND logical condition to the current WHERE clause using a predicate expression.
@@ -152,7 +181,15 @@ public sealed record DeleteQuery<T> : IDeleteFromBuilder<T>, IDeleteWhereBuilder
     /// </summary>
     /// <param name="columns">The names of the columns to return.</param>
     /// <returns>A new <see cref="IDeleteWhereBuilder{T}"/> instance with the returning clause applied.</returns>
-    public IDeleteWhereBuilder<T> Returning(params string[] columns) => AddNode(new ReturningNode(columns));
+    public IDeleteWhereBuilder<T> Returning(params string[] columns)
+    {
+        ArgumentNullException.ThrowIfNull(columns);
+        foreach (var col in columns)
+        {
+            SqlNamingHelper.ValidateIdentifier(col, nameof(columns));
+        }
+        return AddNode(new ReturningNode(columns));
+    }
 
     /// <summary>
     /// Specifies the columns to return from the deleted rows using a predicate expression.

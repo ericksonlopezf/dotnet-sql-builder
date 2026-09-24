@@ -225,10 +225,15 @@ public class MySqlMissingCoverageTests
     public void MySqlCompiler_EscapeIdentifier_Overloads()
     {
         _compiler.EscapeIdentifier("column_name").Should().Be("`column_name`");
+        _compiler.EscapeIdentifier("col`name").Should().Be("`col``name`");
 
         var sb = new StringBuilder();
         _compiler.EscapeIdentifier(sb, "my_col".AsSpan());
         sb.ToString().Should().Be("`my_col`");
+
+        var sbQuote = new StringBuilder();
+        _compiler.EscapeIdentifier(sbQuote, "col`name".AsSpan());
+        sbQuote.ToString().Should().Be("`col``name`");
     }
 
     [Fact]

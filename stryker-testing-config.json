@@ -1,0 +1,36 @@
+{
+  "stryker-config": {
+    "project": "EricksonLopez.SqlBuilder.Testing.csproj",
+    "test-projects": [
+      "tests/EricksonLopez.SqlBuilder.Testing.UnitTests/EricksonLopez.SqlBuilder.Testing.UnitTests.csproj"
+    ],
+    "mutate": [
+      "**/*.cs",
+      "!Infrastructure/**",
+      "!Abstractions/**",
+      "!Seeders/**",
+      "!Domain/**",
+      "!DataBuilders/**",
+      "!bin/**",
+      "!obj/**",
+      "!**/*.g.cs",
+      "!**/*.AssemblyInfo.cs"
+    ],
+    "thresholds": {
+      "high": 100,
+      "low": 98,
+      "break": 95
+    },
+    "reporters": [
+      "html",
+      "json",
+      "cleartext",
+      "progress"
+    ],
+    "ignore-methods": [
+      "ConfigureAwait",
+      "Dispose"
+    ],
+    "concurrency": 2
+  }
+}

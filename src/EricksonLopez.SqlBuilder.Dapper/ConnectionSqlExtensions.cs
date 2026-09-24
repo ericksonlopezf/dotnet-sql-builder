@@ -69,7 +69,9 @@ public static class ConnectionSqlExtensions
     /// <param name="query">The query to execute.</param>
     /// <param name="connection">The database connection.</param>
     /// <param name="transaction">An optional transaction.</param>
-    /// <returns>A <see cref="Result{T}"/> containing a read-only list of items, or an error.</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="Result{T}"/> with a read-only list of items, or an error.
+    /// </returns>
     public static async Task<Result<IReadOnlyList<T>>> ToResultAsync<T>(
         this SelectQuery<T> query,
         IDbConnection connection,
@@ -93,7 +95,7 @@ public static class ConnectionSqlExtensions
     /// <param name="query">The query to execute.</param>
     /// <param name="connection">The database connection.</param>
     /// <param name="transaction">An optional transaction.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
     /// <returns>An asynchronous stream of items.</returns>
     public static IAsyncEnumerable<T> ToStreamAsync<T>(
         this SelectQuery<T> query,
@@ -113,7 +115,9 @@ public static class ConnectionSqlExtensions
     /// <param name="pageNumber">The 1-based page number.</param>
     /// <param name="pageSize">The number of items per page.</param>
     /// <param name="transaction">An optional transaction.</param>
-    /// <returns>A <see cref="Result{T}"/> containing the paginated list, or an error.</returns>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="Result{T}"/> with the paginated list, or an error.
+    /// </returns>
     public static async Task<Result<IPagedList<T>>> ToPagedListAsync<T>(
         this SelectQuery<T> query,
         IDbConnection connection,

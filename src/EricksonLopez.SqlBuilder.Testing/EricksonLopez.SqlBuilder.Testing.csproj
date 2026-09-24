@@ -8,7 +8,7 @@
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
     <PackageId>EricksonLopez.SqlBuilder.Testing</PackageId>
     <AssemblyName>EricksonLopez.SqlBuilder.Testing</AssemblyName>
-    <PackageTags>$(CommonPackageTags);testing;testcontainers;integration-testing;unit-testing;test-harness</PackageTags>
+    <PackageTags>$(CommonPackageTags);sql;sql-builder;testing;test-harness;testcontainers;integration-testing;unit-testing</PackageTags>
     <NoWarn>$(NoWarn);RS0016;IL2026;IL3050</NoWarn>
   </PropertyGroup>
 
@@ -40,6 +40,8 @@
     <PackageReference Include="Microsoft.Data.Sqlite" />
     <PackageReference Include="MySqlConnector" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" />
+    <PackageReference Include="SSH.NET" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />
   </ItemGroup>
 
   <!-- Core project references -->

@@ -27,7 +27,7 @@ public class OracleBooleanHandler : SqlMapper.TypeHandler<bool>
 [Trait("Category", "Integration")]
 public class OracleIntegrationTests : IAsyncLifetime
 {
-    private readonly OracleContainer _oracleContainer = new OracleBuilder().Build();
+    private readonly OracleContainer _oracleContainer = new OracleBuilder("gvenzl/oracle-free:23-slim-faststart").Build();
 
     public async Task InitializeAsync()
     {
