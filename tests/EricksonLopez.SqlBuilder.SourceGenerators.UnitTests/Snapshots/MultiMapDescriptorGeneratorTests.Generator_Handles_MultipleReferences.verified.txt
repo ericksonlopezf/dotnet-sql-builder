@@ -9,7 +9,7 @@ namespace TestNamespace
         /// <summary>
         /// Returns a compile-time-generated factory that maps an <see cref="System.Data.IDataReader"/>
         /// row to a boxed <see cref="User"/> instance, with no reflection.
-        /// Suitable for use with MultiMapBuilder and NativeAOT execution paths.
+        /// Suitable for NativeAOT and custom multi-entity reader pipelines without reflection.
         /// </summary>
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static System.Func<System.Data.IDataReader, object> GetMultiMapReaderFactory()
@@ -18,7 +18,7 @@ namespace TestNamespace
             return reader => parser.Parse(reader);
         }
 
-        /// <summary>Returns a typed reader factory for use with MultiMapBuilder.</summary>
+        /// <summary>Returns a typed reader factory for mapping rows without reflection.</summary>
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static System.Func<System.Data.IDataReader, User> GetTypedReaderFactory()
         {
@@ -38,7 +38,7 @@ namespace TestNamespace
         /// <summary>
         /// Returns a compile-time-generated factory that maps an <see cref="System.Data.IDataReader"/>
         /// row to a boxed <see cref="Role"/> instance, with no reflection.
-        /// Suitable for use with MultiMapBuilder and NativeAOT execution paths.
+        /// Suitable for NativeAOT and custom multi-entity reader pipelines without reflection.
         /// </summary>
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static System.Func<System.Data.IDataReader, object> GetMultiMapReaderFactory()
@@ -47,7 +47,7 @@ namespace TestNamespace
             return reader => parser.Parse(reader);
         }
 
-        /// <summary>Returns a typed reader factory for use with MultiMapBuilder.</summary>
+        /// <summary>Returns a typed reader factory for mapping rows without reflection.</summary>
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static System.Func<System.Data.IDataReader, Role> GetTypedReaderFactory()
         {
@@ -67,7 +67,7 @@ namespace TestNamespace
         /// <summary>
         /// Returns a compile-time-generated factory that maps an <see cref="System.Data.IDataReader"/>
         /// row to a boxed <see cref="Company"/> instance, with no reflection.
-        /// Suitable for use with MultiMapBuilder and NativeAOT execution paths.
+        /// Suitable for NativeAOT and custom multi-entity reader pipelines without reflection.
         /// </summary>
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static System.Func<System.Data.IDataReader, object> GetMultiMapReaderFactory()
@@ -76,7 +76,7 @@ namespace TestNamespace
             return reader => parser.Parse(reader);
         }
 
-        /// <summary>Returns a typed reader factory for use with MultiMapBuilder.</summary>
+        /// <summary>Returns a typed reader factory for mapping rows without reflection.</summary>
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static System.Func<System.Data.IDataReader, Company> GetTypedReaderFactory()
         {

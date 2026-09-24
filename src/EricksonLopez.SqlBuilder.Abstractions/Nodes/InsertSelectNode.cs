@@ -16,8 +16,7 @@ namespace EricksonLopez.SqlBuilder.Abstractions.Nodes;
 /// <param name="SelectQuery">The SELECT query whose results are inserted into the target table.</param>
 /// <remarks>
 /// <para>
-/// This node is the primary mechanism for INSERT INTO ... SELECT statements in the AST.
-/// It is fully supported across all SQL dialects.
+/// Serves as the primary mechanism for INSERT INTO ... SELECT statements in the AST across all supported SQL dialects.
 /// </para>
 /// <para>
 /// Example generated SQL:
@@ -25,6 +24,9 @@ namespace EricksonLopez.SqlBuilder.Abstractions.Nodes;
 /// INSERT INTO archive_orders ("id", "customer_id", "total")
 /// SELECT "id", "customer_id", "total" FROM "orders" WHERE "status" = @p0
 /// </code>
+/// </para>
+/// <para>
+/// The target table columns must match the projected column count and data types from the SELECT query.
 /// </para>
 /// </remarks>
 public sealed record InsertSelectNode(

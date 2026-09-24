@@ -5,7 +5,7 @@
       "tests/EricksonLopez.SqlBuilder.Oracle.UnitTests/EricksonLopez.SqlBuilder.Oracle.UnitTests.csproj"
     ],
     "coverage-analysis": "perTest",
-    "concurrency": 4,
+    "concurrency": 2,
     "mutate": [
       "src/EricksonLopez.SqlBuilder.Oracle/**/*.cs",
       "!src/EricksonLopez.SqlBuilder.Oracle/bin/**",

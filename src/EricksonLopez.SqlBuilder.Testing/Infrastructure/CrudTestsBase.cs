@@ -34,6 +34,8 @@ public abstract class CrudTestsBase<TFixture> : IClassFixture<TFixture> where TF
         Fixture = fixture;
     }
 
+    /// <summary>Verifies that inserting a new customer persists the record into the database.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Insert_NewCustomer_ShouldPersistToDatabase()
     {
@@ -58,6 +60,8 @@ public abstract class CrudTestsBase<TFixture> : IClassFixture<TFixture> where TF
         result.Id.Should().BeGreaterThan(0);
     }
 
+    /// <summary>Verifies that updating a customer name persists the modified value in the database.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Update_CustomerName_ShouldPersistChange()
     {
@@ -84,6 +88,8 @@ public abstract class CrudTestsBase<TFixture> : IClassFixture<TFixture> where TF
         result!.Name.Should().Be("New Name");
     }
 
+    /// <summary>Verifies that deleting a customer removes the record from the database.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Delete_Customer_ShouldRemoveFromDatabase()
     {
@@ -107,6 +113,8 @@ public abstract class CrudTestsBase<TFixture> : IClassFixture<TFixture> where TF
         result.Should().BeNull();
     }
 
+    /// <summary>Verifies that counting rows from a customer query returns expected records.</summary>
+    /// <returns>A task representing the asynchronous unit test.</returns>
     [Fact]
     public async Task Select_CountAggregate_ShouldReturnExpectedRecords()
     {

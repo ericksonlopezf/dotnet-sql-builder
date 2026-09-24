@@ -4,18 +4,18 @@ namespace EricksonLopez.SqlBuilder.Abstractions.Nodes;
 /// <summary>Specifies the type of a SQL JOIN clause.</summary>
 public enum JoinType
 {
-    /// <summary>INNER JOIN</summary>
+    /// <summary>Specifies an INNER JOIN operation.</summary>
     Inner,
-    /// <summary>LEFT [OUTER] JOIN</summary>
+    /// <summary>Specifies a LEFT OUTER JOIN operation.</summary>
     Left,
-    /// <summary>RIGHT [OUTER] JOIN</summary>
+    /// <summary>Specifies a RIGHT OUTER JOIN operation.</summary>
     Right,
-    /// <summary>CROSS JOIN</summary>
+    /// <summary>Specifies a CROSS JOIN operation.</summary>
     Cross,
-    /// <summary>FULL [OUTER] JOIN</summary>
+    /// <summary>Specifies a FULL OUTER JOIN operation.</summary>
     Full,
-    /// <summary>CROSS APPLY (SQL Server) / equivalent to INNER JOIN LATERAL (PostgreSQL).</summary>
+    /// <summary>Specifies a CROSS APPLY or INNER JOIN LATERAL operation.</summary>
     CrossApply,
-    /// <summary>OUTER APPLY (SQL Server) / equivalent to LEFT JOIN LATERAL (PostgreSQL).</summary>
+    /// <summary>Specifies an OUTER APPLY or LEFT JOIN LATERAL operation.</summary>
     OuterApply
 }

@@ -185,7 +185,7 @@ public static class CustomizationSample
         // ────────────────────────────────────────────────────────────────────
         // 1. ITypeHandler — Complex type serialization
         // ────────────────────────────────────────────────────────────────────
-        Console.WriteLine("\n[+] 1. ITypeHandler — Tipos complejos (JSON en columna TEXT)");
+        Console.WriteLine("\n[+] 1. ITypeHandler — Complex types (JSON in TEXT column)");
 
         var product = new InventoryProduct
         {
@@ -200,7 +200,7 @@ public static class CustomizationSample
         var fetchedProducts = await connection.QueryAsync<InventoryProduct>(
             Sql.From<InventoryProduct>().Where(p => p.Name == "Laptop"));
         var fetched = fetchedProducts.FirstOrDefault();
-        Console.WriteLine($"    Recuperado: {fetched?.Name}, Tags: [{string.Join(", ", fetched?.Tags?.Tags ?? new List<string>())}]");
+        Console.WriteLine($"    Retrieved: {fetched?.Name}, Tags: [{string.Join(", ", fetched?.Tags?.Tags ?? new List<string>())}]");
 
         // ────────────────────────────────────────────────────────────────────
         // 2. Custom IParameterManager — Parameter logging

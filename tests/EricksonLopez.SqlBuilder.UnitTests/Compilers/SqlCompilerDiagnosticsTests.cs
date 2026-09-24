@@ -34,9 +34,9 @@ public class SqlCompilerDiagnosticsTests
     }
 
     [Fact]
-    public void ActivitySource_WhenInitialized_ShouldExposeVersion100()
+    public void ActivitySource_WhenInitialized_ShouldExposeExpectedVersion()
     {
-        SqlBuilderDiagnostics.ActivitySource.Version.Should().Be("1.0.0.0");
+        SqlBuilderDiagnostics.ActivitySource.Version.Should().Be("2.0.0.0");
     }
 
     [Fact]

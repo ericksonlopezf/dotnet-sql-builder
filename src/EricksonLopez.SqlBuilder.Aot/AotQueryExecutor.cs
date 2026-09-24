@@ -21,7 +21,7 @@ namespace EricksonLopez.SqlBuilder.Aot;
 /// <c>[SqlEntity]</c> type.
 /// </para>
 /// <para>
-/// Use this class as the execution backend when targeting environments that cannot JIT-compile
+/// Use <see cref="AotQueryExecutor"/> as the execution backend when targeting environments that cannot JIT-compile
 /// code at runtime: NativeAOT, Blazor WASM (without interpreter), and constrained mobile platforms.
 /// </para>
 /// </remarks>
@@ -45,8 +45,10 @@ public static class AotQueryExecutor
     /// </param>
     /// <param name="transaction">An optional <see cref="IDbTransaction"/>.</param>
     /// <param name="commandTimeout">Optional command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>An enumerable of mapped <typeparamref name="T"/> instances.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains an enumerable of mapped <typeparamref name="T"/> instances.
+    /// </returns>
     public static async Task<IReadOnlyList<T>> QueryAsync<T>(
         IDbConnection connection,
         SqlResult result,
@@ -78,8 +80,10 @@ public static class AotQueryExecutor
     /// <param name="mapper">The row mapper function.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The first mapped entity, or <see langword="null"/> if the result set is empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the first mapped entity, or <see langword="null"/> if the result set is empty.
+    /// </returns>
     public static async Task<T?> QueryFirstOrDefaultAsync<T>(
         IDbConnection connection,
         SqlResult result,
@@ -111,8 +115,10 @@ public static class AotQueryExecutor
     /// <param name="mapper">The row mapper function.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The single mapped entity.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the single mapped entity.
+    /// </returns>
     /// <exception cref="InvalidOperationException">The query returned no results or more than one result</exception>
     public static async Task<T> QuerySingleAsync<T>(
         IDbConnection connection,
@@ -150,8 +156,10 @@ public static class AotQueryExecutor
     /// <param name="result">The compiled SQL query and parameters.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The number of rows affected.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the number of rows affected.
+    /// </returns>
     public static async Task<int> ExecuteAsync(
         IDbConnection connection,
         SqlResult result,
@@ -176,8 +184,10 @@ public static class AotQueryExecutor
     /// <param name="result">The compiled SQL query and parameters.</param>
     /// <param name="transaction">An optional database transaction.</param>
     /// <param name="commandTimeout">The command timeout in seconds.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The scalar result value, or <see langword="default"/> if empty.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the scalar result value, or <see langword="default"/> if empty.
+    /// </returns>
     public static async Task<TScalar?> QueryScalarAsync<TScalar>(
         IDbConnection connection,
         SqlResult result,

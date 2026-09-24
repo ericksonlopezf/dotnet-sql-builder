@@ -72,7 +72,7 @@ public interface IStaticEntityMetadata<TEntity>
     /// Extracts a batch of entities into column-based arrays and binds them to the parameter manager.
     /// </summary>
     /// <remarks>
-    /// This method is critical for bulk operations that rely on parameter arrays (e.g., PostgreSQL COPY or array unnesting).
+    /// Supports bulk operations that rely on parameter arrays (e.g., PostgreSQL COPY or array unnesting).
     /// </remarks>
     /// <param name="entities">A read-only span of entities to extract.</param>
     /// <param name="activeColumns">A read-only span of booleans indicating which columns should be extracted.</param>

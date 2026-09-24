@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Date
+2026-09-04
+
 ## Context
 EricksonLopez.SqlBuilder's Core produces `SqlResult` (SQL string + parameters). Executing that result requires a database driver and a micro-ORM or ADO.NET directly.
 

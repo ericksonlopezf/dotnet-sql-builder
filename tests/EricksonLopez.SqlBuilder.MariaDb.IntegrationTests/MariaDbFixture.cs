@@ -26,8 +26,7 @@ public class MariaDbFixture : IAsyncLifetime
     public MariaDbFixture()
     {
         DapperExtensions.RegisterCompiler<MySqlConnection>(() => new MariaDbCompiler());
-        _mariaDbContainer = new MySqlBuilder()
-            .WithImage("mariadb:10.11")
+        _mariaDbContainer = new MySqlBuilder("mariadb:10.11")
             .Build();
     }
 

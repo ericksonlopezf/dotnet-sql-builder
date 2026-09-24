@@ -215,6 +215,7 @@ It is NOT an ORM. It is NOT a data access framework. It is NOT a domain model.
 | `EricksonLopez.Result` | Optional | Query execution can return `Result<T>` in app layer | No direct dep |
 | `EricksonLopez.Specification` | Optional adapter | `ISpecification<T>` → `.Where(spec.ToExpression())` | Adapter pkg |
 | `EricksonLopez.Pagination` | Optional integration | `PagedQuery<T>` → `.Limit(page.Size).Offset(page.Offset)` | Adapter pkg |
+| `EricksonLopez.DapperExtensions` | Complementary runtime | Executes compiled queries within its managed UnitOfWork, Savepoints, UNNEST bulk, and streaming runtimes | Referenced by DapperExtensions |
 | `EricksonLopez.Events` / `EricksonLopez.Outbox` | No integration | Separate concern | No dep |
 | `EricksonLopez.Mapper` | No integration | Hydration is SrcGen responsibility | No dep |
 

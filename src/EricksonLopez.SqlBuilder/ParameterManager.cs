@@ -15,7 +15,7 @@ internal sealed class ParameterManager : EricksonLopez.SqlBuilder.Abstractions.I
     /// <summary>
     /// Initializes a new instance of the <see cref="ParameterManager"/> class.
     /// </summary>
-    /// <param name="prefix">The prefix used for parameter names (e.g., '@', ':', or '$').</param>
+    /// <param name="prefix">The prefix applied to parameter names (e.g., '@', ':', or '$').</param>
     /// <param name="maxParameters">The maximum number of parameters allowed before throwing an exception.</param>
     public ParameterManager(string prefix = "@", int maxParameters = int.MaxValue)
     {
@@ -35,7 +35,12 @@ internal sealed class ParameterManager : EricksonLopez.SqlBuilder.Abstractions.I
         {
             throw new System.InvalidOperationException($"Maximum number of parameters ({_maxParameters}) exceeded.");
         }
-        var name = $"p{_counter++}";
+        string name;
+        do
+        {
+            name = $"p{_counter++}";
+        } while (_parameters.ContainsKey(name));
+
         _parameters[name] = ProcessValue(value);
         return string.Concat(_prefix, name);
     }
@@ -46,10 +51,29 @@ internal sealed class ParameterManager : EricksonLopez.SqlBuilder.Abstractions.I
     /// <param name="name">The name of the parameter without the prefix.</param>
     /// <param name="value">The value to bind to the parameter.</param>
     /// <returns>The parameter name including the prefix.</returns>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is null or whitespace</exception>
+    /// <exception cref="InvalidOperationException">Parameter is already registered with a different value</exception>
     public string AddNamed(string name, object? value)
     {
-        _parameters[name] = ProcessValue(value);
-        return string.Concat(_prefix, name);
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Parameter name cannot be null or whitespace.", nameof(name));
+        }
+
+        var cleanName = name.TrimStart('@', ':', '$');
+        var processed = ProcessValue(value);
+
+        if (_parameters.TryGetValue(cleanName, out var existingValue))
+        {
+            if (!Equals(existingValue, processed))
+            {
+                throw new InvalidOperationException($"Parameter collision detected: Parameter '{cleanName}' is already bound to a different value.");
+            }
+            return string.Concat(_prefix, cleanName);
+        }
+
+        _parameters[cleanName] = processed;
+        return string.Concat(_prefix, cleanName);
     }
     
     private object? ProcessValue(object? value)

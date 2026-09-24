@@ -12,7 +12,7 @@ namespace EricksonLopez.SqlBuilder.OpenTelemetry
     public static class SqlBuilderInstrumentation
     {
         /// <summary>
-        /// The name of the <see cref="System.Diagnostics.ActivitySource"/> used to emit SQL query traces.
+        /// Gets the name of the <see cref="System.Diagnostics.ActivitySource"/> used to emit SQL query traces.
         /// </summary>
         public const string ActivitySourceName = "EricksonLopez.SqlBuilder";
         private static readonly ActivitySource ActivitySource = new ActivitySource(ActivitySourceName);

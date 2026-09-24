@@ -3,6 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using EricksonLopez.SqlBuilder;
+using EricksonLopez.SqlBuilder.Samples.Level00_Conceptual;
 using EricksonLopez.SqlBuilder.Samples.Level01_QuickStart;
 using EricksonLopez.SqlBuilder.Samples.Level02_FullConfiguration;
 using EricksonLopez.SqlBuilder.Samples.Level03_RealUseCases;
@@ -13,6 +14,7 @@ using EricksonLopez.SqlBuilder.Samples.Level07_Scalability;
 using EricksonLopez.SqlBuilder.Samples.Level08_Customization;
 using EricksonLopez.SqlBuilder.Samples.Level09_Extensions;
 using EricksonLopez.SqlBuilder.Samples.Level10_EnterpriseArchitecture;
+using EricksonLopez.SqlBuilder.Samples.Level11_ComprehensiveApiCoverage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -59,6 +61,7 @@ public class Program
         SqlBuilderDiagnostics.LoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
         // Execute samples
+        ConceptualSample.Run();
         await QuickStartSample.RunAsync();
         await FullConfigurationSample.RunAsync();
         await RealUseCasesSample.RunAsync();
@@ -70,6 +73,7 @@ public class Program
         await CustomizationSample.RunAsync();
         await ExtensionsSample.RunAsync();
         await EnterpriseArchitectureSample.RunAsync();
+        await ComprehensiveApiCoverageSample.RunAsync();
 
         Console.WriteLine("\n=========================================================");
         Console.WriteLine("  All Showcase samples completed successfully.           ");

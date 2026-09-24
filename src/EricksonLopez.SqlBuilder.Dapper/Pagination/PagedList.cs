@@ -17,8 +17,14 @@ public class PagedList<T> : IPagedList<T>
     private readonly bool? _hasPreviousPage;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PagedList{T}"/> class.
+    /// Initializes a new instance of the <see cref="PagedList{T}"/> class with the specified items and pagination metadata.
     /// </summary>
+    /// <param name="items">The items for the current page.</param>
+    /// <param name="totalCount">The total count of items across all pages, or <see langword="null"/> if unknown.</param>
+    /// <param name="page">The current one-based page number.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="hasNextPage">An optional value indicating whether a subsequent page exists.</param>
+    /// <param name="hasPreviousPage">An optional value indicating whether a preceding page exists.</param>
     internal PagedList(
         IReadOnlyList<T> items,
         long? totalCount,

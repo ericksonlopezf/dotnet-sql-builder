@@ -47,7 +47,7 @@ public interface IEntityMetadata<T>
     /// Transposes a batch of entities into individual column arrays and registers them with the parameter manager.
     /// </summary>
     /// <remarks>
-    /// This method is critical for highly optimized bulk operations based on parametric arrays (e.g., PostgreSQL UNNEST).
+    /// Supports highly optimized bulk operations based on parametric arrays (e.g., PostgreSQL UNNEST).
     /// </remarks>
     /// <param name="entities">A read-only span containing the batch of entities to transpose.</param>
     /// <param name="activeColumns">A bitmask span indicating which columns to include in the extraction.</param>

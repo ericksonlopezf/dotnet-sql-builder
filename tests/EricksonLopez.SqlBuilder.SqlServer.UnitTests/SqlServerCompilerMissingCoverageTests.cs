@@ -101,7 +101,7 @@ public class SqlServerCompilerMissingCoverageTests
         }.ToImmutableList());
 
         var result = _compiler.Compile((ISqlQuery)query);
-        result.Sql.Trim().Should().Be("SUM([salary]) OVER (PARTITION BY [dept] ORDER BY [salary] DESC) AS [total]");
+        result.Sql.Trim().Should().Be("SELECT SUM([salary]) OVER (PARTITION BY [dept] ORDER BY [salary] DESC) AS [total]");
     }
 
     [Fact]

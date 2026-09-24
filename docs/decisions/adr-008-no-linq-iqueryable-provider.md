@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Date
+2026-09-04
+
 ## Context
 A full `IQueryable<T>` LINQ provider would allow standard LINQ chains (`.Where()`, `.Select()`, `.OrderBy()`, etc.) to be compiled to SQL at query execution time.
 

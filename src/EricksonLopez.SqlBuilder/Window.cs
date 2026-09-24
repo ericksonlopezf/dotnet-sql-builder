@@ -8,10 +8,10 @@ using EricksonLopez.SqlBuilder.Abstractions.Nodes;
 namespace EricksonLopez.SqlBuilder;
 
 /// <summary>
-/// Static factory for creating typed window function builders.
+/// Provides factory methods for creating typed window function builders.
 /// </summary>
 /// <remarks>
-/// Usage: <c>Window.Rank&lt;Employee&gt;().PartitionBy(e => e.Dept).OrderByDescending(e => e.Salary).As("rnk")</c>
+/// Usage: <c>Window.Rank&lt;Employee&gt;().PartitionBy(e =&gt; e.Dept).OrderByDescending(e =&gt; e.Salary).As("rnk")</c>.
 /// </remarks>
 public static class Window
 {

@@ -16,19 +16,11 @@ using Testcontainers.PostgreSql;
 namespace EricksonLopez.SqlBuilder.Testing.Infrastructure;
 
 /// <summary>
-/// PostgreSQL fixture using Testcontainers.
-/// Starts a postgres:16-alpine container for each test collection.
-///
-/// Requirements:
-///   • Docker Desktop or Docker Engine running
-///   • NuGet: Testcontainers.PostgreSql
-///
-/// Container specs:
-///   • Image:    postgres:16-alpine (smallest, fastest)
-///   • Database: sqlbuilder_test
-///   • Username: test
-///   • Password: Test@1234!
+/// Represents a PostgreSQL test fixture backed by Testcontainers.
 /// </summary>
+/// <remarks>
+/// Starts a PostgreSQL container, creates schema and extensions, and seeds test data.
+/// </remarks>
 public sealed class PostgreSqlFixture : DatabaseFixture
 {
     private readonly PostgreSqlContainer _container = new PostgreSqlBuilder()
@@ -39,9 +31,13 @@ public sealed class PostgreSqlFixture : DatabaseFixture
         .WithCleanUp(true)
         .Build();
 
+    /// <inheritdoc/>
     public override string ConnectionString => _container.GetConnectionString();
+
+    /// <inheritdoc/>
     public override string EngineName => "PostgreSQL";
 
+    /// <inheritdoc/>
     public override IDbConnection CreateConnection()
     {
         var conn = new NpgsqlConnection(ConnectionString);
@@ -49,8 +45,10 @@ public sealed class PostgreSqlFixture : DatabaseFixture
         return conn;
     }
 
+    /// <inheritdoc/>
     public override ISqlCompiler CreateCompiler() => new PostgreSqlCompiler();
 
+    /// <inheritdoc/>
     protected override async Task StartContainerAsync()
     {
         await _container.StartAsync();
@@ -60,12 +58,14 @@ public sealed class PostgreSqlFixture : DatabaseFixture
         DefaultTypeMap.MatchNamesWithUnderscores = true;
     }
 
+    /// <inheritdoc/>
     protected override async Task StopContainerAsync()
     {
         await _container.StopAsync();
         await _container.DisposeAsync();
     }
 
+    /// <inheritdoc/>
     protected override async Task InitializeSchemaAsync(System.Data.Common.DbConnection connection)
     {
         await connection.ExecuteAsync(@"
@@ -241,6 +241,7 @@ public sealed class PostgreSqlFixture : DatabaseFixture
         ");
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedCoreDataAsync(System.Data.Common.DbConnection connection)
     {
         await connection.ExecuteAsync(@"
@@ -260,6 +261,7 @@ public sealed class PostgreSqlFixture : DatabaseFixture
         ");
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedTestDataAsync(System.Data.Common.DbConnection connection)
     {
         var dataset = Data;

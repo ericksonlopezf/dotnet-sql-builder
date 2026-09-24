@@ -46,5 +46,5 @@ This rule enforces the safety contract documented in **ADR-016**. A retry policy
 
 ## See Also
 
-- [ADR-016: Resilience Policy Boundaries](../../docs/adr/ADR-016.md)
-- [EricksonLopez.SqlBuilder.Dapper.Resilience](../../src/EricksonLopez.SqlBuilder.Dapper.Resilience/README.md)
+- [ADR-016: Resilience Policy Boundaries](../decisions/adr-016-transaction-retry-semantics.md)
+- [Resilience Architecture](../resilience.md)

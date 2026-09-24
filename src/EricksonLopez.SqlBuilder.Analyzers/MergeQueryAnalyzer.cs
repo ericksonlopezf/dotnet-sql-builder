@@ -16,7 +16,7 @@ namespace EricksonLopez.SqlBuilder.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MergeQueryAnalyzer : DiagnosticAnalyzer
     {
-        /// <summary>The diagnostic identifier for ESQL026.</summary>
+        /// <summary>Represents the diagnostic identifier for ESQL026.</summary>
         public const string DiagnosticId = "ESQL026";
 
         private static readonly LocalizableString Title =

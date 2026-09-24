@@ -25,6 +25,6 @@ For complex calculations for which you do not have a mapped C# model:
 
 ```csharp
 var query = Sql.From<Order>()
-    .RawSelect("CustomerId, COUNT(*) as OrderCount, SUM(TotalAmount) as Total")
+    .RawSelect($"CustomerId, COUNT(*) as OrderCount, SUM(TotalAmount) as Total")
     .GroupBy("CustomerId");
 ```

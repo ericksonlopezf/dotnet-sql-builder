@@ -1,6 +1,6 @@
 # EricksonLopez.SqlBuilder
 
-Immutable, AOT-first, strongly-typed SQL AST builder and high-performance execution ecosystem for modern .NET.
+Immutable, Native AOT-first SQL query builder and high-performance execution ecosystem for .NET 8, 9 & 10. Features type-safe AST compilation, zero-reflection source generators, Roslyn analyzers, and dialect compilers for PostgreSQL, SQL Server, MySQL, MariaDB, SQLite, and Oracle.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/ericksonlopezf/dotnet-sql-builder/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/ericksonlopezf/dotnet-sql-builder/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/ericksonlopezf/dotnet-sql-builder?style=for-the-badge&logo=codecov&logoColor=white)](https://codecov.io/gh/ericksonlopezf/dotnet-sql-builder)
@@ -14,7 +14,7 @@ Immutable, AOT-first, strongly-typed SQL AST builder and high-performance execut
 
 ---
 
-**EricksonLopez.SqlBuilder** is an enterprise-grade, immutable, AOT-first SQL builder and execution ecosystem for **.NET 8**, **.NET 9**, and **.NET 10**. It eliminates the runtime memory overhead, hidden state, and impedance mismatch of heavy ORMs while providing compile-time type safety over fragile, error-prone raw SQL strings. By modeling SQL queries as an immutable Abstract Syntax Tree (AST) compiled through dialect-specific visitors, it enables deterministic query composition, zero-reflection Native AOT execution via C# Source Generators, compile-time SQL safety enforcement via Roslyn Analyzers, and native high-speed bulk data ingestion across 6 database engines: **SQL Server**, **PostgreSQL**, **MySQL**, **MariaDB**, **SQLite**, and **Oracle**.
+**EricksonLopez.SqlBuilder** is an enterprise-grade, immutable, AOT-first SQL builder and execution ecosystem for **.NET 8**, **.NET 9**, and **.NET 10**. It eliminates the runtime memory overhead, hidden state, and impedance mismatch of heavy ORMs while providing compile-time type safety over fragile, error-prone raw SQL strings. By modeling SQL queries as an immutable Abstract Syntax Tree (AST) compiled through dialect-specific visitors, it enables deterministic query composition, strict Native AOT execution with zero-reflection mappers via C# Source Generators, compile-time SQL safety enforcement via Roslyn Analyzers, and native high-speed bulk data ingestion across 6 database engines: **SQL Server**, **PostgreSQL**, **MySQL**, **MariaDB**, **SQLite**, and **Oracle**.
 
 ---
 
@@ -27,7 +27,8 @@ Immutable, AOT-first, strongly-typed SQL AST builder and high-performance execut
   - [Internal & Test Packages](#internal--test-packages)
   - [Recommended Architectural Stacks](#recommended-architectural-stacks)
 - [Documentation](#-documentation)
-  - [Step-by-Step Interactive Showcase (Levels 02 to 14)](#-step-by-step-interactive-showcase-levels-02-to-14)
+  - [Thematic Technical Guides (Guides 02 to 14)](#-thematic-technical-guides-guides-02-to-14)
+  - [Step-by-Step Interactive Showcase (Levels 00 to 11)](#-step-by-step-interactive-showcase-levels-00-to-11)
   - [Technical Reference & Architecture Guides](#-technical-reference--architecture-guides)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
@@ -44,10 +45,12 @@ Immutable, AOT-first, strongly-typed SQL AST builder and high-performance execut
   - [Use Case 5: Complex Analytical Queries with Window Functions](#use-case-5-complex-analytical-queries-with-window-functions)
   - [Use Case 6: Common Table Expressions (CTEs) & Recursive Hierarchies](#use-case-6-common-table-expressions-ctes--recursive-hierarchies)
   - [Use Case 7: Dialect-Aware Mutations (RETURNING / OUTPUT / Upsert)](#use-case-7-dialect-aware-mutations-returning--output--upsert)
+  - [Use Case 8: INSERT INTO ... SELECT (InsertFrom)](#use-case-8-insert-into--select-insertfrom)
 - [Configuration & Integrations](#-configuration--integrations)
   - [ASP.NET Core Minimal APIs Integration](#aspnet-core-minimal-apis-integration)
   - [OpenTelemetry Distributed Tracing](#opentelemetry-distributed-tracing)
   - [Native AOT Serialization & Trimming Setup](#native-aot-serialization--trimming-setup)
+  - [Dapper Synergy & DynamicParameters Cookbook](#-dapper-synergy--dynamicparameters-cookbook)
   - [Roslyn Diagnostic Analyzers Catalog](#roslyn-diagnostic-analyzers-catalog)
 - [Testing & Quality](#-testing--quality)
   - [Fluent Query Assertion API](#fluent-query-assertion-api)
@@ -64,6 +67,8 @@ Immutable, AOT-first, strongly-typed SQL AST builder and high-performance execut
   - [AST Compilation & Execution Pipeline](#ast-compilation--execution-pipeline)
   - [Modular Package Dependency Graph](#modular-package-dependency-graph)
   - [Core Architectural Invariants](#core-architectural-invariants)
+  - [Concurrency, Thread Safety & Memory Model](#-concurrency-thread-safety--memory-model)
+  - [Security Model & Threat Invariants](#-security-model--threat-invariants)
 - [Best Practices & Anti-Patterns](#-best-practices--anti-patterns)
 - [Troubleshooting & Common Pitfalls](#-troubleshooting--common-pitfalls)
 - [Part of the EricksonLopez Ecosystem](#-part-of-the-ericksonlopez-ecosystem)
@@ -88,22 +93,22 @@ Modern .NET data access architectures frequently suffer from five structural cha
 - **Compile-Time C# Expressions**: Queries are written as strongly-typed C# lambda expressions (`u => u.IsActive && u.Age >= 18`), enabling instant compiler feedback and automated IDE refactoring.
 - **Zero-Reflection Native AOT Path**: C# Source Generators analyze `[SqlEntity]` models at build time to generate static metadata, zero-allocation column maps, and strongly-typed `IDataReader` parsers.
 - **Transpilation across 6 Dialects**: A single portable query AST compiles accurately into native SQL for SQL Server, PostgreSQL, MySQL, MariaDB, SQLite, and Oracle.
-- **Roslyn SQL Safety Analyzers**: Built-in compile-time analyzers (`ESQL001`–`ESQL026`) block unbounded `DELETE`/`UPDATE` operations, unsafe string concatenations, and invalid transaction retry configurations at build time.
+- **Roslyn SQL Safety Analyzers**: Built-in compile-time analyzers (`ESQL001`–`ESQL026`, `ELSB004`, `ELSB006`, `SQL0003`–`SQL0009`) block unbounded `DELETE`/`UPDATE` operations, unsafe string concatenations, and invalid transaction retry configurations at build time.
 - **Native High-Speed Bulk Operations**: Leverages dedicated database transport protocols (`SqlBulkCopy`, `NpgsqlBinaryImporter COPY`, and `MySqlBatch`) for maximum ingestion throughput.
 
 ---
 
 ## ⚡ Key Features
 
-- **🚀 Immutable AST & Thread-Safe Composition**: Query objects (`SelectQuery<T>`, `InsertQuery<T>`, etc.) are immutable records using `with`-expressions. Base queries can be shared across concurrent pipelines safely.
-- **⚡ Native AOT & Trimming Compliant**: Zero reliance on runtime `Emit` or reflection in the core and AOT execution paths (`IsAotCompatible=true`, `EnableTrimAnalyzer=true`).
-- **🛡️ Built-In Roslyn Analyzers**: Real-time IDE diagnostics and CI quality gates catching unsafe SQL concatenations, unindexed queries, and destructive mutations.
-- **🌐 6 First-Class Dialect Compilers**: Independent compiler packages for SQL Server, PostgreSQL, MySQL, MariaDB, SQLite, and Oracle following a strict pay-for-play dependency model.
-- **📊 Advanced SQL DSL**: Native support for Window Functions, Common Table Expressions (CTEs), Recursive CTEs, LATERAL Joins, CROSS/OUTER APPLY, CASE expressions, and Set Operations (`UNION`, `INTERSECT`, `EXCEPT`).
-- **📑 Keyset & Seek Pagination**: Constant-time $O(1)$ performance over multi-million row datasets via composite cursor keys (`SeekAfter` / `SeekBefore`), alongside classic offset and window pagination.
-- **📦 Native High-Speed Bulk Ingestion**: Optimized bulk drivers utilizing TDS streams, PostgreSQL binary `COPY`, and MySQL batch execution.
-- **📡 Enterprise Observability**: Full OpenTelemetry distributed tracing integration with semantic database activity attributes and performance counters.
-- **🔌 Flexible Execution Models**: Seamless companion support for both standard Dapper workflows and pure reflection-free ADO.NET execution.
+- 🚀 **Immutable AST & Thread-Safe Composition**: Query objects (`SelectQuery<T>`, `InsertQuery<T>`, etc.) are immutable records using `with`-expressions. Base queries can be shared across concurrent pipelines safely.
+- ⚡ **Native AOT & Trimming Compliant**: Zero reliance on runtime `Emit` or reflection in the core and AOT execution paths (`IsAotCompatible=true`, `EnableTrimAnalyzer=true`).
+- 🛡️ **Built-In Roslyn Analyzers**: Real-time IDE diagnostics and CI quality gates catching unsafe SQL concatenations, unindexed queries, and destructive mutations.
+- 🌐 **6 First-Class Dialect Compilers**: Independent compiler packages for SQL Server, PostgreSQL, MySQL, MariaDB, SQLite, and Oracle following a strict pay-for-play dependency model.
+- 📊 **Advanced SQL DSL**: Native support for Window Functions, Common Table Expressions (CTEs), Recursive CTEs, LATERAL Joins, CROSS/OUTER APPLY, CASE expressions, and Set Operations (`UNION`, `INTERSECT`, `EXCEPT`).
+- 📑 **Keyset & Seek Pagination**: Constant-time $O(1)$ performance over multi-million row datasets via composite cursor keys (`SeekAfter` / `SeekBefore`), alongside classic offset and window pagination.
+- 📦 **Native High-Speed Bulk Ingestion**: Optimized bulk drivers utilizing TDS streams, PostgreSQL binary `COPY`, and MySQL batch execution.
+- 📡 **Enterprise Observability**: Full OpenTelemetry distributed tracing integration with semantic database activity attributes and performance counters.
+- 🔌 **Flexible Execution Models**: Seamless companion support for both standard Dapper workflows and pure reflection-free ADO.NET execution.
 
 ---
 
@@ -113,27 +118,27 @@ Modern .NET data access architectures frequently suffer from five structural cha
 
 | Package | Version | Description | Target Frameworks | AOT Safe |
 |---|:---:|---|:---:|:---:|
-| [`EricksonLopez.SqlBuilder`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder) | Core immutable query AST, builders, expression visitors, and compilation contracts | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.Abstractions`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Abstractions) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Abstractions?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Abstractions) | Core interfaces (`ISqlCompiler`, `ISqlNode`), entity annotations, and shared contracts | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.SqlServer`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.SqlServer) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.SqlServer?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.SqlServer) | SQL Server / Azure SQL compiler, `OUTPUT` clause, `SqlBulkCopyStrategy`, and bulk merge | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.PostgreSql`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.PostgreSql) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.PostgreSql?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.PostgreSql) | PostgreSQL compiler, `RETURNING`, `ON CONFLICT`, `NpgsqlCopyStrategy`, and CTE hints | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.MySql`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MySql) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.MySql?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MySql) | MySQL compiler, `ON DUPLICATE KEY UPDATE`, and `MySqlBatchStrategy` | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.MariaDb`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MariaDb) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.MariaDb?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MariaDb) | Dedicated MariaDB compiler inheriting optimized MySQL AST visitor | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.Sqlite`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Sqlite) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Sqlite?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Sqlite) | Lightweight SQLite compiler with zero external driver dependencies and UPSERT support | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.Oracle`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Oracle) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Oracle?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Oracle) | Oracle compiler, `MERGE INTO`, `FETCH FIRST` and `ROWNUM` pagination | `net8.0`, `net9.0` | ⚠️ Non-AOT driver |
-| [`EricksonLopez.SqlBuilder.Aot`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Aot) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Aot?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Aot) | Pure reflection-free ADO.NET query execution engine (`AotQueryExecutor`) | `net8.0`, `net9.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.Dapper`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Dapper?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper) | High-level Dapper extension methods, multi-mapping (2–7 entities), and bulk APIs | `net8.0`, `net9.0` | ⚠️ Dapper uses Emit |
-| [`EricksonLopez.SqlBuilder.Dapper.Aot`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper.Aot) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Dapper.Aot?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper.Aot) | Dapper.AOT & NativeAOT reflection-free execution over `DbConnection` | `net8.0`, `net9.0` | ✅ |
+| [`EricksonLopez.SqlBuilder`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder) | Core immutable query AST, builders, expression visitors, and compilation contracts | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.Abstractions`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Abstractions) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Abstractions?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Abstractions) | Core interfaces (`ISqlCompiler`, `ISqlNode`), entity annotations, and shared contracts | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.SqlServer`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.SqlServer) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.SqlServer?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.SqlServer) | SQL Server / Azure SQL compiler, `OUTPUT` clause, `SqlBulkCopyStrategy`, and bulk merge | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.PostgreSql`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.PostgreSql) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.PostgreSql?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.PostgreSql) | PostgreSQL compiler, `RETURNING`, `ON CONFLICT`, `NpgsqlCopyStrategy`, and CTE hints | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.MySql`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MySql) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.MySql?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MySql) | MySQL compiler, `ON DUPLICATE KEY UPDATE`, and `MySqlBatchStrategy` | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.MariaDb`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MariaDb) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.MariaDb?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.MariaDb) | Dedicated MariaDB compiler inheriting optimized MySQL AST visitor | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.Sqlite`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Sqlite) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Sqlite?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Sqlite) | Lightweight SQLite compiler with zero external driver dependencies and UPSERT support | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.Oracle`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Oracle) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Oracle?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Oracle) | Oracle compiler, `MERGE INTO`, `FETCH FIRST` and `ROWNUM` pagination, and `OracleBulkCopyStrategy` | `net8.0`, `net9.0`, `net10.0` | ⚠️ Non-AOT driver |
+| [`EricksonLopez.SqlBuilder.Aot`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Aot) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Aot?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Aot) | Pure reflection-free ADO.NET query execution engine (`AotQueryExecutor`) | `net8.0`, `net9.0`, `net10.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.Dapper`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Dapper?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper) | High-level Dapper extension methods, multi-mapping (2–7 entities), and bulk APIs | `net8.0`, `net9.0`, `net10.0` | ⚠️ Dapper uses Emit |
+| [`EricksonLopez.SqlBuilder.Dapper.Aot`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper.Aot) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Dapper.Aot?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Dapper.Aot) | Dapper.AOT & NativeAOT reflection-free execution over `DbConnection` | `net8.0`, `net9.0`, `net10.0` | ✅ |
 | [`EricksonLopez.SqlBuilder.Pagination`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Pagination) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Pagination?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Pagination) | Offset, Keyset, and Cursor pagination AST extensions integrated with `EricksonLopez.Pagination` | `net8.0`, `net9.0`, `net10.0` | ✅ |
-| [`EricksonLopez.SqlBuilder.OpenTelemetry`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.OpenTelemetry) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.OpenTelemetry?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.OpenTelemetry) | OpenTelemetry distributed tracing `ActivitySource` instrumentation with database semantic tags | `net8.0`, `net9.0` | ✅ |
+| [`EricksonLopez.SqlBuilder.OpenTelemetry`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.OpenTelemetry) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.OpenTelemetry?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.OpenTelemetry) | OpenTelemetry distributed tracing `ActivitySource` instrumentation with database semantic tags | `net8.0`, `net9.0`, `net10.0` | ✅ |
 | [`EricksonLopez.SqlBuilder.SourceGenerators`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.SourceGenerators) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.SourceGenerators?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.SourceGenerators) | Compile-time entity metadata, `IDataReaderMapper<T>`, and diff-update code generation | `netstandard2.0` | ✅ (Build Tool) |
-| [`EricksonLopez.SqlBuilder.Analyzers`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Analyzers) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Analyzers?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Analyzers) | Roslyn SQL safety and correctness analyzers (`ESQL001`–`ESQL026`) | `netstandard2.0` | ✅ (Build Tool) |
+| [`EricksonLopez.SqlBuilder.Analyzers`](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Analyzers) | [![NuGet](https://img.shields.io/nuget/v/EricksonLopez.SqlBuilder.Analyzers?style=flat-square)](https://www.nuget.org/packages/EricksonLopez.SqlBuilder.Analyzers) | Roslyn SQL safety and correctness analyzers (`ESQL001`–`ESQL026`, `ELSB004`, `ELSB006`, `SQL0003`–`SQL0009`) | `netstandard2.0` | ✅ (Build Tool) |
 
 ### Internal & Test Packages
 
 | Package | Description | Target Frameworks |
 |---|---|:---:|
-| `EricksonLopez.SqlBuilder.Testing` | Shared test framework: `MockSqlCompiler`, `QueryAssert`, Testcontainers fixtures, and SQL assertion helpers | `net8.0`, `net9.0` |
+| `EricksonLopez.SqlBuilder.Testing` | Shared test framework: `MockSqlCompiler`, `QueryAssert`, Testcontainers fixtures, and SQL assertion helpers | `net8.0`, `net9.0`, `net10.0` |
 | `EricksonLopez.SqlBuilder.Benchmarks` | BenchmarkDotNet performance suite validating memory allocation and compiler throughput | `net8.0`, `net9.0`, `net10.0` |
 
 ### Recommended Architectural Stacks
@@ -155,28 +160,47 @@ Modern .NET data access architectures frequently suffer from five structural cha
 
 > 🌐 **Official Documentation Hub:** [https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/docs](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/docs)
 
-### 🎓 Step-by-Step Interactive Showcase (Levels 02 to 14)
+### 🎓 Thematic Technical Guides (Guides 02 to 14)
 
-| Level | Topic | Description |
+| Guide | Topic | Description |
 |---|---|---|
-| [**Level 02**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/02-basic-concepts.md) | **Basic Concepts & Primitives** | Entities, compilers, query builders, and fundamental AST anatomy |
-| [**Level 03**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/03-crud-operations.md) | **CRUD Operations & Expressions** | Type-safe INSERT, SELECT, UPDATE, DELETE, and parameterized expressions |
-| [**Level 04**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/04-advanced-select-queries.md) | **Advanced SELECT & Aggregates** | Subqueries, GROUP BY, HAVING, Scalar projections, and CASE expressions |
-| [**Level 05**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/05-joins-and-relationships.md) | **Joins & Lateral References** | Standard joins, LATERAL joins, CROSS/OUTER APPLY, and multi-table navigation |
-| [**Level 06**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/06-transactions-and-bulk.md) | **Transactions & Bulk Ingestion** | Atomic Unit of Work, savepoints, and high-throughput bulk insertion strategies |
-| [**Level 07**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/07-pagination-and-sorting.md) | **Pagination & Keyset Sorting** | Offset paging, $O(1)$ Keyset Seek cursors, and Window-based pagination |
-| [**Level 08**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/08-aot-code-generators.md) | **Native AOT & Source Generators** | Zero-reflection entity metadata, AOT mappers, and diff update generation |
-| [**Level 09**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/09-dapper-extensions-and-materialization.md) | **Dapper Integration & Multi-Mapping** | Extension methods, multi-mapping (2–7 and 8+ entities), and stream iteration |
-| [**Level 10**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/10-ecosystem-and-extensions.md) | **Ecosystem & Observability** | OpenTelemetry activity tracing, metrics counters, and pagination integration |
-| [**Level 11**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/11-real-world-use-cases.md) | **Real-World Architecture** | CQRS repository implementations, multi-tenant filters, and audit logs |
-| [**Level 12**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/12-playgrounds-and-examples.md) | **Playgrounds & DDL Setup** | Multi-engine sample apps, containerized database scripts, and live demos |
-| [**Level 13**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/13-performance-and-benchmarks.md) | **Performance Optimization** | Zero-allocation tuning, query sharing, and BenchmarkDotNet validation |
-| [**Level 14**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/14-testing-and-integration.md) | **Testing & Testcontainers** | QueryAssert, snapshot verification, and multi-dialect container suites |
+| [**Guide 02**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/02-basic-concepts.md) | **Basic Concepts & Primitives** | Entities, compilers, query builders, and fundamental AST anatomy |
+| [**Guide 03**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/03-crud-operations.md) | **CRUD Operations & Expressions** | Type-safe INSERT, SELECT, UPDATE, DELETE, and parameterized expressions |
+| [**Guide 04**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/04-advanced-select-queries.md) | **Advanced SELECT & Aggregates** | Subqueries, GROUP BY, HAVING, Scalar projections, and CASE expressions |
+| [**Guide 05**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/05-joins-and-relationships.md) | **Joins & Lateral References** | Standard joins, LATERAL joins, CROSS/OUTER APPLY, and multi-table navigation |
+| [**Guide 06**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/06-transactions-and-bulk.md) | **Transactions & Bulk Ingestion** | Transactions, savepoints, and high-throughput bulk insertion strategies |
+| [**Guide 07**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/07-pagination-and-sorting.md) | **Pagination & Keyset Sorting** | Offset paging, $O(1)$ Keyset Seek cursors, and Window-based pagination |
+| [**Guide 08**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/08-aot-code-generators.md) | **Native AOT & Source Generators** | Zero-reflection entity metadata, AOT mappers, and diff update generation |
+| [**Guide 09**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/09-dapper-extensions-and-materialization.md) | **Dapper Integration & Multi-Mapping** | Extension methods, multi-mapping (2–7 entities), and stream iteration |
+| [**Guide 10**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/10-ecosystem-and-extensions.md) | **Ecosystem & Observability** | OpenTelemetry activity tracing, metrics counters, and pagination integration |
+| [**Guide 11**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/11-real-world-use-cases.md) | **Real-World Architecture** | CQRS repository implementations, multi-tenant filters, and audit logs |
+| [**Guide 12**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/12-playgrounds-and-examples.md) | **Playgrounds & DDL Setup** | Multi-engine sample apps, containerized database scripts, and live demos |
+| [**Guide 13**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/13-performance-and-benchmarks.md) | **Performance Optimization** | Zero-allocation tuning, query sharing, and BenchmarkDotNet validation |
+| [**Guide 14**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/14-testing-and-integration.md) | **Testing & Testcontainers** | QueryAssert, snapshot verification, and multi-dialect container suites |
+
+### 🚀 Step-by-Step Interactive Showcase (Levels 00 to 11)
+
+The repository includes a dedicated, runnable multi-engine showcase project in [`samples/EricksonLopez.SqlBuilder.Samples`](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples) accompanied by walk-through guides in [`docs/showcase`](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/docs/showcase):
+
+| Level | Topic | Executable Sample | Guide |
+|---|---|---|---|
+| **Level 00** | Introduction & Quickstart | [`ConceptualSample.cs`](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/samples/EricksonLopez.SqlBuilder.Samples/Level00_Conceptual/ConceptualSample.cs) | [**level-00-introduction.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-00-introduction.md) |
+| **Level 01** | Basic Query Building | [`QuickStartSample.cs`](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/samples/EricksonLopez.SqlBuilder.Samples/Level01_QuickStart/QuickStartSample.cs) | [**level-01-basic-query-building.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-01-basic-query-building.md) |
+| **Level 02** | Window Functions & CTEs | [`FullConfigurationSample.cs`](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/samples/EricksonLopez.SqlBuilder.Samples/Level02_FullConfiguration/FullConfigurationSample.cs) | [**level-02-window-functions-and-ctes.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-02-window-functions-and-ctes.md) |
+| **Level 03** | Zero-Allocation & Native AOT | [Level03_RealUseCases](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level03_RealUseCases) | [**level-03-zero-allocation-aot.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-03-zero-allocation-aot.md) |
+| **Level 04** | Advanced Dialect Integration | [Level04_AdvancedIntegration](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level04_AdvancedIntegration) | [**level-04-advanced-integration.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-04-advanced-integration.md) |
+| **Level 05** | Bulk Processing | [Level05_Processing](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level05_Processing) | [**level-05-processing.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-05-processing.md) |
+| **Level 06** | Concurrency & Error Handling | [Level06_ErrorHandling](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level06_ErrorHandling) | [**level-06-error-handling.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-06-error-handling.md) |
+| **Level 07** | Scalability & High-Throughput | [Level07_Scalability](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level07_Scalability) | [**level-07-scalability.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-07-scalability.md) |
+| **Level 08** | Customization & Filters | [Level08_Customization](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level08_Customization) | [**level-08-customization.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-08-customization.md) |
+| **Level 09** | Ecosystem Extensions | [Level09_Extensions](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level09_Extensions) | [**level-09-extensions.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-09-extensions.md) |
+| **Level 10** | Enterprise Architecture & CQRS | [Level10_EnterpriseArchitecture](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level10_EnterpriseArchitecture) | [**level-10-enterprise-architecture.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-10-enterprise-architecture.md) |
+| **Level 11** | Comprehensive API Coverage | [Level11_ComprehensiveApiCoverage](https://github.com/ericksonlopezf/dotnet-sql-builder/tree/main/samples/EricksonLopez.SqlBuilder.Samples/Level11_ComprehensiveApiCoverage) | [**level-11-comprehensive-api-coverage.md**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/showcase/level-11-comprehensive-api-coverage.md) |
 
 ### 📖 Technical Reference & Architecture Guides
 
 - [**Architecture & Invariants**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/architecture.md) — Complete architectural blueprint, memory layouts, AST design, and internal boundaries.
-- [**Architectural Decision Records (ADRs)**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/decisions/index.md) — Index of all 48 ADRs documenting design rationale and rejected alternatives.
+- [**Architectural Decision Records (ADRs)**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/decisions/index.md) — Index of all 50+ ADRs documenting design rationale and rejected alternatives.
 - [**Package Catalog & Compatibility**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/packages.md) — Target framework matrix, dependencies, and Central Package Management.
 - [**API Reference**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/api-reference.md) — Public API contracts, `Sql` static entry point, and extension methods.
 - [**Production Cookbook**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/cookbook.md) — Ready-to-use production recipes for complex queries, joins, mutations, and filters.
@@ -184,9 +208,9 @@ Modern .NET data access architectures frequently suffer from five structural cha
 - [**Bulk Operations Guide**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/bulk-operations.md) — Native bulk copy strategies, batch limits, and identity management rules.
 - [**Resilience & Fault Tolerance**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/resilience.md) — Polly v8 retry pipelines, transient error detectors, and transaction safety.
 - [**Unit of Work & Transactions**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/unit-of-work.md) — Async transaction scopes, auto-rollback on dispose, and savepoint management.
-- [**Multi-Mapping Guide**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/multi-mapping.md) — 2–7 entity mapping with Dapper and 8+ entity mapping via `MultiMapBuilder`.
+- [**Multi-Mapping Guide**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/multi-mapping.md) — 2–7 entity mapping with Dapper and planned 8+ entity mapping specification.
 - [**Native AOT Guarantees & Limits**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/aot.md) — Invariants, reflection-free execution paths, and third-party driver constraints.
-- [**Roslyn Analyzers Catalog**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/analyzers.md) — Full diagnostic rule catalog (`ESQL001`–`ESQL026`), severities, and remediation fixes.
+- [**Roslyn Analyzers Catalog**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/analyzers.md) — Full diagnostic rule catalog (`ESQL001`–`ESQL026`, `ELSB004`, `ELSB006`, `SQL0003`–`SQL0009`), severities, and remediation fixes.
 - [**Performance & Benchmarks**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/performance.md) — BenchmarkDotNet specifications, zero-allocation AST proofs, and guidelines.
 - [**Build & MSBuild Properties**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/build.md) — Deterministic build settings, strong-name signing (`.snk`), and SourceLink.
 - [**Dependency Management**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/dependency-management.md) — Global CPM version pinning in `Directory.Packages.props`.
@@ -244,7 +268,7 @@ Configure the `SourceGenerators` package as a build-time analyzer so it emits re
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
@@ -319,7 +343,7 @@ await using var connection = new SqlConnection("Server=tcp:localhost,1433;Databa
 await connection.OpenAsync();
 
 // Execute via AOT executor using source-generated parser (100% Trim & AOT safe)
-var users = await connection.AotQueryAsync(query, compiler, User.GetReaderParser(), CancellationToken.None);
+var users = await connection.AotQueryAsync(query, compiler, User.GetReaderParser(), cancellationToken: CancellationToken.None);
 
 foreach (var user in users)
 {
@@ -452,21 +476,26 @@ var nextBatch = Sql.From<Order>()
 Utilize native database bulk drivers for streaming tens of thousands of rows per second:
 
 ```csharp
-using EricksonLopez.SqlBuilder.Dapper;
+using EricksonLopez.SqlBuilder.Builders.Bulk;
 using EricksonLopez.SqlBuilder.SqlServer;
 using Microsoft.Data.SqlClient;
-
-// Register native TDS bulk streaming strategy
-DapperExtensions.RegisterBulkStrategy(new SqlBulkCopyStrategy());
 
 using var connection = new SqlConnection(connectionString);
 await connection.OpenAsync();
 
-// Ingest 50,000 entities in a single roundtrip
-await connection.BulkInsertAsync(userEntities, new BulkOptions
+// Option A: Fluent BulkBuilder<T> API (AOT-compatible, requires [SqlEntity] + SourceGenerators)
+var bulk = Sql.Bulk<User>(userEntities)
+              .WithBatchSize(5000)
+              .IgnoreNulls()
+              .Insert();  // configures for INSERT; use .Update(), .Upsert(), or .Merge() for other operations
+
+var bulkResult = bulk.Build(compiler);  // ISqlRenderer / ISqlCompiler
+
+// Option B: Ingest directly via dialect strategy
+await SqlBulkCopyStrategy.BulkInsertAsync(connection, userEntities, new BulkOptions
 {
     BatchSize = 5000,
-    BulkCopyTimeout = 60
+    TimeoutSeconds = 60
 });
 ```
 
@@ -520,12 +549,29 @@ var insertPg = Sql.Insert(newUser)
 // PostgreSQL / SQLite: ON CONFLICT DO UPDATE
 var upsertPg = Sql.Insert(newUser)
                   .OnConflict(u => u.Email)
-                  .DoUpdate(u => u.Name, u => u.Balance);
+                  .DoUpdate(u => new { u.Name, u.Balance });
 
 // MySQL: ON DUPLICATE KEY UPDATE
 var upsertMySql = Sql.Insert(newUser)
                      .OnConflict()
-                     .DoUpdate(u => u.Name, u => u.Balance);
+                     .DoUpdate(u => new { u.Name, u.Balance });
+```
+
+---
+
+### Use Case 8: INSERT INTO ... SELECT (InsertFrom)
+
+Copy data across tables or stages using a strongly-typed `INSERT INTO ... SELECT` query:
+
+```csharp
+// Copy active users to an archive table, projecting specific columns
+var sourceQuery = Sql.From<User>().Where(u => u.IsActive == false);
+
+var insertSelect = Sql.InsertFrom<ArchivedUser>(sourceQuery, "Name", "Email", "CreatedAt");
+
+var result = insertSelect.Build(new PostgreSqlCompiler());
+// Generates: INSERT INTO "archived_users" ("Name", "Email", "CreatedAt")
+//            SELECT "Name", "Email", "CreatedAt" FROM "users" WHERE "IsActive" = @p0
 ```
 
 ---
@@ -556,7 +602,7 @@ app.MapGet("/api/users", async (CancellationToken ct) =>
                    .Limit(20);
 
     await using var connection = new SqlConnection(connString);
-    var users = await connection.AotQueryAsync(query, compiler, User.GetReaderParser(), ct);
+    var users = await connection.AotQueryAsync(query, compiler, User.GetReaderParser(), cancellationToken: ct);
     return Results.Ok(users);
 });
 
@@ -574,7 +620,7 @@ using EricksonLopez.SqlBuilder.OpenTelemetry;
 
 // Wrap query execution in an Activity span
 using var activity = SqlBuilderInstrumentation.StartQueryActivity(query, databaseName: "CustomersDb");
-var result = await connection.AotQueryAsync(query, compiler, User.GetReaderParser(), ct);
+var result = await connection.AotQueryAsync(query, compiler, User.GetReaderParser(), cancellationToken: ct);
 ```
 
 ---
@@ -597,6 +643,42 @@ public partial class AppJsonSerializerContext : JsonSerializerContext
 
 ---
 
+### 🛠️ Dapper Synergy & DynamicParameters Cookbook
+
+`EricksonLopez.SqlBuilder.Dapper` provides seamless, zero-copy handoffs from AST queries directly into Dapper execution pipelines:
+
+```csharp
+using Dapper;
+using EricksonLopez.SqlBuilder;
+using EricksonLopez.SqlBuilder.Dapper;
+using EricksonLopez.SqlBuilder.PostgreSql;
+
+// 1. Build immutable query
+var compiler = new PostgreSqlCompiler();
+var result = Sql.From<User>()
+    .Where(u => u.IsActive && u.Age >= 18)
+    .OrderByDescending(u => u.CreatedAt)
+    .Limit(25)
+    .Build(compiler);
+
+// 2. Direct Execution with Dapper (Automatic parameter binding)
+using var connection = new NpgsqlConnection(connectionString);
+var users = await connection.QueryAsync<User>(
+    sql: result.Sql,
+    param: result.ToDynamicParameters(),
+    commandTimeout: 30);
+
+// 3. Structured CommandDefinition with Cancellation Token
+var cmd = new CommandDefinition(
+    commandText: result.Sql,
+    parameters: result.ToDynamicParameters(),
+    cancellationToken: cancellationToken);
+
+var activeUser = await connection.QueryFirstOrDefaultAsync<User>(cmd);
+```
+
+---
+
 ### Roslyn Diagnostic Analyzers Catalog
 
 `EricksonLopez.SqlBuilder.Analyzers` automatically inspects your query construction and warns of common hazards:
@@ -611,8 +693,8 @@ public partial class AppJsonSerializerContext : JsonSerializerContext
 | **`ESQL006`** | **Warning** | Correctness | Missing `ON` condition in `JOIN` clause | ❌ |
 | **`ESQL007`** | **Info** | Performance | Potential missing index on filtered column | ❌ |
 | **`ESQL008`** | **Warning** | Performance | Large `OFFSET` detected; Keyset pagination recommended | ❌ |
-| **`ESQL009`** | **Warning** | Performance | Leading wildcard in `LIKE '%...'` predicate (non-sargable scan) | ❌ |
-| **`ESQL010`** | **Warning** | Performance | Inefficient `LIKE` pattern usage | ❌ |
+| **`ESQL009`** | **Info** | Performance | Use of `LIKE` without wildcards (prefer `=` / `Equals`) | ❌ |
+| **`ESQL010`** | **Warning** | Performance | Leading wildcard in `LIKE '%...'` predicate (non-sargable scan) | ❌ |
 | **`ESQL011`** | **Warning** | Security | Unsafe overload `Sql.Raw(string)` used instead of `FormattableString` | ✅ (Interpolation fix) |
 | **`ESQL012`** | **Warning** | Correctness | Retry policy configured inside active `IUnitOfWork` (data corruption risk) | ❌ |
 | **`ESQL020`** | **Warning** | Compatibility | Dialect-specific API called with incompatible `ISqlCompiler` | ❌ |
@@ -622,9 +704,11 @@ public partial class AppJsonSerializerContext : JsonSerializerContext
 | **`ESQL024`** | **Warning** | Correctness | Cartesian join detected due to missing join predicates | ❌ |
 | **`ESQL025`** | **Info** | Migration | SqlKata API detected — automated migration code fix available | ✅ (SqlBuilder conversion) |
 | **`ESQL026`** | **Error** | Correctness | Deprecated generic `MergeQuery<T>` detected (use dialect-specific UPSERT) | ❌ |
-| **`SQL003`** | **Warning** | Best Practice | Legacy `SELECT *` projection detected | ❌ |
-| **`SQL004`** | **Warning** | Performance | Redundant `WHERE` condition detected | ❌ |
-| **`SQL009`** | **Warning** | Correctness | Missing column reference in entity mapping | ❌ |
+| **`ELSB004`** | **Warning** | Security | Dynamically constructed SQL table or column identifier passed without allowlist check | ❌ |
+| **`ELSB006`** | **Warning** | Performance | Batch size exceeds database provider parameter limits | ❌ |
+| **`SQL0003`** | **Warning** | Performance | Legacy `SELECT *` projection detected (use explicit column list) | ✅ (Explicit projection) |
+| **`SQL0004`** | **Warning** | Correctness | Redundant or contradictory `WHERE` condition detected | ❌ |
+| **`SQL0009`** | **Warning** | Correctness | Referenced property has no mapped database column | ❌ |
 
 ---
 
@@ -714,7 +798,7 @@ public async Task ComplexAnalyticalQuery_MatchesGoldenSnapshot()
 {
     var compiler = new SqlServerCompiler();
     var query = Sql.From<Order>()
-                   .InnerJoin<User>((o, u) => o.UserId == u.Id)
+                   .Join<User>((o, u) => o.UserId == u.Id)
                    .Where(o => o.Status == "Completed");
 
     await QueryAssert.VerifySql(query, compiler);
@@ -745,26 +829,27 @@ The repository enforces strict mutation quality thresholds via [Stryker.NET](htt
 | **Branch Coverage** | **≥98%** | Coverlet automated CI branch analysis |
 | **Mutation Score** | **≥95%** | Stryker.NET 15-project configuration matrix |
 | **Static Analysis** | **Clean** | SonarCloud Clean Code & Roslyn Analyzers (`TreatWarningsAsErrors=true`) |
-| **Public API Governance** | **100%** | `Microsoft.CodeAnalysis.PublicApiAnalyzers` binary tracking |
+| **Public API Governance** | **Enforced** | Public API baseline tracking via `Microsoft.CodeAnalysis.PublicApiAnalyzers` (ADR-047) |
 
 ---
 
 ## ⚡ Performance Benchmarks
 
-> **Environment:** .NET 10.0.10, X64 RyuJIT AVX-512, BenchmarkDotNet v0.14.0
+> **Environment:** .NET 10.0.10, X64 RyuJIT AVX-512, BenchmarkDotNet v0.14.0  
+> *These are reference results measured on a specific hardware configuration. Actual numbers vary by runtime version, CPU model, and OS. Run the benchmark suite locally for environment-specific measurements.*
 
 ### Query Compilation & Materialization Benchmarks
 
 | Method | Mean | Allocated Memory | Gen 0 / 1000 ops |
 |---|---:|---:|---:|
-| `SqlBuilder.SimpleSelect_Compile` | 42.15 ns | **0 B** | — |
-| `SqlBuilder.ComplexMultiJoin_Compile` | 118.30 ns | **0 B** | — |
-| `SqlBuilder.GroupByHaving_Compile` | 84.62 ns | **0 B** | — |
-| `SqlBuilder.KeysetSeek_Compile` | 65.10 ns | **0 B** | — |
+| `SqlBuilder.SimpleSelect_Compile` | 42.15 ns | ~32 B | — |
+| `SqlBuilder.ComplexMultiJoin_Compile` | 118.30 ns | ~128 B | — |
+| `SqlBuilder.GroupByHaving_Compile` | 84.62 ns | ~96 B | — |
+| `SqlBuilder.KeysetSeek_Compile` | 65.10 ns | ~64 B | — |
 | `SqlBuilder.AotDataReaderMaterialization` | 14.80 ns | **0 B** | — |
-| `SqlBuilder.ApplyDiffUpdate_Compile` | 52.40 ns | **0 B** | — |
+| `SqlBuilder.ApplyDiffUpdate_Compile` | 52.40 ns | ~48 B | — |
 
-*Zero allocations during repeated compilation are guaranteed by immutable AST node sharing and Source Generator metadata caching (ADR-014).*
+*Ultra-low allocations during query compilation are achieved via StringBuilderPool object pooling, internal value buffers, and immutable AST node sharing (ADR-014, ADR-048).*
 
 ### Executing Benchmarks Locally
 
@@ -779,21 +864,21 @@ dotnet run --project benchmarks/EricksonLopez.SqlBuilder.Benchmarks/EricksonLope
 
 ### Framework & Native AOT Support Matrix
 
-| Package | `netstandard2.0` | `net8.0` | `net9.0` | `net10.0` | Native AOT | Trimmable | Driver Dependency |
+| Package | `netstandard2.0` | `net8.0` | `net9.0` | `net10.0` | Native AOT | Trimmable | Driver / Core Dependency |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|---|
-| `EricksonLopez.SqlBuilder` | — | ✅ | ✅ | — | ✅ | ✅ | *None (Zero Dependency)* |
-| `EricksonLopez.SqlBuilder.Abstractions` | — | ✅ | ✅ | — | ✅ | ✅ | *None (Zero Dependency)* |
-| `EricksonLopez.SqlBuilder.SqlServer` | — | ✅ | ✅ | — | ✅ | ✅ | `Microsoft.Data.SqlClient` |
-| `EricksonLopez.SqlBuilder.PostgreSql` | — | ✅ | ✅ | — | ✅ | ✅ | `Npgsql` |
-| `EricksonLopez.SqlBuilder.MySql` | — | ✅ | ✅ | — | ✅ | ✅ | `MySqlConnector` |
-| `EricksonLopez.SqlBuilder.MariaDb` | — | ✅ | ✅ | — | ✅ | ✅ | `MySqlConnector` |
-| `EricksonLopez.SqlBuilder.Sqlite` | — | ✅ | ✅ | — | ✅ | ✅ | `Microsoft.Data.Sqlite` |
-| `EricksonLopez.SqlBuilder.Oracle` | — | ✅ | ✅ | — | ⚠️ * | ⚠️ * | `Oracle.ManagedDataAccess.Core` |
-| `EricksonLopez.SqlBuilder.Aot` | — | ✅ | ✅ | — | ✅ | ✅ | Standard `System.Data.Common` |
-| `EricksonLopez.SqlBuilder.Dapper` | — | ✅ | ✅ | — | ⚠️ | ⚠️ | `Dapper` |
-| `EricksonLopez.SqlBuilder.Dapper.Aot` | — | ✅ | ✅ | — | ✅ | ✅ | `Dapper.AOT` |
+| `EricksonLopez.SqlBuilder` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `Logging.Abstractions`, `ObjectPool` |
+| `EricksonLopez.SqlBuilder.Abstractions` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `EricksonLopez.Result` |
+| `EricksonLopez.SqlBuilder.SqlServer` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `Microsoft.Data.SqlClient` |
+| `EricksonLopez.SqlBuilder.PostgreSql` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `Npgsql` |
+| `EricksonLopez.SqlBuilder.MySql` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `MySqlConnector` |
+| `EricksonLopez.SqlBuilder.MariaDb` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `MySqlConnector` |
+| `EricksonLopez.SqlBuilder.Sqlite` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `Microsoft.Data.Sqlite` |
+| `EricksonLopez.SqlBuilder.Oracle` | — | ✅ | ✅ | ✅ | ⚠️ * | ⚠️ * | `Oracle.ManagedDataAccess.Core` |
+| `EricksonLopez.SqlBuilder.Aot` | — | ✅ | ✅ | ✅ | ✅ | ✅ | Standard `System.Data.Common` |
+| `EricksonLopez.SqlBuilder.Dapper` | — | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | `Dapper` |
+| `EricksonLopez.SqlBuilder.Dapper.Aot` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `Dapper.AOT` |
 | `EricksonLopez.SqlBuilder.Pagination` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `EricksonLopez.Pagination` |
-| `EricksonLopez.SqlBuilder.OpenTelemetry` | — | ✅ | ✅ | — | ✅ | ✅ | `OpenTelemetry.Api` |
+| `EricksonLopez.SqlBuilder.OpenTelemetry` | — | ✅ | ✅ | ✅ | ✅ | ✅ | `OpenTelemetry.Api` |
 | `EricksonLopez.SqlBuilder.Analyzers` | ✅ | — | — | — | ✅ | ✅ | Roslyn 4.8.0 SDK |
 | `EricksonLopez.SqlBuilder.SourceGenerators` | ✅ | — | — | — | ✅ | ✅ | Roslyn 4.8.0 SDK |
 
@@ -814,6 +899,10 @@ dotnet run --project benchmarks/EricksonLopez.SqlBuilder.Benchmarks/EricksonLope
 | **LATERAL / APPLY Joins** | `CROSS APPLY` | `LATERAL` | `LATERAL` | `LATERAL` | ❌ | `LATERAL` |
 | **Keyset (Seek) Pagination** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Native High-Speed Bulk Strategy** | `SqlBulkCopy` | `COPY STDIN` | `MySqlBatch` | `MySqlBatch` | Batch Loop | Array Binding |
+
+---
+
+> 🛡️ **Target Framework & Lifecycle Policy**: First-class multi-targeting across `.NET 10` (Modern LTS), `.NET 9` (STS), and `.NET 8` (Enterprise LTS) — along with `.NET Standard 2.0` for Roslyn analyzers and source generators — is actively maintained. Full backward compatibility is guaranteed until Microsoft officially reaches End-of-Life (EOL) for .NET 8 and .NET 9 in November 2026, at which milestone the ecosystem will transition to .NET 10 and .NET 11.
 
 ---
 
@@ -891,6 +980,27 @@ flowchart TD
 2. **Zero Runtime Reflection in AOT Hot Paths (ADR-013)**: The engine avoids `System.Reflection.Emit`, `MakeGenericType`, and runtime scanning. All entity metadata is resolved at compile time via Source Generators.
 3. **Pay-for-Play Modularity (ADR-009)**: Dialect drivers, Dapper, pagination, and OpenTelemetry integrations are segregated into discrete packages. The core AST engine has zero third-party runtime dependencies.
 4. **No Hidden State or Ambient Tracking (ADR-007, ADR-023, ADR-024)**: No ambient transaction contexts, no automatic query caching, and no change trackers.
+
+---
+
+### 🧵 Concurrency, Thread Safety & Memory Model
+
+- **Thread-Safe Dialect Compilers**: All compiler instances (`new PostgreSqlCompiler()`, `new SqlServerCompiler()`, etc.) are stateless and immutable. They can be safely instantiated once and registered as singletons in DI containers, then shared across hundreds of concurrent threads.
+- **Immutable AST Architecture**: Builders (`SelectQuery<T>`, `UpdateQuery<T>`, etc.) are immutable C# records. Chaining methods returns new record instances via non-destructive mutation (`with`), enabling safe concurrent query branching without race conditions.
+- **Pooled Compilation Memory**: Query string assembly rents buffers from `StringBuilderPool` within a scoped `CompilationContext`. Resources are reclaimed immediately via `try/finally` blocks, resulting in Gen-0/1/2 collection stability even under 100,000 queries/second.
+
+---
+
+### 🔒 Security Model & Threat Invariants
+
+`EricksonLopez.SqlBuilder` enforces a defense-in-depth security posture designed to neutralize SQL injection and silent data corruption vectors at both compile-time and runtime:
+
+1. **Strict Value Parameterization**: All values supplied through fluent expressions, comparison helpers (`WhereDate`, `WhereYear`), or collections are converted to positional parameter placeholders (`@p0`, `@p1`). Raw user values are never interpolated into SQL text.
+2. **Zero-Allocation Delimiter Escaping (SQL-SEC-001)**: All table, schema, and column identifiers undergo dialect-specific closing delimiter doubling (`"` $\to$ `""` in PostgreSQL/SQLite/Oracle, `]` $\to$ `]]` in SQL Server, `` ` `` $\to$ ```` `` ```` in MySQL). Deliberate quote injection attempts cannot escape identifier boundaries.
+3. **Whitelist Identifier Validation (SQL-SEC-002)**: Aggregate projections (`AsCount`, `AsSum`, `AsAvg`, `AsMin`, `AsMax`) and raw column expressions validate identifiers against the character whitelist `[a-zA-Z0-9_.*]`. Invalid characters trigger immediate `ArgumentException`.
+4. **Collision-Immune Parameter Registry (SQL-PARAM-001)**: `ParameterManager` verifies that duplicate named parameters carry identical values. Conflicting values throw a fail-fast `InvalidOperationException`, preventing silent query corruption. Auto-generated parameters (`@p0`) automatically skip existing named keys.
+5. **Fail-Fast Boundary Validation (SQL-SEM-001)**: `Limit`, `Offset`, and `Fetch` reject negative integers at invocation time via `ArgumentOutOfRangeException.ThrowIfNegative`.
+6. **Raw SQL Boundaries**: Unchecked user input must **never** be passed to `.RawSql()`, `.RawWhere()`, or `.Where(FormattableString)`. These APIs are reserved exclusively for trusted, static, or developer-authored fragments.
 
 ---
 
@@ -986,12 +1096,11 @@ Please review our governance and community standards:
 - [**Contributing Guidelines**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/CONTRIBUTING.md)
 - [**Code of Conduct**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/CODE_OF_CONDUCT.md)
 - [**Security Policy**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/SECURITY.md)
-- [**Project Roadmap**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/roadmap.md)
+- [**Project Roadmap**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/docs/roadmap.md)
 - [**Support Guide**](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/SUPPORT.md)
 
 ---
 
 ## 📄 License
 
-Distributed under the [MIT License](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/LICENSE).  
-Copyright © 2026 Erickson Lopez.
+Distributed under the [MIT License](https://github.com/ericksonlopezf/dotnet-sql-builder/blob/main/LICENSE). Copyright © 2026 Erickson Lopez.

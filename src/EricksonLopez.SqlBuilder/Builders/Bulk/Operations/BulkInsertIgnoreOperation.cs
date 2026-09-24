@@ -8,6 +8,7 @@ namespace EricksonLopez.SqlBuilder.Builders.Bulk.Operations;
 /// <summary>
 /// Represents a bulk insert ignore operation.
 /// </summary>
+/// <typeparam name="T">The entity type implementing static metadata.</typeparam>
 internal sealed class BulkInsertIgnoreOperation<T> : IBulkOperation<T> where T : IStaticEntityMetadata<T>
 {
     private readonly IEnumerable<T> _entities;

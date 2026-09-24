@@ -10,8 +10,8 @@ namespace EricksonLopez.SqlBuilder.SourceGenerators;
 /// <summary>
 /// Generates compile-time multi-map metadata methods for entity types annotated with <c>[SqlEntity]</c>.
 /// For each entity, emits a <c>GetMultiMapReaderFactory()</c> static method that returns a
-/// <c>Func&lt;System.Data.IDataReader, object&gt;</c> — a reflection-free factory usable by
-/// <c>MultiMapBuilder</c> and the NativeAOT execution path.
+/// <c>Func&lt;System.Data.IDataReader, object&gt;</c> — a reflection-free factory for NativeAOT
+/// and stream reader execution paths.
 /// </summary>
 [Generator]
 public class MultiMapDescriptorGenerator : IIncrementalGenerator
@@ -52,7 +52,7 @@ public class MultiMapDescriptorGenerator : IIncrementalGenerator
         sb.AppendLine("        /// <summary>");
         sb.AppendLine("        /// Returns a compile-time-generated factory that maps an <see cref=\"System.Data.IDataReader\"/>");
         sb.Append("        /// row to a boxed <see cref=\"").Append(className).AppendLine("\"/> instance, with no reflection.");
-        sb.AppendLine("        /// Suitable for use with MultiMapBuilder and NativeAOT execution paths.");
+        sb.AppendLine("        /// Suitable for NativeAOT and custom multi-entity reader pipelines without reflection.");
         sb.AppendLine("        /// </summary>");
         sb.AppendLine("        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]");
         sb.AppendLine("        public static System.Func<System.Data.IDataReader, object> GetMultiMapReaderFactory()");
@@ -62,7 +62,7 @@ public class MultiMapDescriptorGenerator : IIncrementalGenerator
         sb.AppendLine("        }");
         sb.AppendLine();
         // Typed version
-        sb.AppendLine("        /// <summary>Returns a typed reader factory for use with MultiMapBuilder.</summary>");
+        sb.AppendLine("        /// <summary>Returns a typed reader factory for mapping rows without reflection.</summary>");
         sb.AppendLine("        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]");
         sb.Append("        public static System.Func<System.Data.IDataReader, ").Append(className).AppendLine("> GetTypedReaderFactory()");
         sb.AppendLine("        {");

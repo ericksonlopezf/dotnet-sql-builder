@@ -1,7 +1,7 @@
 {
   "stryker-config": {
     "project": "EricksonLopez.SqlBuilder.Dapper.Aot.csproj",
-    "concurrency": 6,
+    "concurrency": 2,
     "mutation-level": "Standard",
     "coverage-analysis": "perTest",
     "reporters": [

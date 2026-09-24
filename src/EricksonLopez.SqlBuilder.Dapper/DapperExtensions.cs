@@ -56,8 +56,8 @@ public static class DapperExtensions
     /// </summary>
     /// <param name="connection">The active database connection whose concrete type is used to look up the compiler.</param>
     /// <returns>The registered <see cref="ISqlCompiler"/> for the connection type.</returns>
-    /// <exception cref="System.InvalidOperationException">
-    /// No compiler has been registered for the connection type via <see cref="RegisterCompiler{TConnection}"/>.
+    /// <exception cref="InvalidOperationException">
+    /// No compiler has been registered for the connection type via <see cref="RegisterCompiler{TConnection}"/>
     /// </exception>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public static ISqlCompiler GetCompiler(IDbConnection connection)
@@ -277,7 +277,7 @@ public static class DapperExtensions
     /// Asynchronously executes a query and yields results as an unbuffered asynchronous stream.
     /// </summary>
     /// <remarks>
-    /// Rows are streamed directly from the database as they become available, making this method
+    /// Rows are streamed directly from the database as they become available, making the operation
     /// suitable for processing large result sets without buffering all rows in memory.
     /// Requires the connection to be a <see cref="System.Data.Common.DbConnection"/>.
     /// </remarks>
@@ -287,6 +287,7 @@ public static class DapperExtensions
     /// <param name="transaction">An optional transaction to participate in.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the asynchronous enumeration.</param>
     /// <returns>An asynchronous stream of <typeparamref name="T"/> instances.</returns>
+    /// <exception cref="NotSupportedException"><paramref name="connection"/> does not inherit from <see cref="System.Data.Common.DbConnection"/></exception>
     public static async IAsyncEnumerable<T> QueryStreamAsync<T>(
         this IDbConnection connection, 
         ISqlQuery query, 

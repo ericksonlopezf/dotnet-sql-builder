@@ -1,159 +1,156 @@
 # Dialect Compatibility Matrix — EricksonLopez.SqlBuilder
 
-> **Scope:** This document details per-feature, per-dialect behavior for SQL builders, compilers,
-> and execution integrations. Verified against compiler source code.
-> Last audit: 2026-08-14
+`EricksonLopez.SqlBuilder` compiles portable, strongly-typed Abstract Syntax Tree (AST) query representations into high-performance, dialect-specific SQL across six database engines:
+- **SS**: Microsoft SQL Server / Azure SQL (`EricksonLopez.SqlBuilder.SqlServer`)
+- **PG**: PostgreSQL (`EricksonLopez.SqlBuilder.PostgreSql`)
+- **MY**: MySQL (`EricksonLopez.SqlBuilder.MySql`)
+- **MA**: MariaDB (`EricksonLopez.SqlBuilder.MariaDb`)
+- **LT**: SQLite (`EricksonLopez.SqlBuilder.Sqlite`)
+- **OR**: Oracle Database (`EricksonLopez.SqlBuilder.Oracle`)
 
 ---
 
-## Dialect Identity
+## Dialect Identity & Compiler Defaults
 
-| Dialect | Package | Compiler Class | Identifier Quoting | Parameter Style |
-|---------|---------|---------------|--------------------|----------------|
-| SQL Server | `EricksonLopez.SqlBuilder.SqlServer` | `SqlServerCompiler` | `[identifier]` | `@p0`, `@p1` (max 2100) |
-| PostgreSQL | `EricksonLopez.SqlBuilder.PostgreSql` | `PostgreSqlCompiler` | `"identifier"` | `@p0`, `@p1` |
-| MySQL/MariaDB | `EricksonLopez.SqlBuilder.MySql` | `MySqlCompiler` | `` `identifier` `` | `@p0`, `@p1` |
-| SQLite | `EricksonLopez.SqlBuilder.Sqlite` | `SqliteCompiler` | `"identifier"` | `@p0`, `@p1` |
-| Oracle | `EricksonLopez.SqlBuilder.Oracle` | `OracleCompiler` | `"IDENTIFIER"` (UPPERCASE) | `:p0`, `:p1` |
-
----
-
-## Pagination
-
-| Syntax | SS | PG | MY | LT | OR | Notes |
-|--------|----|----|----|----|-----|-------|
-| `LIMIT n` | ❌ | ✅ | ✅ | ✅ | ❌ | SS: not supported |
-| `FETCH NEXT n ROWS ONLY` | ✅ | ❌ | ❌ | ❌ | ✅ (12c+) | SS emits this for `.Limit()` |
-| `OFFSET n ROWS` | ✅ | ❌ | ❌ | ❌ | ✅ (12c+) | SS form |
-| `OFFSET n` | ❌ | ✅ | ✅ | ✅ | ❌ | PG/MY/LT form |
-| `ROW_NUMBER()` window page | ✅ | ✅ | ✅ | ✅ | ✅ | `.WindowPage()` — `WITH __wp AS (...)` |
-| Composite cursor | ✅ | ✅ | ✅ | ✅ | ✅ | `.SeekAfter()` / `.SeekBefore()` |
-| `ROWNUM` / `FETCH FIRST` (Oracle native) | ❌ | ❌ | ❌ | ❌ | 📋 | TD-006; target v1.4 |
+| Dialect | Package Name | Primary Compiler Class | Identifier Quoting | Parameter Style | Parameter Ceiling |
+|---|---|---|---|---|---|
+| **SQL Server** | `EricksonLopez.SqlBuilder.SqlServer` | `SqlServerCompiler` | `[identifier]` | `@p0`, `@p1` | 2,100 parameters |
+| **PostgreSQL** | `EricksonLopez.SqlBuilder.PostgreSql` | `PostgreSqlCompiler` | `"identifier"` | `@p0`, `@p1` (or `$1`, `$2` native) | 65,535 parameters |
+| **MySQL** | `EricksonLopez.SqlBuilder.MySql` | `MySqlCompiler` | `` `identifier` `` | `@p0`, `@p1` | 65,535 parameters |
+| **MariaDB** | `EricksonLopez.SqlBuilder.MariaDb` | `MariaDbCompiler` | `` `identifier` `` | `@p0`, `@p1` | 65,535 parameters |
+| **SQLite** | `EricksonLopez.SqlBuilder.Sqlite` | `SqliteCompiler` | `"identifier"` | `@p0`, `@p1` | 999 parameters |
+| **Oracle** | `EricksonLopez.SqlBuilder.Oracle` | `OracleCompiler` | `"IDENTIFIER"` (UPPERCASE) | `:p0`, `:p1` | 65,535 parameters |
 
 ---
 
-## ORDER BY NULL Position
+## Classification Key
 
-| Behavior | SS | PG | MY | LT | OR | Notes |
-|----------|----|----|----|----|-----|-------|
-| Default NULL position (ASC) | Last | Last | Last | Last | Last | Standard SQL |
-| `NULLS FIRST` native | ❌ | ✅ | ❌ | ❌ | ✅ | |
-| `NULLS LAST` native | ❌ | ✅ | ❌ | ❌ | ✅ | |
-| `NULLS FIRST` emulation via `IIF()` | ⚠️ NOP | — | ⚠️ NOP | ⚠️ NOP | — | TD-004; SS/MY/LT currently ignore |
-
----
-
-## UPSERT / Conflict Resolution
-
-| Feature | SS | PG | MY | LT | OR | Notes |
-|---------|----|----|----|----|-----|-------|
-| `ON CONFLICT (cols) DO NOTHING` | ❌ | ✅ | ⚠️ | ✅ | ❌ | MY: `ON DUPLICATE KEY UPDATE id=id` |
-| `ON CONFLICT (cols) DO UPDATE SET` | ❌ | ✅ | ⚠️ | ✅ | ❌ | MY: `ON DUPLICATE KEY UPDATE col=VALUES(col)` |
-| `MERGE INTO … WHEN MATCHED` | ✅ `[Obs.]` | ❌ | ❌ | ❌ | ✅ `[Obs.]` | `MergeQuery<T>` is `[Obsolete]` |
-| `INSERT … ON DUPLICATE KEY UPDATE` | ❌ | ❌ | ✅ | ❌ | ❌ | MySQL native form |
+| Symbol | Class | Meaning |
+|---|---|---|
+| 🌐 | **Universal** | Identical API surface, syntax, and semantics across all database engines. |
+| 🔵 | **DialectSpecific** | Syntax differs per engine, but exposed natively by the respective dialect package. |
+| 🟡 | **DialectEmulated** | Syntax translated or emulated by the compiler to achieve the desired semantic. |
+| ❌ | **Unsupported** | Capability not available in this database engine. |
+| ⛔ | **UnsafeToAbstract** | Feature intentionally rejected from a generic abstraction to prevent false safety or data anomalies. |
 
 ---
 
-## RETURNING / OUTPUT
+## 1. Identifier Quoting & Case Sensitivity
 
-| Feature | SS | PG | MY | LT | OR | Notes |
-|---------|----|----|----|----|-----|-------|
-| `RETURNING col, col` (INSERT) | ❌ | ✅ | ❌ | ✅ | ✅ | MY: throws `NotSupportedException` |
-| `RETURNING *` (INSERT) | ❌ | ✅ | ❌ | ✅ | ❌ | OR: requires explicit columns |
-| `OUTPUT INSERTED.col` (INSERT) | ✅ | ❌ | ❌ | ❌ | ❌ | SS-specific via `SqlServerVisitor` |
-| `RETURNING` from UPDATE | ❌ | ✅ | ❌ | ✅ | ✅ | SS emits `OUTPUT INSERTED.*` |
-| `OUTPUT DELETED.*` from DELETE | ✅ | ❌ | ❌ | ❌ | ❌ | SS only |
-| `RETURNING` from DELETE | ❌ | ✅ | ❌ | ✅ | ✅ | |
-| Oracle `RETURNING … INTO :out_col` | ❌ | ❌ | ❌ | ❌ | ✅ | Named OUT params; requires explicit cols |
+| Feature | SS | PG | MY | MA | LT | OR | Class |
+|---|---|---|---|---|---|---|---|
+| Identifier Quoting | `[x]` | `"x"` | `` `x` `` | `` `x` `` | `"x"` | `"X"` (UPPER) | 🔵 DialectSpecific |
+| Case Sensitivity Default | Insensitive | Case-preserved in quotes | Insensitive | Insensitive | Insensitive | UPPERCASE unless quoted | 🔵 DialectSpecific |
+| Schema Qualified (`schema.table`) | `[dbo].[Table]` | `"public"."Table"` | `` `db`.`Table` `` | `` `db`.`Table` `` | `"main"."Table"` | `"SCHEMA"."TABLE"` | 🌐 Universal |
 
 ---
 
-## JOIN Variants
+## 2. Pagination & Offset Traversal
 
-| Feature | SS | PG | MY | LT | OR | Notes |
-|---------|----|----|----|----|-----|-------|
-| INNER / LEFT / RIGHT / FULL / CROSS JOIN | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| JOIN in UPDATE | ✅ | ⚠️ | ✅ | ❌ | ❌ | PG uses `FROM`; LT: no JOIN in UPDATE |
-| JOIN in DELETE | ✅ | ❌ | ✅ | ❌ | ❌ | PG uses `USING`; LT: no JOIN in DELETE |
-| CROSS APPLY | ✅ | 🔄 | ❌ | ❌ | ❌ | PG: translates to CROSS JOIN LATERAL |
-| OUTER APPLY | ✅ | 🔄 | ❌ | ❌ | ❌ | PG: translates to LEFT JOIN LATERAL |
-| LATERAL JOIN | ❌ | ✅ | ❌ | ❌ | ❌ | PG only; `SubqueryJoinNode(IsLateral:true)` |
-| UNNEST FROM | ❌ | ✅ | ❌ | ❌ | ❌ | PG: `FROM UNNEST(@arr) AS alias` |
-
----
-
-## SELECT Modifiers
-
-| Feature | SS | PG | MY | LT | OR | Notes |
-|---------|----|----|----|----|-----|-------|
-| `DISTINCT` | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| `DISTINCT ON (col)` | ❌ | ✅ | ❌ | ❌ | ❌ | PG-only; `DistinctOnNode` |
-| `COPY FROM` | ❌ | ✅ | ❌ | ❌ | ❌ | PG-only bulk load via `CopyNode` |
+| Pagination Strategy | SS | PG | MY | MA | LT | OR | Class |
+|---|---|---|---|---|---|---|---|
+| `.Limit(n)` | 🟡 `FETCH NEXT n ROWS ONLY` | ✅ `LIMIT n` | ✅ `LIMIT n` | ✅ `LIMIT n` | ✅ `LIMIT n` | 🟡 `FETCH NEXT n ROWS ONLY` (12c+) | 🟡 DialectEmulated |
+| `.Offset(n)` | ✅ `OFFSET n ROWS` | ✅ `OFFSET n` | ✅ `OFFSET n` | ✅ `OFFSET n` | ✅ `OFFSET n` | 🟡 `OFFSET n ROWS` (12c+) | 🟡 DialectEmulated |
+| `.Page(page, size)` | ✅ Native Offset-Fetch | ✅ `LIMIT/OFFSET` | ✅ `LIMIT/OFFSET` | ✅ `LIMIT/OFFSET` | ✅ `LIMIT/OFFSET` | ✅ `OFFSET...FETCH` (12c+) | 🟡 DialectEmulated |
+| Oracle 11g `ROWNUM` Paging | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ `SELECT * FROM (SELECT a_.*, ROWNUM...)` | 🔵 DialectSpecific |
+| Keyset Cursor (`.SeekAfter()`, `.SeekBefore()`) | ✅ $O(1)$ | ✅ $O(1)$ | ✅ $O(1)$ | ✅ $O(1)$ | ✅ $O(1)$ | ✅ $O(1)$ | 🌐 Universal |
+| Window Function Paging (`.WindowPage()`) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
 
 ---
 
-## DELETE Semantics
+## 3. ORDER BY & NULL Ordering
 
-| Feature | SS | PG | MY | LT | OR | Notes |
-|---------|----|----|----|----|-----|-------|
-| `DELETE FROM table WHERE ...` | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| `DELETE FROM t1 USING t2` | ❌ | ✅ | ❌ | ❌ | ❌ | PG: `PostgreSqlCompiler.CompileDelete` |
-| `DELETE t1 FROM t1 JOIN t2` | ✅ | ❌ | ✅ | ❌ | ❌ | MySQL JOIN delete pattern |
-
----
-
-## Bulk Operations
-
-| Feature | SS | PG | MY | LT | OR | Notes |
-|---------|----|----|----|----|-----|-------|
-| Multi-row VALUES insert | ✅ | ✅ | ✅ | ✅ | ✅ | `BulkInsert` with VALUES batching |
-| `SqlBulkCopy` native | ✅ | ❌ | ❌ | ❌ | ❌ | SS-specific `IBulkStrategy` |
-| `COPY FROM STDIN` (NpgsqlBinaryImporter) | ❌ | ✅ | ❌ | ❌ | ❌ | PG-specific |
-| `INSERT … ON DUPLICATE KEY` bulk | ❌ | ❌ | ✅ | ❌ | ❌ | MySQL bulk upsert |
-| `BulkBuilder<T>` AOT path | ✅ | ✅ | ✅ | ✅ | ✅ | Requires `[SqlEntity]` + SourceGenerators |
+| Ordering Syntax | SS | PG | MY | MA | LT | OR | Class |
+|---|---|---|---|---|---|---|---|
+| Standard `ORDER BY col ASC/DESC` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
+| `NULLS FIRST` (Native) | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | 🔵 DialectSpecific |
+| `NULLS LAST` (Native) | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | 🔵 DialectSpecific |
+| `NULLS FIRST / LAST` Emulation | 🟡 `CASE WHEN col IS NULL...` | — (Native) | 🟡 `CASE WHEN col IS NULL...` | 🟡 `CASE WHEN col IS NULL...` | 🟡 `CASE WHEN col IS NULL...` | — (Native) | 🟡 DialectEmulated |
 
 ---
 
-## CTE Support
+## 4. JOIN Types & Lateral Navigation
 
-| Feature | SS | PG | MY | LT | OR | Notes |
-|---------|----|----|----|----|-----|-------|
-| Non-recursive CTE | ✅ | ✅ | ✅ | ✅ | ✅ | MySQL 8.0+ required |
-| Recursive CTE | ✅ | ✅ | ✅ | ✅ | ✅ | MySQL 8.0+ required |
-| CTE in INSERT | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| CTE in UPDATE | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| CTE in DELETE | ✅ | ✅ | ✅ | ✅ | ✅ | |
-
----
-
-## ProviderCapability Flags
-
-| Capability | SS | PG | MY | LT | OR |
-|-----------|----|----|----|----|-----|
-| `ProviderCapability.Apply` | ✅ | ✅* | ❌ | ❌ | ❌ |
-| `ProviderCapability.Cte` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `ProviderCapability.WindowFunctions` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `ProviderCapability.Merge` | ✅ | ❌ | ❌ | ❌ | ✅ |
-| `ProviderCapability.Lateral` | ❌ | ✅ | ❌ | ❌ | ❌ |
-
-> \* PostgreSQL translates `Apply` into `LATERAL` automatically.
+| JOIN Feature | SS | PG | MY | MA | LT | OR | Class |
+|---|---|---|---|---|---|---|---|
+| `INNER`, `LEFT`, `RIGHT`, `FULL` JOIN | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
+| `CROSS JOIN` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
+| `CROSS APPLY` | ✅ | 🟡 `LATERAL` | ❌ | ❌ | ❌ | ❌ | 🟡 DialectEmulated |
+| `OUTER APPLY` | ✅ | 🟡 `LEFT JOIN LATERAL ... ON true` | ❌ | ❌ | ❌ | ❌ | 🟡 DialectEmulated |
+| Explicit `LATERAL JOIN` | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | 🔵 DialectSpecific |
+| Multi-Table Joins (2 to 7 Entities) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
+| Extended Multi-Mapping (8+ Entities) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
 
 ---
 
-## Known Dialect-Specific Limitations
+## 5. DML Mutations, UPSERT & Conflict Resolution
 
-| Dialect | Limitation | Workaround |
-|---------|-----------|-----------|
-| SQL Server | `NULLS FIRST/LAST` silently ignored (TD-004) | Use `.OrderBy($"IIF({col} IS NULL, 0, 1), {col}")` |
-| SQL Server | Max 2100 parameters enforced | Batch queries; use `SqlBulkCopy` for large inserts |
-| MySQL | `RETURNING` throws `NotSupportedException` | Use `LAST_INSERT_ID()` or query after insert |
-| MySQL | `ON CONFLICT` target columns ignored (maps to `ON DUPLICATE KEY`) | Use raw SQL if specific conflict target needed |
-| Oracle | `ON CONFLICT` throws `NotSupportedException` | Use `MergeQuery<T>` (obsolete) or `Sql.Raw()` |
-| Oracle | `RETURNING` requires explicit column list | Always pass column names to `.Returning()` |
-| Oracle | `LIMIT`/`OFFSET` not translated (TD-006) | Use `Sql.Raw()` with `FETCH FIRST n ROWS ONLY` |
-| SQLite | No JOIN in UPDATE or DELETE | Use subqueries or restructure query |
-| All | `MergeQuery<T>` is `[Obsolete]` | Use `OnConflict().DoUpdate()` for PG/MY/LT; raw SQL for SS/OR |
+| Mutation Feature | SS | PG | MY | MA | LT | OR | Class |
+|---|---|---|---|---|---|---|---|
+| `INSERT INTO ... VALUES` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
+| Multi-Row Batch `VALUES (…),(…)` | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ (requires `INSERT ALL`) | 🔵 DialectSpecific |
+| `INSERT INTO ... SELECT` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
+| `ON CONFLICT (cols) DO NOTHING` | ❌ | ✅ | 🟡 `ON DUPLICATE KEY UPDATE` | 🟡 `ON DUPLICATE KEY UPDATE` | ✅ | ❌ | 🟡 DialectEmulated |
+| `ON CONFLICT (cols) DO UPDATE SET` | ❌ | ✅ | 🟡 `ON DUPLICATE KEY UPDATE` | 🟡 `ON DUPLICATE KEY UPDATE` | ✅ | ❌ | 🟡 DialectEmulated |
+| `ON DUPLICATE KEY UPDATE` | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | 🔵 DialectSpecific |
+| Cross-Dialect Generic `MERGE` | ⛔ UnsafeToAbstract | ⛔ UnsafeToAbstract | ⛔ UnsafeToAbstract | ⛔ UnsafeToAbstract | ⛔ UnsafeToAbstract | ⛔ UnsafeToAbstract | ⛔ UnsafeToAbstract (ADR-025) |
+| Optimistic Concurrency Token Update | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
 
 ---
 
-*This document is generated from compiler source code audit. Re-verify after each dialect compiler change.*
+## 6. Returning & Output Clauses
+
+| Clause Feature | SS | PG | MY | MA | LT | OR | Class |
+|---|---|---|---|---|---|---|---|
+| Unified `.Returning()` AST Node | 🟡 `OUTPUT INSERTED.*` | ✅ `RETURNING ...` | ❌ (Throws) | ✅ `RETURNING ...` (10.5+) | ✅ `RETURNING ...` | 🟡 `RETURNING ... INTO` | 🟡 DialectEmulated |
+| Return Generated Identity on INSERT | ✅ `OUTPUT INSERTED.Id` | ✅ `RETURNING "Id"` | ❌ (Scope Identity) | ✅ `RETURNING Id` | ✅ `RETURNING rowid` | ✅ `RETURNING ID INTO :out` | 🔵 DialectSpecific |
+| Return Modified Columns on UPDATE | ✅ `OUTPUT INSERTED.*` | ✅ `RETURNING *` | ❌ | ✅ `RETURNING *` | ✅ `RETURNING *` | ✅ `RETURNING ... INTO` | 🔵 DialectSpecific |
+| Return Deleted Columns on DELETE | ✅ `OUTPUT DELETED.*` | ✅ `RETURNING *` | ❌ | ✅ `RETURNING *` | ✅ `RETURNING *` | ✅ `RETURNING ... INTO` | 🔵 DialectSpecific |
+
+---
+
+## 7. Advanced SQL DSL (CTEs, Window Functions & Set Operations)
+
+| Feature | SS | PG | MY | MA | LT | OR | Class |
+|---|---|---|---|---|---|---|---|
+| Non-Recursive Common Table Expressions (CTEs) | ✅ | ✅ | ✅ (8.0+) | ✅ (10.2+) | ✅ (3.8+) | ✅ | 🌐 Universal |
+| Recursive Common Table Expressions | ✅ | ✅ | ✅ (8.0+) | ✅ (10.2+) | ✅ (3.8+) | ✅ | 🌐 Universal |
+| Materialization Hints (`MATERIALIZED` / `NOT MATERIALIZED`) | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | 🔵 DialectSpecific (ADR-037) |
+| Window Functions (`ROW_NUMBER`, `RANK`, `DENSE_RANK`) | ✅ | ✅ | ✅ (8.0+) | ✅ (10.2+) | ✅ | ✅ | 🌐 Universal |
+| Offset Window Functions (`LAG`, `LEAD`, `FIRST_VALUE`, `LAST_VALUE`) | ✅ | ✅ | ✅ (8.0+) | ✅ (10.2+) | ✅ | ✅ | 🌐 Universal |
+| Analytical Window Functions (`NTILE`, `PERCENT_RANK`, `CUME_DIST`) | ✅ | ✅ | ✅ (8.0+) | ✅ (10.2+) | ✅ | ✅ | 🌐 Universal |
+| Window Function `FILTER (WHERE ...)` Clause | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ | 🔵 DialectSpecific (ADR-035) |
+| Grouping Sets (`GROUPING SETS`, `ROLLUP`, `CUBE`) | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | 🔵 DialectSpecific (ADR-034) |
+| Set Operations (`UNION`, `UNION ALL`) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🌐 Universal |
+| Set Operations (`INTERSECT`, `EXCEPT`) | ✅ | ✅ | ✅ (8.0+) | ✅ (10.3+) | ✅ | ✅ (`MINUS`) | 🌐 Universal |
+
+---
+
+## 8. High-Performance Bulk Data Ingestion
+
+| Bulk Strategy | SS | PG | MY | MA | LT | OR | Description |
+|---|---|---|---|---|---|---|---|
+| **SQL Server TDS Streaming** | ✅ `SqlBulkCopy` | ❌ | ❌ | ❌ | ❌ | ❌ | Direct Tabular Data Stream protocol via `Microsoft.Data.SqlClient.SqlBulkCopy`. |
+| **PostgreSQL Binary COPY** | ❌ | ✅ Binary `COPY` | ❌ | ❌ | ❌ | ❌ | Maximum-speed binary stream ingestion via `NpgsqlBinaryImporter`. |
+| **MySQL / MariaDB Batching** | ❌ | ❌ | ✅ `MySqlBatch` | ✅ `MySqlBatch` | ❌ | ❌ | Pipelined batch execution minimizing roundtrips via `MySqlConnector`. |
+| **Oracle Native Bulk Copy** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ `OracleBulkCopy` | Direct path bulk data loading via `Oracle.ManagedDataAccess.Client.OracleBulkCopy`. |
+| **SQLite Transactional Batch** | ❌ | ❌ | ❌ | ❌ | ✅ WAL Batch | ❌ | Fast single-transaction batched statements in Write-Ahead Logging mode. |
+
+---
+
+## 9. Semi-Structured Data, Arrays & Specialized Types
+
+| Capability | SS | PG | MY | MA | LT | OR | Description |
+|---|---|---|---|---|---|---|---|
+| **JSON / JSONB Storage & Querying** | 🟡 `JSON_VALUE` / `JSON_QUERY` | ✅ Native `jsonb` & `->` / `->>` operators | ✅ Native `JSON` & `->` / `->>` | ✅ Native `JSON` functions | 🟡 `json_extract()` | ✅ Native `JSON` (21c+) | PostgreSQL uses binary indexed JSON (`jsonb`); integrated with `JsonbTypeHandler<T>` in `EricksonLopez.SqlBuilder.Dapper`. |
+| **Array Types & Unnesting** | ❌ (requires `STRING_SPLIT`) | ✅ Native arrays (`text[]`, `int[]`) & `UNNEST()` | ❌ | ❌ | ❌ | 🟡 `VARRAY` / Nested Tables | PostgreSQL supports native first-class multidimensional arrays and relational decomposition via `UNNEST()`. |
+| **Vector Similarity Search (pgvector)** | ❌ | ✅ `<->` L2, `<=>` Cosine, `<#>` IP | ❌ | ❌ | ❌ | 🟡 AI Vector Search (23ai) | PostgreSQL vector distance calculations and cosine similarity indexes (`hnsw`, `ivfflat`) via raw expression helpers and type mappings. |
+| **Full-Text Search DSL** | 🟡 `CONTAINS` / `FREETEXT` | ✅ `to_tsvector` / `to_tsquery` / `@@` | 🟡 `MATCH(...) AGAINST(...)` | 🟡 `MATCH(...) AGAINST(...)` | 🟡 `FTS5` virtual tables | 🟡 `CONTAINS` (Oracle Text) | Dialect-specific full-text indexing and query syntax abstractions. |
+
+---
+
+## 10. Architectural Boundaries & Safe Abstractions
+
+1. **Why generic `Sql.Merge<T>()` is deprecated (ADR-025)**: SQL Server's `MERGE` statement has known concurrency bugs under high concurrency (e.g. deadlocks, duplicate key violations even with unique indexes). An ORM-like abstraction hiding these differences creates false safety. The ecosystem requires developers to use dialect-native primitives.
+2. **Why raw SQL strings are validated**: Roslyn analyzers (`ESQL002`, `ESQL011`, `ELSB004`) enforce that identifier names and parameter values are never built via unvalidated string concatenation.
+

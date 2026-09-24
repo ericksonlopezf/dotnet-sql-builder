@@ -6,14 +6,15 @@ Only the latest release of `EricksonLopez.SqlBuilder` is actively supported for 
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.1.x   | :white_check_mark: |
-| < 1.1   | :x:                |
+| 2.0.x   | :white_check_mark: |
+| 1.0.x   | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
 We take the security of this project seriously. If you discover a vulnerability, please **do NOT open a public issue**.
 
-Instead, report it via [GitHub Security Advisories](https://github.com/ericksonlopezf/dotnet-sql-builder/security/advisories/new) or by emailing **ericksonlopezf@gmail.com**.
+Instead, report it via [GitHub Security Advisories](https://github.com/ericksonlopezf/dotnet-sql-builder/security/advisories/new) or by emailing [ericksonlopezf@gmail.com](mailto:ericksonlopezf@gmail.com).
 
 Please include the following details in your report:
 
@@ -44,4 +45,7 @@ The `EricksonLopez.SqlBuilder` API boundary strictly assumes that **developers c
 - **Safe:** All literal values passed into `.Where()`, `.Insert()`, or `.Update()` via closure variables are automatically parameterized by the dialect compilers, protecting against SQL injection.
 - **Unsafe (By Design):** Dynamic raw strings passed into escape hatches (e.g., `Sql.Raw()`, or table/column names dynamically generated via string concatenation instead of strongly-typed mappings) are **not** parameterized. Users must sanitize identifiers if they originate from untrusted input.
 
-> The Roslyn Analyzer rule **ESQL011** (Unsafe `Sql.Raw()` with non-constant string) will emit a warning when `Sql.Raw()` is called with a non-literal string argument.
+The Roslyn Analyzers suite enforces compile-time security boundaries:
+- **ESQL002** (Error): Blocks raw string concatenation when composing SQL statements to eliminate injection vectors.
+- **ESQL011** (Warning): Flags unsafe calls to `Sql.Raw(string)` where non-constant or non-literal arguments are passed.
+- **ELSB004** (Warning): Detects dynamically constructed SQL identifiers passed without explicit compile-time or runtime allowlist validation.

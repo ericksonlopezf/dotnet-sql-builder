@@ -13,7 +13,7 @@ All MSBuild properties are centralized in [`Directory.Build.props`](../Directory
 ## Version Management
 
 ```xml
-<VersionPrefix>1.0.0</VersionPrefix>
+<VersionPrefix>2.0.0</VersionPrefix>
 <VersionSuffix></VersionSuffix>
 ```
 
@@ -30,13 +30,13 @@ All packages share these metadata properties:
 
 | Property | Value |
 |----------|-------|
-| `Authors` | Erickson López |
-| `Copyright` | Copyright © 2026 Erickson López |
+| `Authors` | Erickson Lopez |
+| `Copyright` | Copyright © 2026 Erickson Lopez |
 | `PackageLicenseExpression` | MIT |
 | `PackageProjectUrl` | https://ericksonlopez.dev/sql-builder |
 | `PackageReadmeFile` | README.md (embedded in each `.nupkg`) |
 | `PackageIcon` | icon.png (embedded in each `.nupkg`) |
-| `PackageTags` | sql, sql-builder, fluent, linq, dapper, query, postgresql, mysql, sqlserver, dotnet |
+| `CommonPackageTags` | `dotnet;.net;csharp;open-source` (centralized in `Directory.Build.props`, composed with package-specific tags) |
 
 ---
 
@@ -46,7 +46,7 @@ All packages share these metadata properties:
 |----------|-------|---------|
 | `LangVersion` | `latest` | Always uses the latest C# language version |
 | `Nullable` | `enable` | Full nullable reference types enabled |
-| `ImplicitUsings` | `disable` | Explicit `using` directives required across all projects |
+| `ImplicitUsings` | `disable` | Implicit usings disabled; explicit using directives required for clarity and deterministic resolution |
 | `TreatWarningsAsErrors` | `true` | All warnings are errors in Release; relaxed in CI with `-p:TreatWarningsAsErrors=false` |
 | `WarningLevel` | `5` | Maximum warning level |
 | `AnalysisLevel` | `latest-recommended` | Latest Roslyn analysis ruleset |
@@ -127,7 +127,7 @@ Every `dotnet restore` and `dotnet build` scans all direct **and transitive** Nu
 
 All source projects generate XML documentation files (`GenerateDocumentationFile=true`). These are embedded in the `.nupkg` for IDE IntelliSense support when the package is consumed.
 
-Missing XML documentation warnings (`CS1591`) are suppressed globally since some internal types do not require public documentation.
+Missing XML documentation warnings (`CS1591`) are strictly enforced as errors (`WarningsAsErrors`) across all production libraries, ensuring complete documentation for all public APIs.
 
 ---
 

@@ -5,7 +5,7 @@ using EricksonLopez.SqlBuilder.Abstractions.Metadata;
 namespace EricksonLopez.SqlBuilder.ColumnSelection.Rules;
 
 /// <summary>
-/// A column selection rule that dynamically excludes any columns whose underlying property value is <see langword="null"/>.
+/// Represents a column selection rule that dynamically excludes any columns whose underlying property value is <see langword="null"/>.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity being processed.</typeparam>
 public readonly struct IgnoreNullsRule<TEntity> : IColumnSelectionRule<TEntity> 

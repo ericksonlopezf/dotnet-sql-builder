@@ -20,7 +20,7 @@ namespace EricksonLopez.SqlBuilder.MySql.IntegrationTests;
 [Trait("Category", "Integration")]
 public class MySqlIntegrationTests : IAsyncLifetime
 {
-    private readonly MySqlContainer _mySqlContainer = new MySqlBuilder().Build();
+    private readonly MySqlContainer _mySqlContainer = new MySqlBuilder("mysql:8.0").Build();
 
     public async Task InitializeAsync()
     {

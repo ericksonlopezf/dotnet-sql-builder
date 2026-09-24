@@ -1,7 +1,11 @@
 # Unit of Work — EricksonLopez.SqlBuilder
 
-> **Package:** `EricksonLopez.SqlBuilder.Dapper.UnitOfWork` (planned v1.1)
+> **Package:** `EricksonLopez.SqlBuilder.Dapper.UnitOfWork` (Planned v1.1+)  
 > **ADR:** [ADR-004](decisions/adr-004-unitofwork-outside-core.md), [ADR-016](decisions/adr-016-transaction-retry-semantics.md)
+
+> [!WARNING]
+> **Architectural Proposal / Unreleased Package:**  
+> The package `EricksonLopez.SqlBuilder.Dapper.UnitOfWork` described in this document is an architectural specification currently under design for future releases (v1.1+). The types and extensions below are not yet published in current NuGet packages.
 
 ---
 
@@ -169,4 +173,4 @@ services.AddScoped<IUnitOfWork>(sp =>
 
 - [ADR-004: UnitOfWork Outside Core](decisions/adr-004-unitofwork-outside-core.md)
 - [ADR-016: Transaction + Retry Semantics](decisions/adr-016-transaction-retry-semantics.md)
-- [Resilience.md](Resilience.md)
+- [Resilience](resilience.md)

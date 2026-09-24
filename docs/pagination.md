@@ -167,4 +167,4 @@ var query = Sql.From<User>()
 ## Related Documents
 
 - [ADR-012: Pagination Strategy](decisions/adr-012-pagination-strategy.md)
-- [Cookbook.md](Cookbook.md) — examples
+- [Cookbook](cookbook.md) — examples

@@ -10,22 +10,22 @@ internal static class SqlEntityCache<T> where T : new()
 
 {
     /// <summary>
-    /// The resolved table name for the entity.
+    /// Gets the resolved table name for the entity.
     /// </summary>
     public static readonly string TableName;
     
     /// <summary>
-    /// The ordered array of column names associated with the entity.
+    /// Gets the ordered array of column names associated with the entity.
     /// </summary>
     public static readonly string[] ColumnNames;
     
     /// <summary>
-    /// A dictionary mapping property names to their corresponding database column names.
+    /// Gets a dictionary mapping property names to their corresponding database column names.
     /// </summary>
     public static readonly IReadOnlyDictionary<string, string> PropertyMap;
     
     /// <summary>
-    /// A set of column names that are indexed for fast lookup.
+    /// Gets a set of column names that are indexed for fast lookup.
     /// </summary>
     public static readonly HashSet<string> IndexedColumns;
 

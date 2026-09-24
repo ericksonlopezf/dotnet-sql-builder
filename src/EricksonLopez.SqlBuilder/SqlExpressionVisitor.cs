@@ -50,7 +50,7 @@ public class SqlExpressionVisitor : ExpressionVisitor
     }
 
     /// <summary>
-    /// Dispatches the expression to one of the more specialized visit methods in this class.
+    /// Dispatches the expression to one of the more specialized visit methods.
     /// </summary>
     /// <param name="node">The expression to visit.</param>
     /// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
@@ -151,6 +151,10 @@ public class SqlExpressionVisitor : ExpressionVisitor
             if (_escapeFunc != null)
             {
                 _sql.Append(_escapeFunc(snakeCase));
+            }
+            else if (SqlNamingHelper.IsReservedKeyword(snakeCase))
+            {
+                _sql.Append("\"" + snakeCase + "\"");
             }
             else
             {
@@ -281,8 +285,10 @@ public class SqlExpressionVisitor : ExpressionVisitor
 
     /// <summary>
     /// Handles <c>value.Between(from, to)</c> extension method calls.
-    /// Emits: <c>column BETWEEN @p0 AND @p1</c>
+    /// Emits: <c>column BETWEEN @p0 AND @p1</c>.
     /// </summary>
+    /// <param name="node">The method call expression to process.</param>
+    /// <returns><see langword="true"/> if the call was successfully handled; otherwise, <see langword="false"/>.</returns>
     private bool HandleBetween(MethodCallExpression node)
     {
         if (node.Method.DeclaringType != typeof(Sql)) return false;
@@ -301,8 +307,10 @@ public class SqlExpressionVisitor : ExpressionVisitor
 
     /// <summary>
     /// Handles <c>value.Coalesce(fallback)</c> or <c>Sql.Coalesce(v1, v2, fallback)</c> calls.
-    /// Emits: <c>COALESCE(c1, @p0)</c> or <c>COALESCE(c1, c2, @p0)</c>
+    /// Emits: <c>COALESCE(c1, @p0)</c> or <c>COALESCE(c1, c2, @p0)</c>.
     /// </summary>
+    /// <param name="node">The method call expression to process.</param>
+    /// <returns><see langword="true"/> if the call was successfully handled; otherwise, <see langword="false"/>.</returns>
     private bool HandleCoalesce(MethodCallExpression node)
     {
         if (node.Method.DeclaringType != typeof(Sql)) return false;

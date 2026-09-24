@@ -92,7 +92,7 @@ public static class RealUseCasesSample
         Console.WriteLine($"    Recursive CTE SQL:\n    {recursiveSql.Sql.Substring(0, Math.Min(120, recursiveSql.Sql.Length))}...");
 
         // ── 3. AsCount / AsSum / AsAvg / AsMin / AsMax ───────────────────
-        Console.WriteLine("\n[+] 3. Funciones de Agregacion — AsCount / AsSum / AsAvg / AsMin / AsMax");
+        Console.WriteLine("\n[+] 3. Aggregate Functions — AsCount / AsSum / AsAvg / AsMin / AsMax");
         var aggSql = Sql.From<Employee>()
             .AsCount("total_employees").AsSum("salary", "total_salary")
             .AsAvg("salary", "avg_salary").AsMin("salary", "min_salary").AsMax("salary", "max_salary")
@@ -117,7 +117,7 @@ public static class RealUseCasesSample
         Console.WriteLine($"    HAVING (raw) SQL: {rawHavingSql.Sql}");
 
         // ── 5. GroupByRollup ──────────────────────────────────────────────
-        Console.WriteLine("\n[+] 5. GROUP BY ROLLUP — Subtotales jerarquicos");
+        Console.WriteLine("\n[+] 5. GROUP BY ROLLUP — Hierarchical subtotals");
         // NOTE: ROLLUP is not supported by SQLite. Use SqlServerCompiler or PostgreSqlCompiler.
         var rollupSql = Sql.From<Category>()
             .Select("name", "year").AsSum("revenue", "total_revenue")
@@ -135,7 +135,7 @@ public static class RealUseCasesSample
         Console.WriteLine($"    CUBE SQL (SQL Server): {cubeSql.Sql}");
 
         // ── 7. GroupingSets ───────────────────────────────────────────────
-        Console.WriteLine("\n[+] 7. GROUPING SETS — Agrupaciones explicitas multi-nivel");
+        Console.WriteLine("\n[+] 7. GROUPING SETS — Explicit multi-level groupings");
         // NOTE: GROUPING SETS is not supported by SQLite. Use SqlServerCompiler or PostgreSqlCompiler.
         var gsQuery = Sql.From<Category>()
             .Select("name", "year").AsSum("revenue", "total_revenue")
@@ -183,10 +183,125 @@ public static class RealUseCasesSample
         Console.WriteLine($"    NULLS LAST:  {Sql.From<Employee>().OrderByDescending(e => e.Salary, NullsPosition.Last).Build(new SqliteCompiler()).Sql}");
 
         // ── 14. Merge / Upsert ────────────────────────────────────────────
-        Console.WriteLine("\n[+] 14. Merge (Upsert / Sincronizacion)");
+        Console.WriteLine("\n[+] 14. Merge (Upsert / Synchronization)");
         var mergeResult = Sql.Raw("MERGE INTO employees AS tgt USING src ON tgt.id = src.id WHEN MATCHED THEN UPDATE SET salary = src.salary WHEN NOT MATCHED THEN INSERT (id,name,department,salary,age) VALUES (src.id,src.name,src.department,src.salary,src.age);")
             .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
         Console.WriteLine($"    Merge SQL:\n    {mergeResult.Sql}");
+
+        // ── 15. Sql.InsertFrom<T> — INSERT INTO ... SELECT ────────────────
+        Console.WriteLine("\n[+] 15. Sql.InsertFrom<T> — INSERT INTO ... SELECT");
+
+        // Move all HR employees to a separate archive table via INSERT INTO ... SELECT
+        var hrEmployeesQuery = Sql.From<Employee>().Where(e => e.Department == "HR");
+        var insertFromSql = Sql.InsertFrom<Employee>(hrEmployeesQuery, "name", "department", "salary", "age")
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    InsertFrom SQL:\n    {insertFromSql.Sql}");
+
+        // InsertFrom with all columns (no explicit column list)
+        var insertFromAllColsSql = Sql.InsertFrom<Employee>(hrEmployeesQuery)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    InsertFrom (all cols) SQL:\n    {insertFromAllColsSql.Sql}");
+
+        // ── 16. InsertQuery.DefaultValues() ──────────────────────────────
+        Console.WriteLine("\n[+] 16. InsertQuery.DefaultValues() — INSERT with all defaults");
+        var defaultValSql = new InsertQuery<Employee>().DefaultValues()
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    DefaultValues SQL: {defaultValSql.Sql}");
+
+        // ── 17. WhereDay ──────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 17. WhereDay — EXTRACT(DAY FROM column)");
+        Console.WriteLine($"    WhereDay SQL: {Sql.From<Category>().WhereDay("month", "=", 15).Build(new SqliteCompiler()).Sql}");
+
+        // ── 18. WithTag — diagnostic tags ─────────────────────────────────
+        Console.WriteLine("\n[+] 18. WithTag — attaching diagnostic tags to queries");
+
+        // Tags allow identifying queries in logs and traces
+        var taggedSelect = Sql.From<Employee>()
+            .Where(e => e.Department == "Engineering")
+            .WithTag("employees:list:engineering");
+        Console.WriteLine($"    Tagged query tag: {taggedSelect.Tag}");
+        Console.WriteLine($"    Tagged query SQL: {taggedSelect.Build(new SqliteCompiler()).Sql}");
+
+        // Tags on InsertQuery
+        var taggedInsert = Sql.Insert(new Employee { Name = "Eve", Department = "Engineering", Salary = 88000m, Age = 29 })
+            .WithTag("employees:insert:onboarding");
+        Console.WriteLine($"    Tagged insert tag: {taggedInsert.Tag}");
+
+        // Tags on DeleteQuery — WithTag must be called before Where() since
+        // Sql.Delete<T>() returns IDeleteFromBuilder which has WithTag on the concrete type.
+        // Pattern: use typed variable or chain WithTag before Where
+        var deleteQuery2 = new DeleteQuery<Employee>()
+            .WithTag("employees:delete:cleanup")
+            .Where(e => e.Department == "HR");
+        Console.WriteLine($"    Tagged delete tag: {deleteQuery2.Tag}");
+
+        // ── 19. IntersectAll / ExceptAll ──────────────────────────────────
+        Console.WriteLine("\n[+] 19. IntersectAll / ExceptAll — set operations with duplicates");
+
+        var highSalaryQ = Sql.From<Employee>().Where(e => e.Salary > 80000m).Select("department");
+        var youngQ = Sql.From<Employee>().Where(e => e.Age < 35).Select("department");
+
+        var intersectAllSql = Sql.From<Employee>().Select("department")
+            .IntersectAll(youngQ)
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    INTERSECT ALL SQL:\n    {intersectAllSql.Sql}");
+
+        var exceptAllSql = highSalaryQ.ExceptAll(youngQ)
+            .Build(new EricksonLopez.SqlBuilder.SqlServer.SqlServerCompiler());
+        Console.WriteLine($"    EXCEPT ALL SQL:\n    {exceptAllSql.Sql}");
+
+        // ── 20. OrHaving ──────────────────────────────────────────────────
+        Console.WriteLine("\n[+] 20. OrHaving — OR condition on HAVING clause");
+        var orHavingSql = Sql.From<Employee>()
+            .Select("department").AsAvg("salary", "avg_salary").AsCount("total")
+            .GroupBy("department")
+            .Having(e => e.Salary > 80000m)
+            .OrHaving(e => e.Age < 30)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    OrHaving SQL: {orHavingSql.Sql}");
+
+        // OrHaving with raw FormattableString
+        decimal minSalary = 50000m;
+        var orHavingRawSql = Sql.From<Employee>()
+            .Select("department").AsCount("total")
+            .GroupBy("department")
+            .Having($"COUNT(*) > 1")
+            .OrHaving($"AVG(salary) > {minSalary}")
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    OrHaving (raw) SQL: {orHavingRawSql.Sql}");
+
+        // ── 21. OrExists / OrNotExists ────────────────────────────────────
+        Console.WriteLine("\n[+] 21. OrExists / OrNotExists — set existential checks");
+        var deptSubquery = Sql.From<Department>().Where(d => d.Id == 1);
+
+        var orExistsSql = Sql.From<Employee>()
+            .Where(e => e.Salary > 90000m)
+            .OrExists(deptSubquery)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    OR EXISTS SQL: {orExistsSql.Sql}");
+
+        var whereNotExistsSql = Sql.From<Employee>()
+            .Where(e => e.Department == "Engineering")
+            .OrNotExists(deptSubquery)
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    OR NOT EXISTS SQL: {whereNotExistsSql.Sql}");
+
+        // ── 22. Alias — naming a subquery ─────────────────────────────────
+        Console.WriteLine("\n[+] 22. Alias — naming SelectQuery for use as subquery");
+        // Alias() names the outer query for use as a derived table reference
+        var subQ = Sql.From<Employee>().Where(e => e.Department == "Engineering").Alias("eng");
+        Console.WriteLine($"    Query alias: {subQ.Alias}");
+        Console.WriteLine($"    Aliased query SQL: {subQ.Build(new SqliteCompiler()).Sql}");
+
+        // ── 23. From(ISqlQuery, alias) — subquery as FROM source ──────────
+        Console.WriteLine("\n[+] 23. SelectQuery.From(ISqlQuery, alias) — derived table");
+        // Build a subquery and use it as the source table
+        var innerQ = Sql.From<Employee>().Select("department", "AVG(salary) as avg_sal").GroupBy("department");
+        var outerSql = Sql.From<Employee>()
+            .From(innerQ, "dept_stats")
+            .Select("dept_stats.department", "dept_stats.avg_sal")
+            .Build(new SqliteCompiler());
+        Console.WriteLine($"    Derived table SQL:\n    {outerSql.Sql}");
     }
 }
 

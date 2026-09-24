@@ -7,9 +7,9 @@ using Dapper;
 namespace EricksonLopez.SqlBuilder.Dapper;
 
 /// <summary>
-/// Dapper type handler for PostgreSQL JSONB columns.
-/// Serializes/deserializes .NET objects to/from JSONB using System.Text.Json.
+/// Provides a Dapper type handler for PostgreSQL JSONB columns that serializes and deserializes objects using <see cref="JsonSerializer"/>.
 /// </summary>
+/// <typeparam name="T">The type of object to serialize and deserialize.</typeparam>
 public sealed class JsonbTypeHandler<T> : SqlMapper.TypeHandler<T>
 {
     private static readonly JsonSerializerOptions _options = new()

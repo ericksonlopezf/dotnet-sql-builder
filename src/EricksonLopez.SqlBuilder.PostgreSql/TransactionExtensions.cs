@@ -22,7 +22,7 @@ public static class TransactionExtensions
     /// </summary>
     /// <param name="connection">The PostgreSQL database connection.</param>
     /// <param name="operation">The asynchronous operation to execute within the transaction.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
     /// <returns>A task representing the asynchronous transaction operation.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="operation"/> is <see langword="null"/></exception>
     public static async Task ExecuteInTransactionAsync(
@@ -58,8 +58,10 @@ public static class TransactionExtensions
     /// <typeparam name="TResult">The result type of the operation.</typeparam>
     /// <param name="connection">The PostgreSQL database connection.</param>
     /// <param name="operation">The asynchronous operation to execute within the transaction.</param>
-    /// <param name="cancellationToken">A cancellation token.</param>
-    /// <returns>The result returned by <paramref name="operation"/>.</returns>
+    /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the value returned by <paramref name="operation"/>.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="connection"/> or <paramref name="operation"/> is <see langword="null"/></exception>
     public static async Task<TResult> ExecuteInTransactionAsync<TResult>(
         this NpgsqlConnection connection,

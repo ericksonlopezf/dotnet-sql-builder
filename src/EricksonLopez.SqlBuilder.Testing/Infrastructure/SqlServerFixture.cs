@@ -15,14 +15,11 @@ using Testcontainers.MsSql;
 namespace EricksonLopez.SqlBuilder.Testing.Infrastructure;
 
 /// <summary>
-/// SQL Server fixture using Testcontainers.
-/// Starts a mcr.microsoft.com/mssql/server:2022-latest container.
-///
-/// Requirements:
-///   • Docker Desktop with ≥4GB RAM (SQL Server requirement)
-///   • NuGet: Testcontainers.MsSql
-///   • ACCEPT_EULA=Y is set automatically by the builder
+/// Represents a Microsoft SQL Server test fixture backed by Testcontainers.
 /// </summary>
+/// <remarks>
+/// Starts an MS SQL Server container, initializes database tables and indexes, and seeds test data.
+/// </remarks>
 public sealed class SqlServerFixture : DatabaseFixture
 {
     private readonly MsSqlContainer _container = new MsSqlBuilder()
@@ -31,9 +28,13 @@ public sealed class SqlServerFixture : DatabaseFixture
         .WithCleanUp(true)
         .Build();
 
+    /// <inheritdoc/>
     public override string ConnectionString => _container.GetConnectionString();
+
+    /// <inheritdoc/>
     public override string EngineName => "SQL Server";
 
+    /// <inheritdoc/>
     public override IDbConnection CreateConnection()
     {
         var conn = new SqlConnection(ConnectionString);
@@ -41,8 +42,10 @@ public sealed class SqlServerFixture : DatabaseFixture
         return conn;
     }
 
+    /// <inheritdoc/>
     public override ISqlCompiler CreateCompiler() => new SqlServerCompiler();
 
+    /// <inheritdoc/>
     protected override async Task StartContainerAsync()
     {
         await _container.StartAsync();
@@ -51,12 +54,14 @@ public sealed class SqlServerFixture : DatabaseFixture
         DefaultTypeMap.MatchNamesWithUnderscores = true;
     }
 
+    /// <inheritdoc/>
     protected override async Task StopContainerAsync()
     {
         await _container.StopAsync();
         await _container.DisposeAsync();
     }
 
+    /// <inheritdoc/>
     protected override async Task InitializeSchemaAsync(System.Data.Common.DbConnection connection)
     {
         // SQL Server requires GO-separated batches — we split manually
@@ -237,6 +242,7 @@ CREATE TABLE dbo.audit_logs (
 );");
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedCoreDataAsync(System.Data.Common.DbConnection connection)
     {
         await using var tx = await connection.BeginTransactionAsync();
@@ -255,6 +261,7 @@ CREATE TABLE dbo.audit_logs (
         await tx.CommitAsync();
     }
 
+    /// <inheritdoc/>
     protected override async Task SeedTestDataAsync(System.Data.Common.DbConnection connection)
     {
         var dataset = Data;

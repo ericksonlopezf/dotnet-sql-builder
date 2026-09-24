@@ -17,7 +17,7 @@ public static class MariaDbExtensions
 
     /// <summary>
     /// Adds a raw WHERE clause using MariaDB <c>JSON_EXTRACT</c> function.
-    /// Generates: <c>WHERE JSON_EXTRACT(`column`, '$.path') = @p0</c>
+    /// Generates: <c>WHERE JSON_EXTRACT(`column`, '$.path') = @p0</c>.
     /// </summary>
     /// <typeparam name="T">The entity type.</typeparam>
     /// <param name="query">The SQL query AST builder.</param>
@@ -40,7 +40,7 @@ public static class MariaDbExtensions
 
     /// <summary>
     /// Adds a SELECT clause using <c>JSON_ARRAYAGG</c> to aggregate column values into a JSON array.
-    /// Generates: <c>JSON_ARRAYAGG(`column`) AS `alias`</c>
+    /// Generates: <c>JSON_ARRAYAGG(`column`) AS `alias`</c>.
     /// </summary>
     /// <typeparam name="T">The entity type.</typeparam>
     /// <param name="query">The SQL query AST builder.</param>
@@ -56,7 +56,7 @@ public static class MariaDbExtensions
 
     /// <summary>
     /// Adds a SELECT clause using <c>JSON_OBJECTAGG</c> to aggregate key-value pairs into a JSON object.
-    /// Generates: <c>JSON_OBJECTAGG(`keyColumn`, `valueColumn`) AS `alias`</c>
+    /// Generates: <c>JSON_OBJECTAGG(`keyColumn`, `valueColumn`) AS `alias`</c>.
     /// </summary>
     /// <typeparam name="T">The entity type.</typeparam>
     /// <param name="query">The SQL query AST builder.</param>
@@ -75,7 +75,7 @@ public static class MariaDbExtensions
 
     /// <summary>
     /// Adds a <c>WHERE MATCH AGAINST</c> full-text search clause.
-    /// Generates: <c>WHERE MATCH(`col1`, `col2`) AGAINST (@p0 IN BOOLEAN MODE)</c>
+    /// Generates: <c>WHERE MATCH(`col1`, `col2`) AGAINST (@p0 IN BOOLEAN MODE)</c>.
     /// </summary>
     /// <typeparam name="T">The entity type.</typeparam>
     /// <param name="query">The SQL query AST builder.</param>
@@ -84,7 +84,7 @@ public static class MariaDbExtensions
     /// <returns>A new <see cref="SelectQuery{T}"/> with the full-text search condition applied.</returns>
     /// <remarks>
     /// The full-text index must exist on the specified columns.
-    /// Example DDL: <c>CREATE FULLTEXT INDEX ft_products ON products(name, description);</c>
+    /// Example DDL: <c>CREATE FULLTEXT INDEX ft_products ON products(name, description);</c>.
     /// </remarks>
     public static SelectQuery<T> WhereFullText<T>(
         this SelectQuery<T> query, string searchTerm, params string[] columns) where T : class, new()

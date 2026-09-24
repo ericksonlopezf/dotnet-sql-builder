@@ -3,8 +3,9 @@
 > **Package:** `EricksonLopez.SqlBuilder.Dapper.Resilience` (**planned** — not yet published)
 > **ADR:** [ADR-003](decisions/adr-003-polly-not-core-dependency.md), [ADR-016](decisions/adr-016-transaction-retry-semantics.md)
 
-> [!IMPORTANT]
-> **Current status:** The `EricksonLopez.SqlBuilder.Dapper.Resilience` package is not yet available on NuGet. The extension methods `QueryWithResilienceAsync` and `ExecuteWithResilienceAsync` shown in this document represent the planned API surface. **Use the Polly-direct pattern shown below until the package ships.**
+> [!WARNING]
+> **Architectural Proposal / Unreleased Package:**  
+> The package `EricksonLopez.SqlBuilder.Dapper.Resilience` is not yet available on NuGet. The extension methods `QueryWithResilienceAsync` and `ExecuteWithResilienceAsync` represent planned API surface. **Use the Polly-direct pattern shown below until the package ships.**
 
 ---
 
@@ -224,4 +225,4 @@ services.AddResiliencePipelineTelemetry();
 
 - [ADR-003: Polly Not Core Dependency](decisions/adr-003-polly-not-core-dependency.md)
 - [ADR-016: Transaction + Retry Semantics](decisions/adr-016-transaction-retry-semantics.md)
-- [UnitOfWork.md](UnitOfWork.md)
+- [Unit of Work & Transactions](unit-of-work.md)
